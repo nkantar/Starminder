@@ -12,6 +12,9 @@ import parsenvy
 from waitress import serve
 
 
+VERSION = '0.1.0'
+
+
 DEPLOYMENT = parsenvy.str('DEPLOYMENT', 'DEVELOPMENT')
 PORT = parsenvy.int('PORT', 5000)
 
@@ -100,6 +103,7 @@ def index():
         session['user'] = user.as_dict
 
     session['users'] = db.session.query(User).count()
+    session['version'] = VERSION
 
     return render_template('index.html')
 
