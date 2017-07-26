@@ -1,0 +1,11 @@
+<p style='font-family: Helvetica, Arial, sans-serif;'>Hi {{ user.github_username }},</p>
+<p style='font-family: Helvetica, Arial, sans-serif;'>Here are your reminders for {{ now.strftime('%Y-%m-%d') }}:</p>
+<br />
+{% for star in stars %}
+  <ul>
+    <li style='font-family: Helvetica, Arial, sans-serif;'><a style='font-family: Helvetica, Arial, sans-serif;' href='https://github.com/{{ star.owner }}/{{ star.name }}'>{{ star.owner }}/{{ star.name }}</a> &mdash; {{ star.description }}{% if star.homepage %} &mdash; <a style='font-family: Helvetica, Arial, sans-serif;' href='{{ star.homepage }}'>{{ star.homepage }}</a>{% endif %} &mdash; {{ star.stargazers }} stargazer{% if star.stargazers != 1 %}s{% endif %}</li>
+  </ul>
+{% endfor %}
+<br />
+<p style='font-family: Helvetica, Arial, sans-serif;'>See you next time!</p>
+<p style='font-family: Helvetica, Arial, sans-serif;'>Cheers,<br /><a href='https://starminder.xyz' style='font-family: Helvetica, Arial, sans-serif;'>Starminder</a></p>

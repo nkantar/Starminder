@@ -1,0 +1,12 @@
+Hi {{ user.github_username }},
+
+Here are your reminders for {{ now.strftime('%Y-%m-%d') }}:
+
+
+{% for star in stars %}- {{ star.owner }}/{{ star.name }}{% if star.description %} - {{ star.description }}{% endif %} - https://github.com/{{ star.owner }}/{{ star.name }}{% if star.homepage %} - {{ star.homepage }}{% endif %} - {{ star.stargazers }} stargazer{% if star.stargazers != 1 %}s{% endif %}
+{% endfor %}
+
+See you next time!
+
+Cheers, Starminder
+https://starminder.xyz

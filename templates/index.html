@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- voodoo -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+
+    <!-- basic meta -->
+    <title>Starminder</title>
+    <meta name="description" content="Remind yourself of your GitHub stars." />
+
+    <!-- OG -->
+    <meta property="og:title" content="Starminder">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://starminder.xyz/">
+    <meta property="og:description" content="Remind yourself of your GitHub stars.">
+    <meta property="og:image" content="/static/images/favicon144.gif">
+    <meta property="og:image:width" content="144">
+    <meta property="og:image:height" content="144">
+
+    <!-- static -->
+    <link rel="author" href="/humans.txt" />
+    <link rel="shortcut icon" href="/static/favicon.gif" />
+    <link rel="apple-touch-icon" href="/static/favicon144.gif" />
+
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+  </head>
+
+  <body>
+    <header>
+      <a href="/"><h1>Starminder</h1></a>
+    </header>
+
+    <nav>
+      {% if session['user'] %}
+        Logged in as <strong>{{ session['user']['github_username'] }}</strong> | <a href="/logout">Log out</a>
+      {% else %}
+        <a href="/login">Log in with GitHub</a>
+      {% endif %}
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <p>{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <section>
+      <p><strong>Starminder</strong> periodically reminds you of some of your starred GitHub projects.</p>
+      <p>You decide how many and how frequently, and it takes care of the rest.</p>
+    </section>
+
+    {% if session['user'] %}
+
+      <section>
+        <form method="POST" action="/save">
+          Send&hellip;
+          <ul>
+            <li>no more than <input type="number" name="number" min="1" step="1" value="{{ session['user']['number'] }}" required> projects</li>
+            <li>every
+              <select name="day" required>
+                <option value="-1" {% if session['user']['day'] == -1 %}selected{% endif %}>day</option>
+                <option value="0" {% if session['user']['day'] == 0 %}selected{% endif %}>Monday</option>
+                <option value="1" {% if session['user']['day'] == 1 %}selected{% endif %}>Tuesday</option>
+                <option value="2" {% if session['user']['day'] == 2 %}selected{% endif %}>Wednesday</option>
+                <option value="3" {% if session['user']['day'] == 3 %}selected{% endif %}>Thursday</option>
+                <option value="4" {% if session['user']['day'] == 4 %}selected{% endif %}>Friday</option>
+                <option value="5" {% if session['user']['day'] == 5 %}selected{% endif %}>Saturday</option>
+                <option value="6" {% if session['user']['day'] == 6 %}selected{% endif %}>Sunday</option>
+              </select>
+            </li>
+            <li>at
+              <select name="time" required>
+                <option value="0" {% if session['user']['time'] == 0 %}selected{% endif %}>00:00</option>
+                <option value="1" {% if session['user']['time'] == 1 %}selected{% endif %}>01:00</option>
+                <option value="2" {% if session['user']['time'] == 2 %}selected{% endif %}>02:00</option>
+                <option value="3" {% if session['user']['time'] == 3 %}selected{% endif %}>03:00</option>
+                <option value="4" {% if session['user']['time'] == 4 %}selected{% endif %}>04:00</option>
+                <option value="5" {% if session['user']['time'] == 5 %}selected{% endif %}>05:00</option>
+                <option value="6" {% if session['user']['time'] == 6 %}selected{% endif %}>06:00</option>
+                <option value="7" {% if session['user']['time'] == 7 %}selected{% endif %}>07:00</option>
+                <option value="8" {% if session['user']['time'] == 8 %}selected{% endif %}>08:00</option>
+                <option value="9" {% if session['user']['time'] == 9 %}selected{% endif %}>09:00</option>
+                <option value="10" {% if session['user']['time'] == 10 %}selected{% endif %}>10:00</option>
+                <option value="11" {% if session['user']['time'] == 11 %}selected{% endif %}>11:00</option>
+                <option value="12" {% if session['user']['time'] == 12 %}selected{% endif %}>12:00</option>
+                <option value="13" {% if session['user']['time'] == 13 %}selected{% endif %}>13:00</option>
+                <option value="14" {% if session['user']['time'] == 14 %}selected{% endif %}>14:00</option>
+                <option value="15" {% if session['user']['time'] == 15 %}selected{% endif %}>15:00</option>
+                <option value="16" {% if session['user']['time'] == 16 %}selected{% endif %}>16:00</option>
+                <option value="17" {% if session['user']['time'] == 17 %}selected{% endif %}>17:00</option>
+                <option value="18" {% if session['user']['time'] == 18 %}selected{% endif %}>18:00</option>
+                <option value="19" {% if session['user']['time'] == 19 %}selected{% endif %}>19:00</option>
+                <option value="20" {% if session['user']['time'] == 20 %}selected{% endif %}>20:00</option>
+                <option value="21" {% if session['user']['time'] == 21 %}selected{% endif %}>21:00</option>
+                <option value="22" {% if session['user']['time'] == 22 %}selected{% endif %}>22:00</option>
+                <option value="23" {% if session['user']['time'] == 23 %}selected{% endif %}>23:00</option>
+              </select> UTC
+            </li>
+            <li>to
+              <input type="email" name="email" value="{{ session['user']['email'] }}" required>
+            </li>
+          </ul>
+
+          <input type="submit" value="Save">
+        </form>
+
+        <hr />
+
+        <form method="POST" action="/delete">
+          <input type="submit" value="Delete account">
+        </form>
+      </section>
+
+    {% else %}
+
+      <section>
+        <hr />
+        <h3>Testimonials</h3>
+        <blockquote>Truly amazing!<br />&mdash; no one, probably</blockquote>
+        <blockquote>Now I <em>never</em> forget about all the random projects I starred.<br />&mdash; also no one, probably</blockquote>
+        <blockquote>I hope this works&hellip;<br />&mdash; author</blockquote>
+      </section>
+
+    {% endif %}
+
+    <footer><a href="/">Starminder</a> is maintained by <a href="https://www.nkantar.com">Nik Kantar</a>.<br />It's hosted on <a href="https://github.com/nkantar/Starminder">GitHub</a> and contributions are highly encouraged.<br />{{ session['users'] }} users are currently active.</footer>
+  </body>
+</html>

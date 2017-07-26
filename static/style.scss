@@ -1,0 +1,79 @@
+body {
+  max-width: 555px;
+  margin: 50px auto;
+  padding: 0 25px;
+  font-size: 16px;
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  color: dimgray;
+
+  a {
+    color: dimgray;
+
+    &:hover,
+    &:active {
+      color: black;
+    }
+  }
+
+  header {
+    text-align: center;
+
+    a {
+      text-decoration: none;
+
+      h1 {
+        padding: 10px 0;
+        font-family: "Lucida Console", Monaco, monospace;
+        font-size: 3rem;
+        line-height: 1;
+        background: dimgray;
+        color: white;
+      }
+
+      &:hover,
+      &:active {
+        h1 {
+          background: black;
+        }
+      }
+    }
+  }
+
+  nav {
+    margin: 25px 0;
+    padding: 10px 0;
+    border-bottom: 1px solid lightgray;
+    text-align: center;
+  }
+
+  section {
+    hr {
+      margin: 15px 0;
+      border: none;
+      border-bottom: 1px dashed gainsboro;
+      height: 0px;
+    }
+
+    form {
+      ul {
+        li {
+          margin: 5px 0;
+        }
+      }
+
+      input[type="submit"] {
+        display: block;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  footer {
+    margin: 25px 0;
+    padding: 10px 0;
+    border-top: 1px solid lightgray;
+    text-align: center;
+    font-size: .75rem;
+  }
+}
