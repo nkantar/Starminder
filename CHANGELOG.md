@@ -5,6 +5,7 @@
 
 ### Updated
 - Better `User.__repr__` (`<User: nkantar [nik@nkantar.com]>` instead of `<User nkantar>`)
+- User count in the footer is pluralized only when `!= 1`.
 
 
 ## [0.2.0]
