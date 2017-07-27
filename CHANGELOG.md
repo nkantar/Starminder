@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+### Updated
+- Better `User.__repr__` (`<User: nkantar [nik@nkantar.com]>` instead of `<User nkantar>`)
+
 
 ## [0.2.0]
 

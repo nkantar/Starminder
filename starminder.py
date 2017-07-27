@@ -58,7 +58,7 @@ class User(db.Model):
         self.joined = datetime.now()
 
     def __repr__(self):
-        return '<User {0}>'.format(self.github_username)
+        return '<User: {0} [{1}]>'.format(self.github_username, self.email)
 
     @classmethod
     def create(cls, github_id, github_username, github_token, email='',
