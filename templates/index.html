@@ -100,7 +100,7 @@
               </select> UTC
             </li>
             <li>to
-              <input type="email" name="email" value="{{ session['user']['email'] }}" required>
+              <input type="email" name="email" value="{{ session['user']['email'] if session['user']['email'] != None else '' }}" required>
             </li>
           </ul>
 

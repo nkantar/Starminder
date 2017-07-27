@@ -6,6 +6,7 @@
 ### Updated
 - Better `User.__repr__` (`<User: nkantar [nik@nkantar.com]>` instead of `<User nkantar>`)
 - User count in the footer is pluralized only when `!= 1`.
+- Email field on the form is now blank instead of showing "None" when there's nothing in the DB.
 
 
 ## [0.2.0]
