@@ -3,10 +3,20 @@
 
 ## [Unreleased]
 
+
+## [0.2.0]
+
 ### Added
 - Version output
 - `LICENSE`
 - `CHANGELOG.md`
+- `CODE_OF_CONDUCT.md`
+- `CONTRIBUTING.md`
+- `ISSUE_TEMPLATE.md`
+- `PULL_REQUEST_TEMPLATE.md`
+
+### Updated
+- `README.rst`
 
 
 ## [0.1.0]
@@ -15,5 +25,6 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/0.2.0...HEAD
+[0.2.0]: https://github.com/nkantar/Starminder/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/nkantar/Starminder/commit/4d1e6cbd23d69e9048cac550b822e5e3c5b8d367
