@@ -4,9 +4,16 @@
 ## [Unreleased]
 
 
+## [1.0.2]
+
+### Changed
+- Fixed bad release linking in the changelog.
+- Fixed improper heading level for a section in the changelog.
+
+
 ## [1.0.1]
 
-## Changed
+### Changed
 - Switched from `ConfigParser` to `SafeConfigParser`.
 
 
@@ -49,7 +56,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/0.2.0...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.2...HEAD
+[1.0.2]: https://github.com/nkantar/Starminder/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/nkantar/Starminder/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/nkantar/Starminder/compare/0.3.0...1.0.0
 [0.3.0]: https://github.com/nkantar/Starminder/compare/0.2.0...0.3.0
