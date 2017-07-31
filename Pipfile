@@ -17,3 +17,6 @@ Flask-Github = "*"
 psycopg2 = "*"
 rq = "*"
 redis = "*"
+
+[packages.raven]
+extras = [ "flask",]

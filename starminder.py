@@ -9,6 +9,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_sslify import SSLify
 import github3
 import parsenvy
+from raven.contrib.flask import Sentry
 from waitress import serve
 
 
@@ -21,6 +22,8 @@ PORT = parsenvy.int('PORT', 5000)
 
 app = Flask(__name__)
 app.secret_key = str(random.getrandbits(128))
+
+sentry = Sentry(app)
 
 if DEPLOYMENT == 'PRODUCTION':
     DB_URL = parsenvy.str('DATABASE_URL')

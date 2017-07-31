@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+### Added
+- Error tracking (for both the web app and notifier job) via Sentry
+
 
 ## [0.3.0]
 

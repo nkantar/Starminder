@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e4ba1ffe303bd9de1ca9803ddc874f2bbaefc3bdf00d25f21886996aa4631c18"
+            "sha256": "25438b585fb49801ff9474e7937d38247969fcda118e7c0e1a0fee6da36610ec"
         },
         "requires": {},
         "sources": [
@@ -18,20 +18,26 @@
         "base58": {
             "version": "==0.2.4"
         },
+        "blinker": {
+            "version": "==1.4"
+        },
         "boto3": {
             "version": "==1.4.4"
         },
         "botocore": {
-            "version": "==1.5.88"
+            "version": "==1.5.90"
         },
         "certifi": {
-            "version": "==2017.4.17"
+            "version": "==2017.7.27.1"
         },
         "chardet": {
             "version": "==3.0.4"
         },
         "click": {
             "version": "==6.7"
+        },
+        "contextlib2": {
+            "version": "==0.5.5"
         },
         "docutils": {
             "version": "==0.13.1"
@@ -114,6 +120,9 @@
         "pyyaml": {
             "version": "==3.12"
         },
+        "raven": {
+            "version": "==6.1.0"
+        },
         "redis": {
             "version": "==2.10.5"
         },
@@ -121,7 +130,7 @@
             "version": "==2.18.2"
         },
         "rq": {
-            "version": "==0.8.0"
+            "version": "==0.8.1"
         },
         "s3transfer": {
             "version": "==0.1.10"
@@ -139,7 +148,7 @@
             "version": "==4.14.0"
         },
         "troposphere": {
-            "version": "==1.9.4"
+            "version": "==1.9.5"
         },
         "unidecode": {
             "version": "==0.04.21"
