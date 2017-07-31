@@ -3,6 +3,9 @@
 
 ## [Unreleased]
 
+
+## [1.0.0]
+
 ### Added
 - Error tracking (for both the web app and notifier job) via Sentry
 - Constants are now tracked in `defaults.ini`.
@@ -41,6 +44,7 @@
 
 
 [Unreleased]: https://github.com/nkantar/Starminder/compare/0.2.0...HEAD
+[1.0.0]: https://github.com/nkantar/Starminder/compare/0.3.0...1.0.0
 [0.3.0]: https://github.com/nkantar/Starminder/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/nkantar/Starminder/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/nkantar/Starminder/commit/4d1e6cbd23d69e9048cac550b822e5e3c5b8d367
