@@ -113,25 +113,33 @@ def index():
 
 @app.route('/save', methods=['POST'])
 def save():
-    user_id = session['user']['id']
-    user = db.session.query(User).filter(User.id == user_id).one()
-    user.number = request.form['number']
-    user.day = request.form['day']
-    user.time = request.form['time']
-    user.email = request.form['email']
-    db.session.commit()
-    flash('Preferences saved! :)')
+    try:
+        user_id = session['user']['id']
+    except KeyError:
+        flash('No active session. :(')
+    else:
+        user = db.session.query(User).filter(User.id == user_id).one()
+        user.number = request.form['number']
+        user.day = request.form['day']
+        user.time = request.form['time']
+        user.email = request.form['email']
+        db.session.commit()
+        flash('Preferences saved! :)')
     return redirect(url_for('index'))
 
 
 @app.route('/delete', methods=['POST'])
 def delete():
-    user_id = session['user']['id']
-    user = db.session.query(User).filter(User.id == user_id).one()
-    db.session.delete(user)
-    db.session.commit()
-    session.clear()
-    flash('Account deleted! :(')
+    try:
+        user_id = session['user']['id']
+    except KeyError:
+        flash('No active session. :(')
+    else:
+        user = db.session.query(User).filter(User.id == user_id).one()
+        db.session.delete(user)
+        db.session.commit()
+        session.clear()
+        flash('Account deleted! :(')
     return redirect(url_for('index'))
 
 
