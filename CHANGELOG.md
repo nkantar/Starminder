@@ -5,6 +5,7 @@
 
 ### Added
 - Error tracking (for both the web app and notifier job) via Sentry
+- Constants are now tracked in `defaults.ini`.
 
 ### Fixed
 - Dead session 500s (user logs in, server gets restartet, uses saves/deletes)

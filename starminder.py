@@ -1,6 +1,7 @@
+import configparser
 from datetime import datetime
-import random
 import os
+import random
 
 from flask import (Flask, flash, redirect, render_template, request, session,
                    url_for)
@@ -13,8 +14,14 @@ from raven.contrib.flask import Sentry
 from waitress import serve
 
 
-VERSION = '0.3.0'
+parser = configparser.ConfigParser()
+parser.read('defaults.ini')
 
+VERSION = parser.get('APPLICATION', 'version')
+
+USER_NUMBER = parser.get('USER', 'number')
+USER_DAY = parser.get('USER', 'day')
+USER_TIME = parser.get('USER', 'time')
 
 DEPLOYMENT = parsenvy.str('DEPLOYMENT', 'DEVELOPMENT')
 PORT = parsenvy.int('PORT', 5000)
@@ -65,7 +72,7 @@ class User(db.Model):
 
     @classmethod
     def create(cls, github_id, github_username, github_token, email='',
-               number=10, day=-1, time=0):
+               number=USER_NUMBER, day=USER_DAY, time=USER_TIME):
         user = User(github_id=github_id,
                     github_username=github_username,
                     github_token=github_token,
