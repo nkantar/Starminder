@@ -14,7 +14,7 @@ from raven.contrib.flask import Sentry
 from waitress import serve
 
 
-parser = configparser.ConfigParser()
+parser = configparser.SafeConfigParser()
 parser.read('defaults.ini')
 
 VERSION = parser.get('APPLICATION', 'version')
