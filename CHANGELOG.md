@@ -3,27 +3,30 @@
 
 ## [Unreleased]
 
+### Changed
+- Added release dates to the changelog.
 
-## [1.0.3]
+
+## [1.0.3] - 2017-08-01
 
 ### Fixed
 - Sentry client in the notifier script was misused, causing an error, which should no longer happen.
 
 
-## [1.0.2]
+## [1.0.2] - 2017-08-01
 
 ### Changed
 - Fixed bad release linking in the changelog.
 - Fixed improper heading level for a section in the changelog.
 
 
-## [1.0.1]
+## [1.0.1] - 2017-07-31
 
 ### Changed
 - Switched from `ConfigParser` to `SafeConfigParser`.
 
 
-## [1.0.0]
+## [1.0.0] - 2017-07-31
 
 ### Added
 - Error tracking (for both the web app and notifier job) via Sentry
@@ -33,7 +36,7 @@
 - Dead session 500s (user logs in, server gets restartet, uses saves/deletes)
 
 
-## [0.3.0]
+## [0.3.0] - 2017-07-27
 
 ### Updated
 - Better `User.__repr__` (`<User: nkantar [nik@nkantar.com]>` instead of `<User nkantar>`)
@@ -41,7 +44,7 @@
 - Email field on the form is now blank instead of showing "None" when there's nothing in the DB.
 
 
-## [0.2.0]
+## [0.2.0] - 2017-07-27
 
 ### Added
 - Version output
@@ -56,7 +59,7 @@
 - `README.rst`
 
 
-## [0.1.0]
+## [0.1.0] - 2017-07-26
 
 ### Added
 - First version suitable for public consumption.
