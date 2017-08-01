@@ -40,7 +40,7 @@ for user in users:
             user.github_username,
             user.id
         )
-        client.client.captureMessage(error_message)
+        client.captureMessage(error_message)
 
     gh = github3.login(token=user.github_token)
     gh_user = gh.user()

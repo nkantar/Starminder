@@ -4,6 +4,12 @@
 ## [Unreleased]
 
 
+## [1.0.3]
+
+### Fixed
+- Sentry client in the notifier script was misused, causing an error, which should no longer happen.
+
+
 ## [1.0.2]
 
 ### Changed
@@ -56,7 +62,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.2...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.3...HEAD
+[1.0.3]: https://github.com/nkantar/Starminder/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/nkantar/Starminder/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/nkantar/Starminder/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/nkantar/Starminder/compare/0.3.0...1.0.0
