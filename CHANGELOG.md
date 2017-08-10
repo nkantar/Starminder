@@ -3,10 +3,15 @@
 
 ## [Unreleased]
 
-### Changed
-- Added release dates to the changelog.
-- Removed first release link from the changelog because it's silly.
-- Add fourth fake testimonial.
+
+## [1.0.4] - 2017-08-14
+
+### Added
+- Release dates to the changelog
+- Fourth fake testimonial
+
+### Removed
+- First release link from the changelog because it's silly
 
 
 ## [1.0.3] - 2017-08-01
@@ -67,7 +72,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.3...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.4...HEAD
+[1.0.4]: https://github.com/nkantar/Starminder/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/nkantar/Starminder/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/nkantar/Starminder/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/nkantar/Starminder/compare/1.0.0...1.0.1
