@@ -5,6 +5,7 @@
 
 ### Changed
 - Added release dates to the changelog.
+- Removed first release link from the changelog because it's silly.
 
 
 ## [1.0.3] - 2017-08-01
@@ -59,7 +60,7 @@
 - `README.rst`
 
 
-## [0.1.0] - 2017-07-26
+## 0.1.0 - 2017-07-26
 
 ### Added
 - First version suitable for public consumption.
@@ -72,4 +73,3 @@
 [1.0.0]: https://github.com/nkantar/Starminder/compare/0.3.0...1.0.0
 [0.3.0]: https://github.com/nkantar/Starminder/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/nkantar/Starminder/compare/0.1.0...0.2.0
-[0.1.0]: https://github.com/nkantar/Starminder/commit/4d1e6cbd23d69e9048cac550b822e5e3c5b8d367
