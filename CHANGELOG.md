@@ -6,6 +6,7 @@
 ### Changed
 - Added release dates to the changelog.
 - Removed first release link from the changelog because it's silly.
+- Add fourth fake testimonial.
 
 
 ## [1.0.3] - 2017-08-01
