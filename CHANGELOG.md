@@ -4,6 +4,12 @@
 ## [Unreleased]
 
 
+## [1.0.5] - 2017-08-14
+
+### Changed
+- Italicized testimonial authors.
+
+
 ## [1.0.4] - 2017-08-14
 
 ### Added
@@ -72,7 +78,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.4...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.5...HEAD
+[1.0.5]: https://github.com/nkantar/Starminder/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/nkantar/Starminder/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/nkantar/Starminder/compare/1.0.2...1.0.3
 [1.0.2]: https://github.com/nkantar/Starminder/compare/1.0.1...1.0.2
