@@ -58,7 +58,7 @@
         <form method="POST" action="/save">
           Send&hellip;
           <ul>
-            <li>no more than <input type="number" name="number" min="1" step="1" value="{{ session['user']['number'] }}" required> projects</li>
+            <li>no more than <input type="number" name="number" min="1" step="1" value="{{ session['user']['number'] }}" placeholder="10" required> projects</li>
             <li>every
               <select name="day" required>
                 <option value="-1" {% if session['user']['day'] == -1 %}selected{% endif %}>day</option>
@@ -100,7 +100,7 @@
               </select> UTC
             </li>
             <li>to
-              <input type="email" name="email" value="{{ session['user']['email'] if session['user']['email'] != None else '' }}" required>
+              <input type="email" name="email" value="{{ session['user']['email'] if session['user']['email'] != None else '' }}" placeholder="{{ session['user']['github_username'] }}@example.com" required>
             </li>
           </ul>
 

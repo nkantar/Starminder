@@ -4,6 +4,12 @@
 ## [Unreleased]
 
 
+## [1.0.6] - 2017-08-21
+
+### Added
+- Placeholders for number and email on the main form
+
+
 ## [1.0.5] - 2017-08-14
 
 ### Changed
@@ -78,7 +84,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.5...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.6...HEAD
+[1.0.6]: https://github.com/nkantar/Starminder/compare/1.0.5...1.0.6
 [1.0.5]: https://github.com/nkantar/Starminder/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/nkantar/Starminder/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/nkantar/Starminder/compare/1.0.2...1.0.3
