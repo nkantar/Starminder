@@ -1,7 +1,13 @@
 # Starminder Changelog
 
 
-## [Unreleased]
+## [1.0.7] - 2018-01-31
+
+### Added
+- Unsubscribe info and mailing address to the email templates
+
+### Changed
+- Python runtime from 3.6.2 to 3.6.4
 
 
 ## [1.0.6] - 2017-08-21
@@ -84,7 +90,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.6...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.7...HEAD
+[1.0.7]: https://github.com/nkantar/Starminder/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/nkantar/Starminder/compare/1.0.5...1.0.6
 [1.0.5]: https://github.com/nkantar/Starminder/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/nkantar/Starminder/compare/1.0.3...1.0.4
