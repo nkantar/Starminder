@@ -1,6 +1,9 @@
 # SQLite
 *.db
 
+# pytest
+.pytest_cache/
+
 # Created by https://www.gitignore.io/api/git,vim,macos,linux,emacs,python,windows,sublimetext,visualstudiocode,sass
 
 ### Emacs ###
