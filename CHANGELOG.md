@@ -1,6 +1,12 @@
 # Starminder Changelog
 
 
+## [1.0.8] - 2019-10-15
+
+### Changed
+- Mailing address in the email templates
+
+
 ## [1.0.7] - 2018-01-31
 
 ### Added
@@ -90,7 +96,8 @@
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.7...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.8...HEAD
+[1.0.8]: https://github.com/nkantar/Starminder/compare/1.0.7...1.0.8
 [1.0.7]: https://github.com/nkantar/Starminder/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/nkantar/Starminder/compare/1.0.5...1.0.6
 [1.0.5]: https://github.com/nkantar/Starminder/compare/1.0.4...1.0.5
