@@ -20,13 +20,13 @@ typecheck: ## check type hints with mypy
 	poetry run mypy --strict starminder/**
 
 test: ## run tests with pytest
-	poetry run pytest --cov=starminder -vv
+	STARMINDER_ENVIRONMENT=test poetry run pytest --cov=starminder -vv
 
 test-watch: ## watch tests with pytest-watch
-	poetry run pytest-watch -- --cov=starminder -vv
+	STARMINDER_ENVIRONMENT=test poetry run pytest-watch -- --cov=starminder -vv
 
 covcheck: ## check code coverage level
-	poetry run coverage report --fail-under=0 # TODO 
+	STARMINDER_ENVIRONMENT=test poetry run coverage report --fail-under=0 # TODO 
 
 devserve: ## run dev server
 	poetry run python manage.py runserver 0.0.0.0:8000

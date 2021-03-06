@@ -11,6 +11,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = getenv("STARMINDER_DJANGO_SECRET_KEY")
 
+ENVIRONMENT = getenv("STARMINDER_ENVIRONMENT")
+
 DEBUG = bool(int(getenv("STARMINDER_DEBUG")))
 
 ALLOWED_HOSTS = []
@@ -55,11 +57,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "starminder.wsgi.application"
 
-DATABASES = {
-    "default": {
+ENVIRONMENT_DATABASES = {
+    "test": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
+    },
+    "local": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
+}
+
+
+DATABASES = {
+    "default": ENVIRONMENT_DATABASES[ENVIRONMENT],
 }
 
 AUTH_PASSWORD_VALIDATORS = [
