@@ -2,7 +2,7 @@ import random
 
 from github import Github, NamedUser, Repository
 
-from django.contrib.auth import User
+from django.contrib.auth.models import User
 from django.db.models import (
     CharField,
     DateTimeField,
