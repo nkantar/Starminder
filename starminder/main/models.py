@@ -6,6 +6,7 @@ from github import Github, NamedUser, Repository
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import (
+    CASCADE,
     CharField,
     DateTimeField,
     ForeignKey,
@@ -59,7 +60,7 @@ class Profile(Model):
     time = TimeField(null=False)
     number = PositiveIntegerField(null=False)
 
-    user = ForeignKey(User, null=False)
+    user = ForeignKey(User, on_delete=CASCADE, null=False)
 
     objects = ProfileManager()
 
