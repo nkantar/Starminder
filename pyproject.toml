@@ -25,6 +25,7 @@ coverage = {extras = ["toml"], version = "^5.5"}
 pytest-cov = "^2.11.1"
 pytest-watch = "^4.2.0"
 django-stubs = "^1.7.0"
+pytest-django = "^4.1.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -40,6 +41,7 @@ exclude = '''
 
 [tool.pytest]
 python_paths = "starminder"
+DJANGO_SETTINGS_MODULE = "config.settings"
 
 [tool.coverage.run]
 branch = true
