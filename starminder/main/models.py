@@ -9,7 +9,7 @@ from django.db.models import (
     CASCADE,
     CharField,
     DateTimeField,
-    ForeignKey,
+    OneToOneField,
     Manager,
     Model,
     PositiveIntegerField,
@@ -60,7 +60,7 @@ class Profile(Model):
     time = TimeField(null=False)
     number = PositiveIntegerField(null=False)
 
-    user = ForeignKey(User, on_delete=CASCADE, null=False)
+    user = OneToOneField(User, on_delete=CASCADE, null=False)
 
     objects = ProfileManager()
 
