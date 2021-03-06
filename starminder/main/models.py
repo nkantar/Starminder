@@ -1,7 +1,9 @@
 import random
 
+from cryptography.fernet import Fernet
 from github import Github, NamedUser, Repository
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import (
     CharField,
@@ -13,8 +15,6 @@ from django.db.models import (
     TimeField,
 )
 from django.utils.functional import cached_property
-
-from starminder.main.encryption import decrypt, encrypt
 
 
 class ProfileManager(Manager):
@@ -35,8 +35,11 @@ class ProfileManager(Manager):
         user.set_unusable_password()
         user.save()
 
+        fernet = Fernet(settings.ENCRYPTION_KEY)
+        token_encrypted = fernet.encrypt(token.encode()).decode()
+
         profile = Profile(
-            token_encrypted=encrypt(token),
+            token_encrypted=token_encrypted,
             day=day,
             time=time,
             user=user,
@@ -62,7 +65,8 @@ class Profile(Model):
 
     @property
     def token(self) -> str:
-        return decrypt(self.token_encrypted)
+        fernet = Fernet(settings.ENCRYPTION_KEY)
+        return fernet.decrypt(self.token_encrypted.encode()).decode()
 
     @property
     def email(self) -> str:
