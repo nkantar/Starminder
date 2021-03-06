@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help formatcheck lint bandit doccheck typecheck test test-watch covcheck devserve
+.PHONY: help formatcheck lint bandit doccheck typecheck test test-watch covcheck devserve sass
 
 help: ## this help dialog
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -30,3 +30,6 @@ covcheck: ## check code coverage level
 
 devserve: ## run dev server
 	poetry run python manage.py runserver 0.0.0.0:8000
+
+sass: ## compile sass
+	poetry run pysassc static/style/style.scss static/style/style.css
