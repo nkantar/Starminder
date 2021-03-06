@@ -1,6 +1,22 @@
 # Starminder Changelog
 
 
+<!--
+Added for new features.
+Changed for changes in existing functionality.
+Deprecated for soon-to-be removed features.
+Removed for now removed features.
+Fixed for any bug fixes.
+Security in case of vulnerabilities.
+-->
+
+
+## [Unreleased]
+
+### Removed
+- Delete _all_ the files in prep for v2!
+
+
 ## [1.0.8] - 2019-10-15
 
 ### Changed
