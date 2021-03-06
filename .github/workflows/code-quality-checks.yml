@@ -51,5 +51,10 @@ jobs:
       - name: Check code coverage
         run: make covcheck
 
-      - name: Check docstring style
-        run: make doccheck
+      # TODO
+      # - name: Check type annotations
+      #   run: make typecheck
+
+      # TODO
+      # - name: Check docstring style
+      #   run: make doccheck
