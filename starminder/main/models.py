@@ -27,6 +27,7 @@ class ProfileManager(Manager):
         token: str,
         day: int,
         time: str,
+        number: int,
     ) -> "Profile":
         user = User(
             username=username,
@@ -44,6 +45,7 @@ class ProfileManager(Manager):
             day=day,
             time=time,
             user=user,
+            number=number,
         )
         profile.save()
 
