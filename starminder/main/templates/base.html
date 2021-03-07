@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -35,10 +36,10 @@
     </header>
 
     <nav>
-      {% if request.user.is_authenticated %}
-        Logged in as <strong>{{ request.user.username }}</strong> | <a href="/logout">Log out</a> {# TODO logout url #}
+      {% if user.is_authenticated %}
+        Logged in as <strong>{{ user.username }}</strong> | <a href="{% url 'account_login' %}">Log out</a>
       {% else %}
-        <a href="/login">Log in with GitHub</a> {# TODO login url #}
+        <a href="{% provider_login_url 'github' %}">Log in with GitHub</a>
       {% endif %}
     </nav>
 
