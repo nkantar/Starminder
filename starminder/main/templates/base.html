@@ -53,7 +53,7 @@
     <footer>
       <a href="/">Starminder</a> is maintained by <a href="https://www.nkantar.com">Nik Kantar</a>.<br />
       <a href="https://github.com/nkantar/Starminder">Contributions welcome!</a><br />
-      {# TODO user count #} users / Version {# TODO version #}
+      {{ profile_count }} user{% if profile_count != 1 %}s{% endif %} / Version {{ starminder_version }}
     </footer>
   </body>
 </html>
