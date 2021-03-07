@@ -3,12 +3,16 @@ from os import getenv
 from pathlib import Path
 
 from dotenv import load_dotenv
+import tomlkit
 
 
 load_dotenv()
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+PYPROJECT_PATH = BASE_DIR / "pyproject.toml"
+PYPROJECT = tomlkit.parse(PYPROJECT_PATH.open().read())
 
 SECRET_KEY = getenv("STARMINDER_DJANGO_SECRET_KEY")
 
@@ -41,6 +45,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "starminder.main.middleware.FooterStatsMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -118,6 +123,8 @@ ENCRYPTION_KEY = getenv("STARMINDER_ENCRYPTION_KEY")
 SITE_ID = 1
 
 APPEND_SLASH = True
+
+STARMINDER_VERSION = PYPROJECT["tool"]["poetry"]["version"]
 
 ################
 # django-allauth
