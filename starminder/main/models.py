@@ -39,9 +39,9 @@ class Profile(Model):
 
     token_encrypted = CharField(max_length=512, null=False)
 
+    number = PositiveIntegerField(null=False, default=settings.DEFAULT_NUMBER)
     day = PositiveIntegerField(null=False, default=settings.DEFAULT_DAY)
     time = TimeField(null=False, default=settings.DEFAULT_TIME)
-    number = PositiveIntegerField(null=False, default=settings.DEFAULT_NUMBER)
     html = BooleanField(null=False, default=settings.DEFAULT_HTML)
 
     user = OneToOneField(User, on_delete=CASCADE, null=False)
