@@ -1,3 +1,4 @@
+from datetime import time
 from os import getenv
 from pathlib import Path
 
@@ -132,3 +133,12 @@ LOGIN_REDIRECT_URL = "dashboard"
 LOGOUT_REDIRECT_URL = "home"
 
 ACCOUNT_LOGOUT_ON_GET = True
+
+
+##################
+# Profile defaults
+
+DEFAULT_DAY = getenv("STARMINDER_DEFAULT_DAY")
+DEFAULT_TIME = time.fromisoformat(getenv("STARMINDER_DEFAULT_TIME"))
+DEFAULT_NUMBER = int(getenv("STARMINDER_DEFAULT_NUMBER"))
+DEFAULT_HTML = bool(int(getenv("STARMINDER_DEFAULT_HTML")))

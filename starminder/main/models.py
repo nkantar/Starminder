@@ -1,52 +1,33 @@
 import random
 
+from allauth.account.signals import user_signed_up
 from cryptography.fernet import Fernet
 from github import Github, NamedUser, Repository
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import (
+    BooleanField,
     CASCADE,
     CharField,
     DateTimeField,
-    OneToOneField,
     Manager,
     Model,
+    OneToOneField,
     PositiveIntegerField,
     TimeField,
 )
+from django.dispatch import receiver
 from django.utils.functional import cached_property
 
 
 class ProfileManager(Manager):
     @classmethod
-    def create_user(
-        cls,
-        username: str,
-        email: str,
-        token: str,
-        day: int,
-        time: str,
-        number: int,
-    ) -> "Profile":
-        user = User(
-            username=username,
-            email=email,
-            password=None,  # ignore, setting unusable immediately after
-        )
-        user.set_unusable_password()
-        user.save()
-
+    def create_profile(cls, token: str, user_id: int) -> "Profile":
         fernet = Fernet(settings.ENCRYPTION_KEY)
         token_encrypted = fernet.encrypt(token.encode()).decode()
 
-        profile = Profile(
-            token_encrypted=token_encrypted,
-            day=day,
-            time=time,
-            user=user,
-            number=number,
-        )
+        profile = Profile(token_encrypted=token_encrypted, user_id=user_id)
         profile.save()
 
         return profile
@@ -58,9 +39,10 @@ class Profile(Model):
 
     token_encrypted = CharField(max_length=512, null=False)
 
-    day = PositiveIntegerField(null=False)
-    time = TimeField(null=False)
-    number = PositiveIntegerField(null=False)
+    day = PositiveIntegerField(null=False, default=settings.DEFAULT_DAY)
+    time = TimeField(null=False, default=settings.DEFAULT_TIME)
+    number = PositiveIntegerField(null=False, default=settings.DEFAULT_NUMBER)
+    html = BooleanField(null=False, default=settings.DEFAULT_HTML)
 
     user = OneToOneField(User, on_delete=CASCADE, null=False)
 
@@ -102,3 +84,8 @@ class Profile(Model):
     @cached_property
     def random_starred(self) -> list[Repository]:
         return random.sample(population=self.all_starred, k=self.max_number)
+
+
+@receiver(user_signed_up)
+def create_profile_on_signup(request, user, signal, sender, sociallogin, **kwargs):
+    Profile.objects.create_profile(token=str(sociallogin.token), user_id=user.id)
