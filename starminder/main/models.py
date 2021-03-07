@@ -31,7 +31,7 @@ class ProfileManager(Manager):
         user = User(
             username=username,
             email=email,
-            password="",  # ignore, setting unusable immediately after
+            password=None,  # ignore, setting unusable immediately after
         )
         user.set_unusable_password()
         user.save()
