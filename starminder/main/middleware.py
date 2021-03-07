@@ -13,5 +13,5 @@ class FooterStatsMiddleware:
 
     def process_template_response(self, request, response):
         response.context_data["profile_count"] = Profile.objects.count()
-        response.context_data['starminder_version'] = settings.STARMINDER_VERSION
+        response.context_data["starminder_version"] = settings.STARMINDER_VERSION
         return response
