@@ -37,7 +37,7 @@
 
     <nav>
       {% if user.is_authenticated %}
-        Logged in as <strong>{{ user.username }}</strong> | <a href="{% url 'account_login' %}">Log out</a>
+        Logged in as <strong>{{ user.username }}</strong> | <a href="{% url 'dashboard' %}">Dashboard</a> | <a href="{% url 'account_logout' %}">Log out</a>
       {% else %}
         <a href="{% provider_login_url 'github' %}">Log in with GitHub</a>
       {% endif %}
@@ -52,7 +52,7 @@
 
     <footer>
       <a href="/">Starminder</a> is maintained by <a href="https://www.nkantar.com">Nik Kantar</a>.<br />
-      It's hosted on <a href="https://github.com/nkantar/Starminder">GitHub</a> and contributions are highly encouraged.<br />
+      <a href="https://github.com/nkantar/Starminder">Contributions welcome!</a><br />
       {# TODO user count #} users / Version {# TODO version #}
     </footer>
   </body>
