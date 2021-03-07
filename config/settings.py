@@ -116,6 +116,11 @@ ENCRYPTION_KEY = getenv("STARMINDER_ENCRYPTION_KEY")
 
 SITE_ID = 1
 
+APPEND_SLASH = True
+
+################
+# django-allauth
+
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
@@ -123,6 +128,7 @@ AUTHENTICATION_BACKENDS = (
 
 ACCOUNT_EMAIL_VERIFICATION = "none"
 
-LOGIN_REDIRECT_URL = "home"
+LOGIN_REDIRECT_URL = "dashboard"
+LOGOUT_REDIRECT_URL = "home"
 
-APPEND_SLASH = True
+ACCOUNT_LOGOUT_ON_GET = True
