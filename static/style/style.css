@@ -71,3 +71,8 @@ body {
     border-top: 1px solid lightgray;
     text-align: center;
     font-size: .75rem; }
+
+.message.error {
+  padding: 10px;
+  background: black;
+  color: white; }
