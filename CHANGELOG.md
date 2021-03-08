@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- New Django based version
+
 ### Removed
 - Delete _all_ the files in prep for v2!
 
