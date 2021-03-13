@@ -66,12 +66,12 @@ class Profile(Model):
         return self.user.username
 
     @cached_property
-    def gh_user(self) -> NamedUser:
+    def gh_user(self):
         gh = Github(self.token)
         return gh.get_user(self.username)
 
     @cached_property
-    def all_starred(self) -> List[Repository]:
+    def all_starred(self):
         return list(self.gh_user.get_starred())
 
     @cached_property
@@ -81,7 +81,7 @@ class Profile(Model):
         return len(self.all_starred)
 
     @cached_property
-    def random_starred(self) -> List[Repository]:
+    def random_starred(self):
         return random.sample(population=self.all_starred, k=self.max_number)
 
 
