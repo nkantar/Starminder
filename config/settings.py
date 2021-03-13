@@ -21,11 +21,14 @@ ENVIRONMENT = getenv("STARMINDER_ENVIRONMENT")
 
 DEBUG = bool(int(getenv("STARMINDER_DEBUG")))
 
-ALLOWED_HOSTS = [
-    getenv("DO_APP_HOSTNAME"),
-    "starminder.xyz",
-    "www.starminder.xyz",
-]
+ALLOWED_HOSTS = ["starminder.xyz", "www.starminder.xyz"]
+
+DO_ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", None)
+if DO_ALLOWED_HOSTS is not None:
+    ALLOWED_HOSTS.extend(DO_ALLOWED_HOSTS.split(","))
+
+DO_ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
 
 if DEBUG:
     ALLOWED_HOSTS.append("localhost")
@@ -120,7 +123,7 @@ USE_L10N = False
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 ##################################################
