@@ -21,7 +21,11 @@ ENVIRONMENT = getenv("STARMINDER_ENVIRONMENT")
 
 DEBUG = bool(int(getenv("STARMINDER_DEBUG")))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    getenv("DO_APP_HOSTNAME"),
+    "starminder.xyz",
+    "www.starminder.xyz",
+]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
