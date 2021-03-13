@@ -16,4 +16,4 @@ def url_format(link_format, url, text, title):
     elif link_format == "text":
         link = url
 
-    return mark_safe(link)
+    return mark_safe(link)  # nosec
