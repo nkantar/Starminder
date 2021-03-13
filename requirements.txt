@@ -70,6 +70,9 @@ defusedxml==0.7.1; python_version >= "2.7" and python_full_version < "3.0.0" or 
 deprecated==1.2.11; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.4.0" and python_version >= "3.6" \
     --hash=sha256:924b6921f822b64ec54f49be6700a126bab0640cfafca78f22c9d429ed590560 \
     --hash=sha256:471ec32b2755172046e28102cd46c481f21c6036a0ec027521eba8521aa4ef35
+dj-database-url==0.5.0 \
+    --hash=sha256:4aeaeb1f573c74835b0686a2b46b85990571159ffc21aa57ecd4d1e1cb334163 \
+    --hash=sha256:851785365761ebe4994a921b433062309eb882fedd318e1b0fcecc607ed02da9
 django-allauth==0.44.0 \
     --hash=sha256:e51af457466022f52154d74c8523ac69375120fad2acce6e239635d85e610b25
 django==3.1.7; python_version >= "3.6" \

@@ -201,6 +201,14 @@ wrapt = ">=1.10,<2"
 dev = ["tox", "bump2version (<1)", "sphinx (<2)", "importlib-metadata (<3)", "importlib-resources (<4)", "configparser (<5)", "sphinxcontrib-websupport (<2)", "zipp (<2)", "PyTest (<5)", "PyTest-Cov (<2.6)", "pytest", "pytest-cov"]
 
 [[package]]
+name = "dj-database-url"
+version = "0.5.0"
+description = "Use Database URLs in your Django Application."
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "django"
 version = "3.1.7"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
@@ -825,7 +833,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "0335a6799c0f8cb50233e3cf3a45c526d380566fd666641859cbdc036a4dd9cf"
+content-hash = "8738cc844320656b71bcfdbd374856511c4c599affd576d48b37fce905a1b56f"
 
 [metadata.files]
 appdirs = [
@@ -989,6 +997,10 @@ defusedxml = [
 deprecated = [
     {file = "Deprecated-1.2.11-py2.py3-none-any.whl", hash = "sha256:924b6921f822b64ec54f49be6700a126bab0640cfafca78f22c9d429ed590560"},
     {file = "Deprecated-1.2.11.tar.gz", hash = "sha256:471ec32b2755172046e28102cd46c481f21c6036a0ec027521eba8521aa4ef35"},
+]
+dj-database-url = [
+    {file = "dj-database-url-0.5.0.tar.gz", hash = "sha256:4aeaeb1f573c74835b0686a2b46b85990571159ffc21aa57ecd4d1e1cb334163"},
+    {file = "dj_database_url-0.5.0-py2.py3-none-any.whl", hash = "sha256:851785365761ebe4994a921b433062309eb882fedd318e1b0fcecc607ed02da9"},
 ]
 django = [
     {file = "Django-3.1.7-py3-none-any.whl", hash = "sha256:baf099db36ad31f970775d0be5587cc58a6256a6771a44eb795b554d45f211b8"},
