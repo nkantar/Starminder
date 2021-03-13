@@ -1,3 +1,5 @@
+# staticfiles/.gitkeep will keep it around for deployment, but we don't want anything else
+staticfiles/
 
 # Created by https://www.toptal.com/developers/gitignore/api/python,django,vim,macos,git,sass
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,django,vim,macos,git,sass
