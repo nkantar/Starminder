@@ -1,4 +1,5 @@
 import random
+from typing import List
 
 from allauth.account.signals import user_signed_up
 from cryptography.fernet import Fernet
@@ -70,7 +71,7 @@ class Profile(Model):
         return gh.get_user(self.username)
 
     @cached_property
-    def all_starred(self) -> list[Repository]:
+    def all_starred(self) -> List[Repository]:
         return list(self.gh_user.get_starred())
 
     @cached_property
@@ -80,7 +81,7 @@ class Profile(Model):
         return len(self.all_starred)
 
     @cached_property
-    def random_starred(self) -> list[Repository]:
+    def random_starred(self) -> List[Repository]:
         return random.sample(population=self.all_starred, k=self.max_number)
 
 
