@@ -23,9 +23,9 @@ DEBUG = bool(int(getenv("STARMINDER_DEBUG")))
 
 ALLOWED_HOSTS = ["starminder.xyz", "www.starminder.xyz"]
 
-DO_ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", None)
-if DO_ALLOWED_HOSTS is not None:
-    ALLOWED_HOSTS.extend(DO_ALLOWED_HOSTS.split(","))
+DO_APP_HOSTNAME = getenv("DO_APP_HOSTNAME")
+if DO_APP_HOSTNAME is not None:
+    ALLOWED_HOSTS.append(DO_APP_HOSTNAME)
 
 DO_ALLOWED_HOSTS = getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 
