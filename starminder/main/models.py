@@ -42,7 +42,6 @@ class Profile(Model):
     number = PositiveIntegerField(null=False, default=settings.DEFAULT_NUMBER)
     day = PositiveIntegerField(null=False, default=settings.DEFAULT_DAY)
     time = TimeField(null=False, default=settings.DEFAULT_TIME)
-    html = BooleanField(null=False, default=settings.DEFAULT_HTML)
 
     user = OneToOneField(User, on_delete=CASCADE, null=False)
 

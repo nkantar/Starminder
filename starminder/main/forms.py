@@ -1,7 +1,6 @@
 from datetime import time as d_time
 
 from django.forms import (
-    BooleanField,
     ChoiceField,
     EmailField,
     Form,
@@ -27,5 +26,4 @@ class ProfileForm(Form):
     number = IntegerField(label="How many stars", min_value=1)
     day = ChoiceField(label="Day of week", choices=DAYS)
     time = ChoiceField(label="Time of day (UTC)", choices=TIMES)
-    html = BooleanField(label="HTML email", required=False)
     email = EmailField(label="Email address", required=True)

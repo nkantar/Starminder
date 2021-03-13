@@ -25,7 +25,6 @@ class DashboardView(FormView):
                 "number": self.request.user.profile.number,
                 "day": self.request.user.profile.day,
                 "time": self.request.user.profile.time,
-                "html": self.request.user.profile.html,
                 "email": self.request.user.email,
             }
         )
@@ -43,7 +42,6 @@ class DashboardView(FormView):
             profile.number = int(form.data["number"])
             profile.day = int(form.data["day"])
             profile.time = time.fromisoformat(form.data["time"])
-            profile.html = form.data.get("html") == "on"
             profile.save()
 
             return self.form_valid(form)
