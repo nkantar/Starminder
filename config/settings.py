@@ -2,6 +2,7 @@ from datetime import time
 from os import getenv
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 import tomlkit
 
@@ -79,9 +80,7 @@ ENVIRONMENT_DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
-    "prod": {
-        "NAME": getenv("DB_URL"),
-    },
+    "prod": dj_database_url.config(),
 }
 
 DATABASES = {
