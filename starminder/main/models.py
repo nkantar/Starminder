@@ -1,9 +1,8 @@
 import random
-from typing import List
 
 from allauth.account.signals import user_signed_up
 from cryptography.fernet import Fernet
-from github import Github, NamedUser, Repository
+from github import Github
 
 from django.conf import settings
 from django.contrib.auth.models import User
