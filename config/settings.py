@@ -27,13 +27,16 @@ ALLOWED_HOSTS = [
     "www.starminder.xyz",
 ]
 
+if DEBUG:
+    ALLOWED_HOSTS.append("localhost")
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
-    # "django.contrib.staticfiles",
+    "django.contrib.staticfiles",
     "django.contrib.sites",
     "allauth",
     "allauth.account",
@@ -117,7 +120,7 @@ USE_L10N = False
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "static"
 
 
 ##################################################
