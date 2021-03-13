@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Starminder"
-version = "2021.0.0"
+version = "21.0.0"
 description = "Remind yourself of your GitHub stars"
 authors = ["Nik Kantar <nik@nkantar.com>"]
 license = "MIT"
