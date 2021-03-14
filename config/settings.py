@@ -162,7 +162,6 @@ SOCIALACCOUNT_PROVIDERS = {
         "APP": {
             "client_id": getenv("GITHUB_CLIENT_ID"),
             "secret": getenv("GITHUB_CLIENT_SECRET"),
-            # "key": "",  # TODO
         }
     }
 }
