@@ -1,1 +1,2 @@
-web: gunicorn --worker-tmp-dir /dev/shm config.wsgi
+release: python manage.py migrate
+web: gunicorn config.wsgi --log-file -
