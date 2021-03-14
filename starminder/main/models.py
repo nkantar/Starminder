@@ -46,6 +46,9 @@ class Profile(Model):
 
     objects = ProfileManager()
 
+    def __repr__(self):
+        return self.user.username
+
     @property
     def token(self) -> str:
         fernet = Fernet(settings.ENCRYPTION_KEY)
