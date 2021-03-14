@@ -88,8 +88,10 @@ ENVIRONMENT_DATABASES = {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     },
-    "prod": dj_database_url.parse(getenv("DATABASE_URL")),
 }
+if ENVIRONMENT == "prod":
+    ENVIRONMENT_DATABASES["prod"] = dj_database_url.parse(getenv("DATABASE_URL"))
+
 
 DATABASES = {
     "default": ENVIRONMENT_DATABASES[ENVIRONMENT],
@@ -137,6 +139,9 @@ APPEND_SLASH = True
 
 STARMINDER_VERSION = PYPROJECT["tool"]["poetry"]["version"]
 
+DEFAULT_DOMAIN = getenv("DEFAULT_DOMAIN")
+
+
 ################
 # django-allauth
 
@@ -152,13 +157,27 @@ LOGOUT_REDIRECT_URL = "home"
 
 ACCOUNT_LOGOUT_ON_GET = True
 
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {
+        "APP": {
+            "client_id": getenv("GITHUB_CLIENT_ID"),
+            "secret": getenv("GITHUB_CLIENT_SECRET"),
+            # "key": "",  # TODO
+        }
+    }
+}
+
 
 ##################
 # Profile defaults
 
-DEFAULT_DAY = getenv("STARMINDER_DEFAULT_DAY")
+DEFAULT_DAY = int(getenv("STARMINDER_DEFAULT_DAY"))
 DEFAULT_TIME = time.fromisoformat(getenv("STARMINDER_DEFAULT_TIME"))
 DEFAULT_NUMBER = int(getenv("STARMINDER_DEFAULT_NUMBER"))
+
+
+#####
+# AWS
 
 AWS_ACCESS_KEY_ID = getenv("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = getenv("AWS_SECRET_ACCESS_KEY")
