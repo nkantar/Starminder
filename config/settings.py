@@ -22,8 +22,14 @@ ENVIRONMENT = getenv("STARMINDER_ENVIRONMENT")
 
 DEBUG = bool(int(getenv("STARMINDER_DEBUG")))
 
-ALLOWED_HOSTS = ["starminder.xyz", "www.starminder.xyz"]
-ALLOWED_HOSTS.extend(getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(","))
+ALLOWED_HOSTS = [
+    "starminder.xyz",
+    "www.starminder.xyz",
+    "starminder-prod.herokuapp.com",
+]
+
+if DEBUG:
+    ALLOWED_HOSTS.extend(["127.0.0.1", "localhost"])
 
 INSTALLED_APPS = [
     "django.contrib.admin",
