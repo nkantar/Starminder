@@ -1,4 +1,5 @@
 from datetime import time
+import os
 from os import getenv
 from pathlib import Path
 
@@ -113,7 +114,7 @@ USE_L10N = False
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 
 ##################################################
