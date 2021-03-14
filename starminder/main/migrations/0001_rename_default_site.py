@@ -4,9 +4,16 @@ from django.db import migrations
 
 
 def rename_default_site(apps, schema_editor):
-    site = Site.objects.get(pk=1)
-    site.domain = settings.DEFAULT_DOMAIN
-    site.save()
+    try:
+        site = Site.objects.get(pk=1)
+        site.domain = settings.DEFAULT_DOMAIN
+        site.name = "Starminder"
+        site.save()
+    except Site.DoesNotExist:
+        site = Site.objects.create(
+            domain=settings.DEFAULT_DOMAIN,
+            name="Starminder",
+        )
 
 
 class Migration(migrations.Migration):
