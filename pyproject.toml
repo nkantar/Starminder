@@ -7,3 +7,12 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.9"
+PyGithub = "^1.55"
+python-dotenv = "^0.19.0"
+loguru = "^0.5.3"
+Jinja2 = "^3.0.1"
+mistune = "2.0.0rc1"
+boto3 = "^1.18.17"
+
+[tool.poetry.dev-dependencies]
+pdbpp = "^0.10.3"
