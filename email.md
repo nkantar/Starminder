@@ -1,4 +1,4 @@
-Hi {{ username }},
+Hi {{ user_name }},
 
 Here are your reminders for {{ today }}:
 {% if stars|length %}{% for star in stars %}

@@ -90,11 +90,21 @@ def generate_star_data(stars):
     return data
 
 
+def generate_name(user):
+    """Generate user name for greeting from name and username."""
+    logger.info("Generating user name")
+    user_name = user.login
+    if user.name:
+        user_name = f"{user.name} ({user.login})"
+    logger.debug(f"Generated user name: {user_name}")
+    return user_name
+
+
 def generate_email_data(user, star_data):
     """Generate all data for email template."""
     logger.info("Generating email data")
     data = {
-        "username": user.login,
+        "user_name": generate_name(user),
         "today": TODAY,
         "stars": star_data,
         "fork_url": GITHUB_FORK_URL,
