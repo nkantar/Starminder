@@ -33,8 +33,5 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_FROM: ${{ secrets.AWS_FROM }}
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          GITHUB_SERVER_URL: ${{ secrets.GITHUB_SERVER_URL }}
-          GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
-          GITHUB_FORK_URL: ${{ secrets.GITHUB_FORK_URL }}
         run: |
           make run
