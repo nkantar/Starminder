@@ -25,6 +25,7 @@ from constants import (
 
 
 TODAY = datetime.utcnow().date().strftime("%A, %-d %B, %Y")
+SUBJECT = STARMINDER_SUBJECT.substitute(today=TODAY)
 
 
 def gh_init():
@@ -130,10 +131,10 @@ def generate_email_html(markdown):
     return html
 
 
-def send_email(text, html):
+def send_email(text, html, subject, recipient):
+    return  # TODO dev
     """Send email via SES."""
     logger.info("Sending email via SES")
-    subject = STARMINDER_SUBJECT.substitute(today=TODAY)
     client = boto3.client(
         "ses",
         region_name="us-east-1",
@@ -142,7 +143,7 @@ def send_email(text, html):
     )
     email_kwargs = {
         "Source": AWS_FROM,
-        "Destination": {"ToAddresses": [STARMINDER_RECIPIENT]},
+        "Destination": {"ToAddresses": [recipient]},
         "Message": {
             "Subject": {"Data": subject},
             "Body": {"Text": {"Data": text}, "Html": {"Data": html}},
@@ -151,6 +152,20 @@ def send_email(text, html):
     }
     client.send_email(**email_kwargs)
     logger.debug("Sent email via SES")
+
+
+def reconcile_send_email_function():
+    """Decide whether to use the built-in or custom send_email implementation."""
+    logger.info("Reconciling send_email function")
+    try:
+        from custom import send_email as custom_send_email
+    except (ImportError, ModuleNotFoundError):
+        logger.debug("Reconciled send_email to built-in")
+        send_function = send_email
+    else:
+        logger.debug("Reconciled send_email to custom")
+        send_function = custom_send_email
+    return send_function
 
 
 def starminder():
@@ -176,7 +191,8 @@ def starminder():
     email_html = generate_email_html(email_md)
 
     # send email
-    send_email(email_md, email_html)
+    send_email_function = reconcile_send_email_function()
+    send_email_function(email_md, email_html, SUBJECT, STARMINDER_RECIPIENT)
 
 
 if __name__ == "__main__":
