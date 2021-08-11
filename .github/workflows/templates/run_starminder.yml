@@ -3,8 +3,6 @@ on:
   schedule:
     # Adjust this to your liking
     - cron: "6 20 * * *"
-  push:
-    branches: [ main ]
 jobs:
   build:
     name: Run Starminder Script
