@@ -13,6 +13,7 @@ loguru = "^0.5.3"
 Jinja2 = "^3.0.1"
 mistune = "2.0.0rc1"
 boto3 = "^1.18.17"
+emoji = "^1.4.2"
 
 [tool.poetry.dev-dependencies]
 pdbpp = "^0.10.3"

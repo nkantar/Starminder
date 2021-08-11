@@ -5,6 +5,7 @@ from datetime import datetime
 import random
 
 import boto3
+from emoji import emojize
 from github import Github
 from jinja2 import Template
 from loguru import logger
@@ -78,7 +79,7 @@ def generate_star_data(stars):
     data = [
         {
             "full_name": star.full_name,
-            "description": star.description or None,
+            "description": emojize(star.description, use_aliases=True) or None,
             "url": star.url,
             "homepage": star.homepage or None,
             "stargazers_count": star.stargazers_count,

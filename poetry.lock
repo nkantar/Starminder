@@ -83,6 +83,17 @@ wrapt = ">=1.10,<2"
 dev = ["tox", "bump2version (<1)", "sphinx (<2)", "importlib-metadata (<3)", "importlib-resources (<4)", "configparser (<5)", "sphinxcontrib-websupport (<2)", "zipp (<2)", "PyTest (<5)", "PyTest-Cov (<2.6)", "pytest", "pytest-cov"]
 
 [[package]]
+name = "emoji"
+version = "1.4.2"
+description = "Emoji for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+dev = ["pytest", "coverage", "coveralls"]
+
+[[package]]
 name = "fancycompleter"
 version = "0.9.1"
 description = "colorful TAB completion for Python prompt"
@@ -356,7 +367,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6d499ff1ec6d57a6e9cbbbd7be48fe04eb40e795dfb428ea1477783e033ba31d"
+content-hash = "e27db2da915c3451e5b64f13359dc9302791b6e19dd5f252164b43bf0c7772b8"
 
 [metadata.files]
 boto3 = [
@@ -429,6 +440,9 @@ colorama = [
 deprecated = [
     {file = "Deprecated-1.2.12-py2.py3-none-any.whl", hash = "sha256:08452d69b6b5bc66e8330adde0a4f8642e969b9e1702904d137eeb29c8ffc771"},
     {file = "Deprecated-1.2.12.tar.gz", hash = "sha256:6d2de2de7931a968874481ef30208fd4e08da39177d61d3d4ebdf4366e7dbca1"},
+]
+emoji = [
+    {file = "emoji-1.4.2.tar.gz", hash = "sha256:21257f311e24468031e85685867c00b87249dc7612b82dc763a771ba5fb00c01"},
 ]
 fancycompleter = [
     {file = "fancycompleter-0.9.1-py3-none-any.whl", hash = "sha256:dd076bca7d9d524cc7f25ec8f35ef95388ffef9ef46def4d3d25e9b044ad7080"},
