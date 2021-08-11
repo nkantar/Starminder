@@ -13,8 +13,8 @@ import mistune
 
 from constants import (
     AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
     AWS_FROM,
+    AWS_SECRET_ACCESS_KEY,
     GITHUB_FORK_URL,
     GITHUB_TOKEN,
     STARMINDER_COUNT,
