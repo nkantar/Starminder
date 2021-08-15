@@ -2,7 +2,7 @@ name: Run Starminder
 on:
   schedule:
     # Adjust this to your liking
-    - cron: "6 20 * * *"
+    - cron: "13 10 * * *"
 jobs:
   build:
     name: Run Starminder Script
