@@ -32,7 +32,7 @@ def gh_init():
     """Initialize GitHub connection object."""
     logger.info("Initializing GitHub connection")
     gh = Github(GITHUB_TOKEN)
-    logger.debug("Initilized GitHub connection successfully")
+    logger.debug("Initialized GitHub connection successfully")
     return gh
 
 
