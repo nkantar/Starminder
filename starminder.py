@@ -132,7 +132,6 @@ def generate_email_html(markdown):
 
 
 def send_email(text, html, subject, recipient):
-    return  # TODO dev
     """Send email via SES."""
     logger.info("Sending email via SES")
     client = boto3.client(
