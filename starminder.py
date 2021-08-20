@@ -84,6 +84,9 @@ def generate_star_data(stars):
             "url": star.html_url,
             "homepage": star.homepage or None,
             "stargazers_count": star.stargazers_count,
+            # watchers are really subscribers, thanks to GitHub API weirdness:
+            # https://developer.github.com/changes/2012-09-05-watcher-api/
+            "watchers_count": star.subscribers_count,
         }
         for star in stars
     ]

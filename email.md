@@ -1,15 +1,15 @@
-Hi {{ user_name }},
+Hi **{{ user_name }}**,
 
-Here are your reminders for {{ today }}:
+Here are your reminders for **{{ today }}**:
 {% if stars|length %}{% for star in stars %}
-- {{ star.full_name}}{% if star.description %} - {{ star.description }}{% endif %}
-    - [{{ star.url }}]({{ star.url }})
+- [**{{ star.full_name }}**]({{ star.url }}){% if star.description %} - {{ star.description }}{% endif %}
 {% if star.homepage %}    - [{{ star.homepage }}]({{ star.homepage }})
-{% endif %}    - {{ star.stargazers_count }} stargazer{% if star.stargazers_count != 1 %}s{% endif %}{% endfor %}{% else %}You have no stars.{% endif %}
+{% endif %}    - {{ star.stargazers_count }} stargazer{% if star.stargazers_count != 1 %}s{% endif %}
+    - {{ star.watchers_count }} watcher{% if star.watchers_count != 1 %}s{% endif %}{% endfor %}{% else %}You have no stars.{% endif %}
 
 See you next time!
 
-Cheers, Starminder
+_Cheers, Starminder_
 
 ---
 
