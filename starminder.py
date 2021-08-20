@@ -81,7 +81,7 @@ def generate_star_data(stars):
         {
             "full_name": star.full_name,
             "description": emojize(star.description, use_aliases=True) or None,
-            "url": star.url,
+            "url": star.html_url,
             "homepage": star.homepage or None,
             "stargazers_count": star.stargazers_count,
         }
