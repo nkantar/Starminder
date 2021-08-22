@@ -23,4 +23,4 @@ check-lint: ## checking for linter errors with flake8
 	poetry run flake8 .
 
 check-docs: ## check docstyle with pydocstyle
-	poetry run pydocstyle starminder.py
+	poetry run pydocstyle starminder.py constants.py

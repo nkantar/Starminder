@@ -1,3 +1,6 @@
+"""Starminder constants."""
+
+
 import os
 from pathlib import Path
 from string import Template
