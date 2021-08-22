@@ -82,9 +82,7 @@ def randomize_stars(stars: list[Repository], count: int) -> list[Repository]:
     return random_stars
 
 
-def generate_star_data(
-    stars: list[Repository],
-) -> StarData:
+def generate_star_data(stars: list[Repository]) -> StarData:
     """Generate star data for email template."""
     logger.info("Generating star email data")
     data = [
