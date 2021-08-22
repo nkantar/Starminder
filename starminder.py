@@ -3,13 +3,16 @@
 
 from datetime import datetime
 import random
+from typing import Callable, Optional, Union
 
 import boto3
 from emoji import emojize
 from github import Github
+from github.AuthenticatedUser import AuthenticatedUser
+from github.Repository import Repository
 from jinja2 import Template
 from loguru import logger
-import mistune
+import mistune  # type: ignore
 
 from constants import (
     AWS_ACCESS_KEY_ID,
@@ -27,8 +30,11 @@ from constants import (
 TODAY = datetime.utcnow().date().strftime("%A, %-d %B, %Y")
 SUBJECT = STARMINDER_SUBJECT.substitute(today=TODAY)
 
+StarData = list[dict[str, Optional[Union[str, int]]]]
+EmailData = dict[str, Union[str, object]]
 
-def gh_init():
+
+def gh_init() -> Github:
     """Initialize GitHub connection object."""
     logger.info("Initializing GitHub connection")
     gh = Github(GITHUB_TOKEN)
@@ -36,7 +42,7 @@ def gh_init():
     return gh
 
 
-def get_user(gh):
+def get_user(gh: Github) -> AuthenticatedUser:
     """Retrieve user for given GitHub connection object."""
     logger.info("Fetching user")
     user = gh.get_user()
@@ -44,7 +50,7 @@ def get_user(gh):
     return user
 
 
-def get_stars(user):
+def get_stars(user: AuthenticatedUser) -> list[Repository]:
     """Retrieve given user's starred repositories."""
     logger.info("Fetching stars")
     stars = list(user.get_starred())
@@ -52,7 +58,7 @@ def get_stars(user):
     return stars
 
 
-def reconcile_count(stars, user_count):
+def reconcile_count(stars: list[Repository], user_count: int) -> int:
     """Decide maximum number of stars based on setting and number of repositories."""
     logger.info("Reconciling count")
     if len(stars) >= user_count:
@@ -65,7 +71,7 @@ def reconcile_count(stars, user_count):
     return count
 
 
-def randomize_stars(stars, count):
+def randomize_stars(stars: list[Repository], count: int) -> list[Repository]:
     """Retrieve random stars from given list."""
     logger.info("Randomizing stars")
     random_stars = random.sample(stars, count)
@@ -73,7 +79,9 @@ def randomize_stars(stars, count):
     return random_stars
 
 
-def generate_star_data(stars):
+def generate_star_data(
+    stars: list[Repository],
+) -> StarData:
     """Generate star data for email template."""
     logger.info("Generating star email data")
     data = [
@@ -93,7 +101,7 @@ def generate_star_data(stars):
     return data
 
 
-def generate_name(user):
+def generate_name(user: AuthenticatedUser) -> str:
     """Generate user name for greeting from name and username."""
     logger.info("Generating user name")
     user_name = user.login
@@ -103,7 +111,7 @@ def generate_name(user):
     return user_name
 
 
-def generate_email_data(user, star_data):
+def generate_email_data(user: AuthenticatedUser, star_data: StarData) -> EmailData:
     """Generate all data for email template."""
     logger.info("Generating email data")
     data = {
@@ -116,7 +124,7 @@ def generate_email_data(user, star_data):
     return data
 
 
-def generate_email_md(data):
+def generate_email_md(data: EmailData) -> str:
     """Generate raw email Markdown."""
     logger.info("Generating email Markdown")
     template = Template(TEMPLATE_PATH.read_text())
@@ -125,15 +133,15 @@ def generate_email_md(data):
     return markdown
 
 
-def generate_email_html(markdown):
+def generate_email_html(markdown: str) -> str:
     """Generate HTML email contents from Markdown."""
     logger.info("Generating email HTML")
-    html = mistune.html(markdown)
+    html: str = mistune.html(markdown)
     logger.debug(f"Generated email HTML: {html}")
     return html
 
 
-def send_email(text, html, subject, recipient):
+def send_email(text: str, html: str, subject: str, recipient: str) -> None:
     """Send email via SES."""
     logger.info("Sending email via SES")
     client = boto3.client(
@@ -155,11 +163,11 @@ def send_email(text, html, subject, recipient):
     logger.debug("Sent email via SES")
 
 
-def reconcile_send_email_function():
+def reconcile_send_email_function() -> Callable[[str, str, str, str], None]:
     """Decide whether to use the built-in or custom send_email implementation."""
     logger.info("Reconciling send_email function")
     try:
-        from custom import send_email as custom_send_email
+        from custom import send_email as custom_send_email  # type: ignore
     except (ImportError, ModuleNotFoundError):
         logger.debug("Reconciled send_email to built-in")
         send_function = send_email
@@ -169,7 +177,7 @@ def reconcile_send_email_function():
     return send_function
 
 
-def starminder():
+def starminder() -> None:
     """Execute Starminder."""
     logger.info("Running Starminder")
 
