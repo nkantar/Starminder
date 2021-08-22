@@ -35,6 +35,7 @@ SUBJECT = STARMINDER_SUBJECT.substitute(today=TODAY)
 
 StarData = list[dict[str, Optional[Union[str, int]]]]
 EmailData = dict[str, Union[str, object]]
+SendFunction = Callable[[str, str, str, str], None]
 
 
 def gh_init() -> Github:
@@ -164,7 +165,7 @@ def send_email(text: str, html: str, subject: str, recipient: str) -> None:
     logger.debug("Sent email via SES")
 
 
-def reconcile_send_email_function() -> Callable[[str, str, str, str], None]:
+def reconcile_send_email_function() -> SendFunction:
     """Decide whether to use the built-in or custom send_email implementation."""
     logger.info("Reconciling send_email function")
     try:
