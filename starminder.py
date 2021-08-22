@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 
+"""Main Starminder script."""
+
+
 from datetime import datetime
 import random
 from typing import Callable, Optional, Union
