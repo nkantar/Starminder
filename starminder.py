@@ -52,12 +52,12 @@ def get_stars(user):
     return stars
 
 
-def reconcile_count(stars):
+def reconcile_count(stars, user_count):
     """Decide maximum number of stars based on setting and number of repositories."""
     logger.info("Reconciling count")
-    if len(stars) >= STARMINDER_COUNT:
+    if len(stars) >= user_count:
         logger.debug("Reconciled count to setting")
-        count = STARMINDER_COUNT
+        count = user_count
     else:
         logger.debug("Reconciled count to number of stars")
         count = len(stars)
@@ -65,10 +65,9 @@ def reconcile_count(stars):
     return count
 
 
-def randomize_stars(stars):
+def randomize_stars(stars, count):
     """Retrieve random stars from given list."""
     logger.info("Randomizing stars")
-    count = reconcile_count(stars)
     random_stars = random.sample(stars, count)
     logger.debug(f"Randomized {count} stars")
     return random_stars
@@ -80,7 +79,7 @@ def generate_star_data(stars):
     data = [
         {
             "full_name": star.full_name,
-            "description": emojize(star.description, use_aliases=True) or None,
+            "description": emojize(star.description or "", use_aliases=True) or None,
             "url": star.html_url,
             "homepage": star.homepage or None,
             "stargazers_count": star.stargazers_count,
@@ -181,8 +180,11 @@ def starminder():
     # fetch all stars
     all_stars = get_stars(user)
 
+    # decide how many stars
+    count = reconcile_count(all_stars, STARMINDER_COUNT)
+
     # pick stars
-    random_stars = randomize_stars(all_stars)
+    random_stars = randomize_stars(all_stars, count)
 
     # generate email data
     star_data = generate_star_data(random_stars)

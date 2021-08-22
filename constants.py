@@ -10,7 +10,7 @@ load_dotenv()  # helps with local dev
 
 TEMPLATE_PATH = Path.cwd() / "email.md"
 
-STARMINDER_COUNT = int(os.getenv("STARMINDER_COUNT"))
+STARMINDER_COUNT = int(os.getenv("STARMINDER_COUNT", 0))
 STARMINDER_RECIPIENT = os.getenv("STARMINDER_RECIPIENT")
 STARMINDER_SUBJECT = Template("[Starminder] Reminders for $today")
 

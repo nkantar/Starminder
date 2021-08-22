@@ -1,4 +1,26 @@
 [[package]]
+name = "atomicwrites"
+version = "1.4.0"
+description = "Atomic file writes."
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
+name = "attrs"
+version = "21.2.0"
+description = "Classes Without Boilerplate"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.extras]
+dev = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface", "furo", "sphinx", "sphinx-notfound-page", "pre-commit"]
+docs = ["furo", "sphinx", "zope.interface", "sphinx-notfound-page"]
+tests = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins", "zope.interface"]
+tests_no_zope = ["coverage[toml] (>=5.0.2)", "hypothesis", "pympler", "pytest (>=4.3.0)", "six", "mypy", "pytest-mypy-plugins"]
+
+[[package]]
 name = "boto3"
 version = "1.18.17"
 description = "The AWS SDK for Python"
@@ -83,6 +105,14 @@ wrapt = ">=1.10,<2"
 dev = ["tox", "bump2version (<1)", "sphinx (<2)", "importlib-metadata (<3)", "importlib-resources (<4)", "configparser (<5)", "sphinxcontrib-websupport (<2)", "zipp (<2)", "PyTest (<5)", "PyTest-Cov (<2.6)", "pytest", "pytest-cov"]
 
 [[package]]
+name = "docopt"
+version = "0.6.2"
+description = "Pythonic argument parser, that will make you smile"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "emoji"
 version = "1.4.2"
 description = "Emoji for Python"
@@ -112,6 +142,14 @@ description = "Internationalized Domain Names in Applications (IDNA)"
 category = "main"
 optional = false
 python-versions = ">=3.5"
+
+[[package]]
+name = "iniconfig"
+version = "1.1.1"
+description = "iniconfig: brain-dead simple config-ini parsing"
+category = "dev"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "jinja2"
@@ -167,6 +205,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "packaging"
+version = "21.0"
+description = "Core utilities for Python packages"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+pyparsing = ">=2.0.2"
+
+[[package]]
 name = "pdbpp"
 version = "0.10.3"
 description = "pdb++, a drop-in replacement for pdb"
@@ -182,6 +231,25 @@ wmctrl = "*"
 [package.extras]
 funcsigs = ["funcsigs"]
 testing = ["funcsigs", "pytest"]
+
+[[package]]
+name = "pluggy"
+version = "0.13.1"
+description = "plugin and hook calling mechanisms for python"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[package.extras]
+dev = ["pre-commit", "tox"]
+
+[[package]]
+name = "py"
+version = "1.10.0"
+description = "library with cross-python path, ini-parsing, io, code, log facilities"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 
 [[package]]
 name = "pycparser"
@@ -247,6 +315,14 @@ docs = ["sphinx (>=1.6.5)", "sphinx-rtd-theme"]
 tests = ["pytest (>=3.2.1,!=3.3.0)", "hypothesis (>=3.27.0)"]
 
 [[package]]
+name = "pyparsing"
+version = "2.4.7"
+description = "Python parsing module"
+category = "dev"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[[package]]
 name = "pyreadline"
 version = "2.1"
 description = "A python implmementation of GNU readline."
@@ -261,6 +337,41 @@ description = "A library for building flexible command line interfaces"
 category = "dev"
 optional = false
 python-versions = "*"
+
+[[package]]
+name = "pytest"
+version = "6.2.4"
+description = "pytest: simple powerful testing with Python"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+atomicwrites = {version = ">=1.0", markers = "sys_platform == \"win32\""}
+attrs = ">=19.2.0"
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+iniconfig = "*"
+packaging = "*"
+pluggy = ">=0.12,<1.0.0a1"
+py = ">=1.8.2"
+toml = "*"
+
+[package.extras]
+testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
+
+[[package]]
+name = "pytest-watch"
+version = "4.2.0"
+description = "Local continuous test runner with pytest and watchdog."
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+colorama = ">=0.3.3"
+docopt = ">=0.4.0"
+pytest = ">=2.6.4"
+watchdog = ">=0.6.0"
 
 [[package]]
 name = "python-dateutil"
@@ -325,6 +436,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "toml"
+version = "0.10.2"
+description = "Python Library for Tom's Obvious, Minimal Language"
+category = "dev"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[[package]]
 name = "urllib3"
 version = "1.26.6"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -336,6 +455,17 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
 brotli = ["brotlipy (>=0.6.0)"]
 secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "certifi", "ipaddress"]
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
+
+[[package]]
+name = "watchdog"
+version = "2.1.4"
+description = "Filesystem events monitoring"
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+watchmedo = ["PyYAML (>=3.10)", "argh (>=0.24.1)"]
 
 [[package]]
 name = "win32-setctime"
@@ -367,9 +497,17 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "e27db2da915c3451e5b64f13359dc9302791b6e19dd5f252164b43bf0c7772b8"
+content-hash = "801611cf511ca899573fbcc73ca74e574711e9aa23808ad0c86b227ba3883721"
 
 [metadata.files]
+atomicwrites = [
+    {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
+    {file = "atomicwrites-1.4.0.tar.gz", hash = "sha256:ae70396ad1a434f9c7046fd2dd196fc04b12f9e91ffb859164193be8b6168a7a"},
+]
+attrs = [
+    {file = "attrs-21.2.0-py2.py3-none-any.whl", hash = "sha256:149e90d6d8ac20db7a955ad60cf0e6881a3f20d37096140088356da6c716b0b1"},
+    {file = "attrs-21.2.0.tar.gz", hash = "sha256:ef6aaac3ca6cd92904cdd0d83f629a15f18053ec84e6432106f7a4d04ae4f5fb"},
+]
 boto3 = [
     {file = "boto3-1.18.17-py3-none-any.whl", hash = "sha256:69a5ebbd5fda6742d20fd536cd9b2927f2eaa8dde84ad529fe816231afcf9c68"},
     {file = "boto3-1.18.17.tar.gz", hash = "sha256:5e5f60ece9b73d48f668bef56ddcde716f013b48a62fdf9c5eac9512a5981136"},
@@ -441,6 +579,9 @@ deprecated = [
     {file = "Deprecated-1.2.12-py2.py3-none-any.whl", hash = "sha256:08452d69b6b5bc66e8330adde0a4f8642e969b9e1702904d137eeb29c8ffc771"},
     {file = "Deprecated-1.2.12.tar.gz", hash = "sha256:6d2de2de7931a968874481ef30208fd4e08da39177d61d3d4ebdf4366e7dbca1"},
 ]
+docopt = [
+    {file = "docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491"},
+]
 emoji = [
     {file = "emoji-1.4.2.tar.gz", hash = "sha256:21257f311e24468031e85685867c00b87249dc7612b82dc763a771ba5fb00c01"},
 ]
@@ -451,6 +592,10 @@ fancycompleter = [
 idna = [
     {file = "idna-3.2-py3-none-any.whl", hash = "sha256:14475042e284991034cb48e06f6851428fb14c4dc953acd9be9a5e95c7b6dd7a"},
     {file = "idna-3.2.tar.gz", hash = "sha256:467fbad99067910785144ce333826c71fb0e63a425657295239737f7ecd125f3"},
+]
+iniconfig = [
+    {file = "iniconfig-1.1.1-py2.py3-none-any.whl", hash = "sha256:011e24c64b7f47f6ebd835bb12a743f2fbe9a26d4cecaa7f53bc4f35ee9da8b3"},
+    {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 jinja2 = [
     {file = "Jinja2-3.0.1-py3-none-any.whl", hash = "sha256:1f06f2da51e7b56b8f238affdd6b4e2c61e39598a378cc49345bc1bd42a978a4"},
@@ -504,9 +649,21 @@ mistune = [
     {file = "mistune-2.0.0rc1-py2.py3-none-any.whl", hash = "sha256:02437870a8d594e61e4f6cff2f56f5104d17d56e3fea5fb234070ede5e7c2eae"},
     {file = "mistune-2.0.0rc1.tar.gz", hash = "sha256:452bdba97c27efc7c1a83823ed0d6a08a9ad6ea5c67648248509f618b68aa7d9"},
 ]
+packaging = [
+    {file = "packaging-21.0-py3-none-any.whl", hash = "sha256:c86254f9220d55e31cc94d69bade760f0847da8000def4dfe1c6b872fd14ff14"},
+    {file = "packaging-21.0.tar.gz", hash = "sha256:7dc96269f53a4ccec5c0670940a4281106dd0bb343f47b7471f779df49c2fbe7"},
+]
 pdbpp = [
     {file = "pdbpp-0.10.3-py2.py3-none-any.whl", hash = "sha256:79580568e33eb3d6f6b462b1187f53e10cd8e4538f7d31495c9181e2cf9665d1"},
     {file = "pdbpp-0.10.3.tar.gz", hash = "sha256:d9e43f4fda388eeb365f2887f4e7b66ac09dce9b6236b76f63616530e2f669f5"},
+]
+pluggy = [
+    {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
+    {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
+]
+py = [
+    {file = "py-1.10.0-py2.py3-none-any.whl", hash = "sha256:3b80836aa6d1feeaa108e046da6423ab8f6ceda6468545ae8d02d9d58d18818a"},
+    {file = "py-1.10.0.tar.gz", hash = "sha256:21b81bda15b66ef5e1a777a21c4dcd9c20ad3efd0b3f817e7a809035269e1bd3"},
 ]
 pycparser = [
     {file = "pycparser-2.20-py2.py3-none-any.whl", hash = "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"},
@@ -544,6 +701,10 @@ pynacl = [
     {file = "PyNaCl-1.4.0-cp38-cp38-win_amd64.whl", hash = "sha256:7c6092102219f59ff29788860ccb021e80fffd953920c4a8653889c029b2d420"},
     {file = "PyNaCl-1.4.0.tar.gz", hash = "sha256:54e9a2c849c742006516ad56a88f5c74bf2ce92c9f67435187c3c5953b346505"},
 ]
+pyparsing = [
+    {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
+    {file = "pyparsing-2.4.7.tar.gz", hash = "sha256:c203ec8783bf771a155b207279b9bccb8dea02d8f0c9e5f8ead507bc3246ecc1"},
+]
 pyreadline = [
     {file = "pyreadline-2.1.win-amd64.exe", hash = "sha256:9ce5fa65b8992dfa373bddc5b6e0864ead8f291c94fbfec05fbd5c836162e67b"},
     {file = "pyreadline-2.1.win32.exe", hash = "sha256:65540c21bfe14405a3a77e4c085ecfce88724743a4ead47c66b84defcf82c32e"},
@@ -551,6 +712,13 @@ pyreadline = [
 ]
 pyrepl = [
     {file = "pyrepl-0.9.0.tar.gz", hash = "sha256:292570f34b5502e871bbb966d639474f2b57fbfcd3373c2d6a2f3d56e681a775"},
+]
+pytest = [
+    {file = "pytest-6.2.4-py3-none-any.whl", hash = "sha256:91ef2131a9bd6be8f76f1f08eac5c5317221d6ad1e143ae03894b862e8976890"},
+    {file = "pytest-6.2.4.tar.gz", hash = "sha256:50bcad0a0b9c5a72c8e4e7c9855a3ad496ca6a881a3641b4260605450772c54b"},
+]
+pytest-watch = [
+    {file = "pytest-watch-4.2.0.tar.gz", hash = "sha256:06136f03d5b361718b8d0d234042f7b2f203910d8568f63df2f866b547b3d4b9"},
 ]
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
@@ -572,9 +740,38 @@ six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
 ]
+toml = [
+    {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
+    {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
 urllib3 = [
     {file = "urllib3-1.26.6-py2.py3-none-any.whl", hash = "sha256:39fb8672126159acb139a7718dd10806104dec1e2f0f6c88aab05d17df10c8d4"},
     {file = "urllib3-1.26.6.tar.gz", hash = "sha256:f57b4c16c62fa2760b7e3d97c35b255512fb6b59a259730f36ba32ce9f8e342f"},
+]
+watchdog = [
+    {file = "watchdog-2.1.4-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:073b379d74aecc7fcba3ee8c2a7b4ac5d56deca52bd47bab024464a47c084d34"},
+    {file = "watchdog-2.1.4-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:1dd5e0e1577a0f3362f6ab986264d9695e40dfba247b994a522bfab254544fc1"},
+    {file = "watchdog-2.1.4-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:34e1517e745b223eb682d09a7ba2532cbb55ce9c8c778daba0955e1af37c903e"},
+    {file = "watchdog-2.1.4-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:bee7eb674850f052599d19f1efdd4db9bc4690593462b760662a38298f1d65b4"},
+    {file = "watchdog-2.1.4-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:e6e6b3a9920ca84d6cc22b313c87fac426e92114d1927ade2909ada3de243d45"},
+    {file = "watchdog-2.1.4-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:407524dc30d9e3bb46017987b100574eeb810d9cc50488aabf81a03ae70c4962"},
+    {file = "watchdog-2.1.4-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:78e36af08a94325b7852827004f4bea1a9b472a532498026a4b8529189797a15"},
+    {file = "watchdog-2.1.4-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:9e0a159fedb9d83dee80b00759a82acd2596a3ed70247088f8a175ce46116096"},
+    {file = "watchdog-2.1.4-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:39a0711a6439a6fa8d9c78c93759fbb07bc61bb06378eaa5a32148a1468a8e87"},
+    {file = "watchdog-2.1.4-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:d8bd7eec21964687b2364e7ab38fda6b4567809d590a0506f74cc48b2a2dfce4"},
+    {file = "watchdog-2.1.4-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:f743b2581c241f55b716e35b451f53076a07e15e1f2f0a83016c2ecaf6ace78e"},
+    {file = "watchdog-2.1.4-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:9b332a20029ebdff605829219fe858070b128471d60a9b6cc4797bb167fe22ff"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_aarch64.whl", hash = "sha256:becbe589b63891cfaa24afe8e31fa7ac0d541701644767c9c28f14da1d5489b7"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_armv7l.whl", hash = "sha256:73782538f9ab7d0fc1f78abd34fe94feea119bd2644c2659d71068d7252a774e"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_i686.whl", hash = "sha256:60785287032cc2cbd428486c0ff0a4b5c098d1ad256449ffe5fdd69657f5a126"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_ppc64.whl", hash = "sha256:2cca4c2725112d5a8b5b89ea24a51dad702db7048ae08dba0435b2c382f08e6d"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_ppc64le.whl", hash = "sha256:536bca6bc9661279310e5946ad4c2dfa5b2b1624e44a7acdf8cb37a10cc45f00"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_s390x.whl", hash = "sha256:0d4602a93e404b3b01e249297ce950ed249295a0c124cdb4b3fbc696032918fb"},
+    {file = "watchdog-2.1.4-py3-none-manylinux2014_x86_64.whl", hash = "sha256:afb03a13c8a75a74f2894a313298ee95ff09fba1f02081ead249e790a5304a18"},
+    {file = "watchdog-2.1.4-py3-none-win32.whl", hash = "sha256:47480f3a82694fe1f4d552b3da8420fecfc5273ba7996d7ceadd838d1970b31a"},
+    {file = "watchdog-2.1.4-py3-none-win_amd64.whl", hash = "sha256:a56c7631dde228d81834466ebf4ebcc8996678b0f794e3e6dc401e9e71e9388d"},
+    {file = "watchdog-2.1.4-py3-none-win_ia64.whl", hash = "sha256:6c58d1cbf01884602afcbc631f79f709812e20ec100a6526c91895d3238d4474"},
+    {file = "watchdog-2.1.4.tar.gz", hash = "sha256:438efbbd929b6436add7ce89f3466ca836f31588220433efeb757b5947a9c979"},
 ]
 win32-setctime = [
     {file = "win32_setctime-1.0.3-py3-none-any.whl", hash = "sha256:dc925662de0a6eb987f0b01f599c01a8236cb8c62831c22d9cada09ad958243e"},
