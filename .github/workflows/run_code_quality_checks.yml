@@ -29,3 +29,15 @@ jobs:
 
       - name: Run tests
         run: make test
+
+      - name: Check code formatting
+        run: make check-format
+
+      - name: Check type hints
+        run: make check-typehints
+
+      - name: Check for linter errors
+        run: make check-lint
+
+      - name: Check doc style
+        run: make check-docs
