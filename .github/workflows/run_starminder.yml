@@ -23,7 +23,7 @@ jobs:
           pip install poetry
           poetry config virtualenvs.create false
           poetry install --no-dev --no-root --no-interaction
-          [ -f requirements.txt ] && poetry run pip install -r requirements.txt
+          [ -f custom_requirements.txt ] && poetry run pip install -r custom_requirements.txt
 
       - name: Run script
         env:
