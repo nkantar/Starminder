@@ -4,9 +4,8 @@ on:
   push:
     branches:
       - main
-  # uncomment and adjust to your liking
-  # schedule:
-  #   - cron: "13 10 * * *"
+  schedule:
+    - cron: "13 10 * * *" # adjust to your liking
 
 jobs:
   build:
