@@ -1,41 +1,40 @@
-name: Run Starminder
+# name: Run Starminder
 
 # on:
 #   schedule:
-#     # Uncomment this section and adjust to your liking
-#     - cron: "13 10 * * *"
+#     - cron: "13 10 * * *" # adjust to your liking
 
-jobs:
-  build:
-    name: Run Starminder Script
-    runs-on: ubuntu-latest
-    steps:
+# jobs:
+#   build:
+#     name: Run Starminder Script
+#     runs-on: ubuntu-latest
+#     steps:
 
-      - name: Checkout repository
-        uses: actions/checkout@v2
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
 
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9
+#       - name: Set up Python 3.9
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.9
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-          poetry config virtualenvs.create false
-          poetry install --no-dev --no-root --no-interaction
-          if [ -f custom_requirements.txt ]; then
-            poetry run pip install -r custom_requirements.txt
-          fi
+#       - name: Install dependencies
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install poetry
+#           poetry config virtualenvs.create false
+#           poetry install --no-dev --no-root --no-interaction
+#           if [ -f custom_requirements.txt ]; then
+#             poetry run pip install -r custom_requirements.txt
+#           fi
 
-      - name: Run script
-        env:
-          STARMINDER_COUNT: ${{ secrets.STARMINDER_COUNT }}
-          STARMINDER_RECIPIENT: ${{ secrets.STARMINDER_RECIPIENT }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_FROM: ${{ secrets.AWS_FROM }}
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          make run
+#       - name: Run script
+#         env:
+#           STARMINDER_COUNT: ${{ secrets.STARMINDER_COUNT }}
+#           STARMINDER_RECIPIENT: ${{ secrets.STARMINDER_RECIPIENT }}
+#           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           AWS_FROM: ${{ secrets.AWS_FROM }}
+#           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+#         run: |
+#           make run
