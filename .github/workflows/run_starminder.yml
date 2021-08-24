@@ -1,9 +1,6 @@
 name: Run Starminder
 
 on:
-  push:
-    branches:
-      - main
   schedule:
     - cron: "13 10 * * *" # adjust to your liking
 
