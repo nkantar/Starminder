@@ -1,8 +1,8 @@
 name: Run Starminder
 on:
   schedule:
-    # Adjust this to your liking
-    - cron: "13 10 * * *"
+    # Uncomment the line below and adjust to your liking
+    # - cron: "13 10 * * *"
 jobs:
   build:
     name: Run Starminder Script
