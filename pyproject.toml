@@ -1,27 +1,11 @@
-[tool.poetry]
+[project]
 name = "Starminder"
-version = "2.0.0"
+version = "3.0.0"
+dependencies = []
+requires-python = ">=3.13.1"
+authors = [
+    {name = "Nik Kantar", email = "nik@nkantar.com" },
+]
 description = "Remind yourself of your GitHub stars"
-authors = ["Nik Kantar <nik@nkantar.com>"]
-license = "MIT"
-
-[tool.poetry.dependencies]
-python = "^3.9"
-PyGithub = "^1.55"
-python-dotenv = "^0.19.0"
-loguru = "^0.5.3"
-Jinja2 = "^3.0.1"
-mistune = "2.0.0rc1"
-boto3 = "^1.18.17"
-emoji = "^1.4.2"
-
-[tool.poetry.dev-dependencies]
-pdbpp = "^0.10.3"
-pytest = "^6.2.4"
-pytest-watch = "^4.2.0"
-black = "^21.7b0"
-mypy = "^0.910"
-types-emoji = "^1.2.4"
-boto3-stubs = "^1.18.26"
-flake8 = "^3.9.2"
-pydocstyle = "^6.1.1"
+readme = "README.md"
+license = {file = "LICENSE"}
