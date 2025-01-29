@@ -1,3 +1,9 @@
+Do not use this version. [v3](https://github.com/nkantar/Starminder/tree/v3) is in the works.
+
+
+---
+
+
 # Starminder
 
 _**Starminder**_ is a GitHub starred project reminder. ⭐

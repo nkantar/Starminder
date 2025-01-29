@@ -14,6 +14,8 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [2.0.0] - 2025-01-28
+
 ### Added
 - New script based version
 
@@ -116,7 +118,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/1.0.8...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/nkantar/Starminder/compare/1.0.8...2.0.0
 [1.0.8]: https://github.com/nkantar/Starminder/compare/1.0.7...1.0.8
 [1.0.7]: https://github.com/nkantar/Starminder/compare/1.0.6...1.0.7
 [1.0.6]: https://github.com/nkantar/Starminder/compare/1.0.5...1.0.6
