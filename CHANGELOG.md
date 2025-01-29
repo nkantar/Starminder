@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Removed
+- Nearly everything, in preparation for v3.
+
 
 ## [2.0.0] - 2025-01-28
 
