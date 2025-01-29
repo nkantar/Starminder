@@ -44,6 +44,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
+    # third party
+    "allauth",
+    "allauth.account",
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.github",
     # project
     "starminder.core",
 ]
@@ -56,6 +62,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "starminder.urls"
@@ -140,3 +147,19 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 AUTH_USER_MODEL = "core.CustomUser"
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+SITE_ID = 1
+SITE_DOMAIN_NAME = getenv("SITE_DOMAIN_NAME")
+SITE_DISPLAY_NAME = getenv("SITE_DISPLAY_NAME")
+
+APP_NAME = getenv("APP_NAME")
+
+GITHUB_CLIENT_ID = getenv("GITHUB_CLIENT_ID")
+GITHUB_CLIENT_SECRET = getenv("GITHUB_CLIENT_SECRET")
