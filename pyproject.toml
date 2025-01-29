@@ -1,7 +1,11 @@
 [project]
 name = "Starminder"
 version = "3.0.0"
-dependencies = []
+dependencies = [
+    "django>=5.1.5",
+    "django-allauth>=65.3.1",
+    "python-dotenv>=1.0.1",
+]
 requires-python = ">=3.13.1"
 authors = [
     {name = "Nik Kantar", email = "nik@nkantar.com" },
@@ -9,3 +13,14 @@ authors = [
 description = "Remind yourself of your GitHub stars"
 readme = "README.md"
 license = {file = "LICENSE"}
+
+[dependency-groups]
+dev = [
+    "django-debug-toolbar>=5.0.1",
+    "django-stubs>=5.1.2",
+    "mypy>=1.14.1",
+    "pdbpp>=0.10.3",
+    "pydocstyle>=6.3.0",
+    "pytest>=8.3.4",
+    "ruff>=0.9.3",
+]
