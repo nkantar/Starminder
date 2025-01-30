@@ -24,5 +24,44 @@ dev = [
     "pdbpp>=0.10.3",
     "pydocstyle>=6.3.0",
     "pytest>=8.3.4",
+    "pytest-django>=4.9.0",
+    "python-lsp-server>=1.12.0",
     "ruff>=0.9.3",
 ]
+
+[tool.ruff]
+exclude = ["migrations"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "ANN401",
+    "COM812",
+    "CPY001",
+    "D203",
+    "D212",
+    "DOC201",
+    "DOC501",
+    "E402",
+    "EM101",
+    "FBT001",
+    "FIX002",
+    "S101",
+    "TD002",
+    "TD003",
+    "TD004",
+    "TRY003",
+    "RUF012",
+]
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+exclude = "migrations"
+follow_untyped_imports = true
+
+[tool.django-stubs]
+django_settings_module = "starminder.settings"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "starminder.settings"
+python_files = ["test_*.py"]
