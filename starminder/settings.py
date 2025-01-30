@@ -69,7 +69,9 @@ ROOT_URLCONF = "starminder.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "starminder" / "core" / "templates",
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -157,6 +159,12 @@ ACCOUNT_EMAIL_VERIFICATION = "none"
 SITE_ID = 1
 SITE_DOMAIN_NAME = getenv("SITE_DOMAIN_NAME")
 SITE_DISPLAY_NAME = getenv("SITE_DISPLAY_NAME")
+
+LOGIN_REDIRECT_URL = "/dashboard"  # new
+LOGOUT_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_ON_GET = True
+
+SOCIALACCOUNT_ONLY = True
 
 APP_NAME = getenv("APP_NAME")
 
