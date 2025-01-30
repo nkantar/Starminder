@@ -3,9 +3,21 @@
 from typing import Any
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CASCADE, Model, OneToOneField
+from django.db.models import CASCADE, DateTimeField, Model, OneToOneField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+
+
+class TimeStampedModel(Model):
+    """Base class to timestamp everything."""
+
+    created_at = DateTimeField(auto_now_add=True)
+    modified_at = DateTimeField(auto_now=True)
+
+    class Meta:
+        """Meta settings for model."""
+
+        abstract = True
 
 
 class CustomUser(AbstractUser):
@@ -16,7 +28,7 @@ class CustomUser(AbstractUser):
         return self.email
 
 
-class UserProfile(Model):
+class UserProfile(TimeStampedModel):
     """Profile for extra user data."""
 
     user = OneToOneField("core.CustomUser", on_delete=CASCADE)
