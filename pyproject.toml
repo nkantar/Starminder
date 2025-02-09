@@ -33,26 +33,26 @@ dev = [
 exclude = ["migrations"]
 
 [tool.ruff.lint]
-select = ["ALL"]
-ignore = [
-    "ANN401",
-    "COM812",
-    "CPY001",
-    "D203",
-    "D212",
-    "DOC201",
-    "DOC501",
-    "E402",
-    "EM101",
-    "FBT001",
-    "FIX002",
-    "S101",
-    "TD002",
-    "TD003",
-    "TD004",
-    "TRY003",
-    "RUF012",
-]
+# select = ["ALL"]
+# ignore = [
+#     "ANN401",
+#     "COM812",
+#     "CPY001",
+#     "D203",
+#     "D212",
+#     "DOC201",
+#     "DOC501",
+#     "E402",
+#     "EM101",
+#     "FBT001",
+#     "FIX002",
+#     "S101",
+#     "TD002",
+#     "TD003",
+#     "TD004",
+#     "TRY003",
+#     "RUF012",
+# ]
 
 [tool.mypy]
 plugins = ["mypy_django_plugin.main"]

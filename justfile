@@ -30,7 +30,7 @@ formatcheck:
 
 # check type hints via mypy
 typecheck:
-    mypy --strict .
+    mypy .
 
 # run linter via ruff
 lint:

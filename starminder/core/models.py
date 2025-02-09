@@ -1,5 +1,3 @@
-"""Core Starminder models."""
-
 from typing import Any
 
 from django.contrib.auth.models import AbstractUser
@@ -8,7 +6,6 @@ from django.db.models import (
     BooleanField,
     CharField,
     DateTimeField,
-    ForeignKey,
     IntegerChoices,
     IntegerField,
     Model,
@@ -21,47 +18,26 @@ from django.dispatch import receiver
 
 
 class TimeStampedModel(Model):
-    """Base class to timestamp everything."""
-
     created_at = DateTimeField(auto_now_add=True)
     modified_at = DateTimeField(auto_now=True)
 
     class Meta:
-        """Meta settings for model."""
-
         abstract = True
 
 
 class CustomUser(AbstractUser):
-    """Override of built-in User class."""
-
     def __str__(self) -> str:
-        """Represent instance as string."""
         return self.email
 
 
 class UserProfile(TimeStampedModel):
-    """Profile for extra user data."""
-
-    user = OneToOneField("core.CustomUser", on_delete=CASCADE)
-
-    class Meta:
-        """Meta settings for model."""
-
-        verbose_name = "User Profile"
-        verbose_name_plural = "User Profiles"
-
-    def __str__(self) -> str:
-        """Represent instance as string."""
-        return f"Profile for {self.user.email}"
-
-
-class Configuration(TimeStampedModel):
-    """Provider configuration."""
+    user = OneToOneField(
+        "core.CustomUser",
+        on_delete=CASCADE,
+        related_name="user_profile",
+    )
 
     class Day(TextChoices):
-        """Day of week."""
-
         MONDAY = "Monday"
         TUESDAY = "Tuesday"
         WEDNESDAY = "Wednesday"
@@ -72,8 +48,6 @@ class Configuration(TimeStampedModel):
         DAY = "day"
 
     class Hour(IntegerChoices):
-        """Hour of day."""
-
         ZERO = 0
         ONE = 1
         TWO = 2
@@ -99,8 +73,6 @@ class Configuration(TimeStampedModel):
         TWENTYTWO = 22
         TWENTYTHREE = 23
 
-    profile = ForeignKey(UserProfile, on_delete=CASCADE)
-
     day = CharField(max_length=9, choices=Day, default=Day.DAY)
     hour = IntegerField(choices=Hour, default=Hour.ZERO)
 
@@ -108,29 +80,19 @@ class Configuration(TimeStampedModel):
 
     active = BooleanField(default=True)
 
+    class Meta:
+        verbose_name = "User Profile"
+        verbose_name_plural = "User Profiles"
+
     def __str__(self) -> str:
-        """Represent instance as string."""
-        return f"Configuration for {self.profile}"
+        return f"Profile for {self.user.email}"
 
 
 @receiver(post_save, sender=CustomUser)
 def create_or_update_user_profile(
-    sender: CustomUser,  # noqa: ARG001
+    sender: CustomUser,
     instance: CustomUser,
-    created: bool,  # noqa: ARG001
-    **kwargs: Any,  # noqa: ARG001
-) -> None:
-    """Create profile for newly created user."""
-    UserProfile.objects.get_or_create(user=instance)
-
-
-@receiver(post_save, sender=UserProfile)
-def create_default_settings(
-    sender: UserProfile,  # noqa: ARG001
-    instance: UserProfile,
     created: bool,
-    **kwargs: Any,  # noqa: ARG001
+    **kwargs: Any,
 ) -> None:
-    """Create default settings for newly created user profile."""
-    if created:
-        Configuration.objects.create(profile=instance)
+    UserProfile.objects.get_or_create(user=instance)
