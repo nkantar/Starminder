@@ -3,7 +3,6 @@ from typing import Any
 from django.contrib.auth.models import AbstractUser
 from django.db.models import (
     CASCADE,
-    BooleanField,
     CharField,
     DateTimeField,
     IntegerChoices,
@@ -77,8 +76,6 @@ class UserProfile(TimeStampedModel):
     hour = IntegerField(choices=Hour, default=Hour.ZERO)
 
     maximum = PositiveIntegerField(default=5)
-
-    active = BooleanField(default=True)
 
     class Meta:
         verbose_name = "User Profile"
