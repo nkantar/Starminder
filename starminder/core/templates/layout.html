@@ -2,6 +2,8 @@
 <h1>Starminder</h1>
 
 {% if user.is_authenticated %}
+  <a href="{% url 'dashboard' %}">Dashboard</a>
+  <a href="{% url 'settings' %}">Settings</a>
   <a href="{% url 'account_logout' %}">Log Out</a>
   <!-- TODO disconnect not working -->
   <form method="post" action="{% url 'socialaccount_connections' %}">

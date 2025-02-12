@@ -172,3 +172,17 @@ GITHUB_CLIENT_ID = getenv("GITHUB_CLIENT_ID")
 GITHUB_CLIENT_SECRET = getenv("GITHUB_CLIENT_SECRET")
 
 ADMIN_PREFIX = getenv("ADMIN_PREFIX")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}

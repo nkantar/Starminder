@@ -2,6 +2,10 @@
 
 {% block content %}
 
-{{ form }}
+<form method="post">
+  <p>Remind me every {{ form.day }} at {{ form.hour }} UTC about no more than {{ form.maximum }} projects.</p>
+  <button type="submit">Save</button>
+  {% csrf_token %}
+</form>
 
 {% endblock %}
