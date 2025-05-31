@@ -1,11 +1,7 @@
-############################################################
-# All commands are to be run inside a virtual environment. #
-# E.g.,                                                    #
-#     uv run just serve                                    #
-############################################################
+# NOTE Some of the commands assume uv is present.
 
 
-#########
+# ==============================================================================
 # general
 
 # run dev modd config
@@ -18,27 +14,27 @@ docker-compose:
 
 # run Django dev server
 serve:
-    python manage.py runserver
+    uv run python manage.py runserver
 
 
-##############
+# ==============================================================================
 # code quality
 
 # check formatting via ruff
 formatcheck:
-    ruff format --check .
+    uv run ruff format --check .
 
 # check type hints via mypy
 typecheck:
-    mypy .
+    uv run mypy .
 
 # run linter via ruff
 lint:
-    ruff check .
+    uv run ruff check .
 
 # run tests via pytest and coverage
 test:
-    pytest
+    uv run pytest
 
 # run all checks
 checkall:
