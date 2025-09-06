@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.forms import ModelForm, Select
 

@@ -14,6 +14,7 @@ from os import getenv
 from pathlib import Path
 
 from dotenv import load_dotenv
+import parsenvy
 
 load_dotenv()
 
@@ -31,7 +32,7 @@ SECRET_KEY = getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = parsenvy.list("DJANGO_ALLOWED_HOSTS")
 
 
 # Application definition
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
+    "neapolitan",
     # project
     "starminder.core",
 ]
@@ -165,6 +167,7 @@ LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_ON_GET = True
 
 SOCIALACCOUNT_ONLY = True
+SOCIALACCOUNT_STORE_TOKENS = True
 
 APP_NAME = getenv("APP_NAME")
 

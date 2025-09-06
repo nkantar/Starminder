@@ -3,11 +3,12 @@ import logging
 
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseServerError
-from django.urls import reverse_lazy
-from django.views.generic import FormView, TemplateView
+from django.urls import reverse
+from django.views.generic import TemplateView
+from neapolitan.views import CRUDView
 
 from .forms import SettingsForm
+from .models import UserProfile
 
 
 logger = logging.getLogger(__name__)
@@ -21,27 +22,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = "dashboard.html"
 
 
-class SettingsView(LoginRequiredMixin, FormView):
+class SettingsView(LoginRequiredMixin, CRUDView):
+    def get_object(self) -> UserProfile:
+        return UserProfile.objects.get(pk=self.request.user.user_profile.pk)
+
+    def get_success_url(self) -> str:
+        return reverse("settings")
+
+    model = UserProfile
+    fields = ["day", "hour", "maximum"]
     form_class = SettingsForm
-    template_name = "settings.html"
-    success_url = reverse_lazy("dashboard")
-
-    def get_initial(self) -> dict[Any, Any]:
-        super_data = super().get_initial()
-
-        profile = self.request.user.user_profile  # type: ignore[union-attr]
-
-        profile_data = {
-            "day": profile.day,
-            "hour": profile.hour,
-            "maximum": profile.maximum,
-        }
-
-        return {**super_data, **profile_data}
-
-    def form_valid(self, form):
-        form.instance.id = self.request.user.user_profile.id
-
-        logger.info(form.is_valid())
-
-        return super().form_valid(form)

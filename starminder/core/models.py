@@ -43,8 +43,8 @@ class UserProfile(TimeStampedModel):
         verbose_name = "User Profile"
         verbose_name_plural = "User Profiles"
 
-    def __str__(self) -> str:
-        return f"Profile for {self.user}"
+    # def __str__(self) -> str:
+    #     return f"Profile for {self.user}"
 
 
 @receiver(post_save, sender=CustomUser)
