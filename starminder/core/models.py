@@ -1,3 +1,5 @@
+from typing import Any
+
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CASCADE, DateTimeField, Manager, Model, OneToOneField
 from django.db.models.signals import post_save
@@ -27,6 +29,11 @@ class UserProfile(TimestampedModel):
 
 
 @receiver(post_save, sender=CustomUser)
-def create_user_profile(sender, instance, created, **kwargs):
+def create_user_profile(
+    sender: type[CustomUser],
+    instance: CustomUser,
+    created: bool,
+    **kwargs: Any,
+) -> None:
     if created:
         UserProfile.objects.get_or_create(user=instance)

@@ -1,10 +1,11 @@
-from unittest.mock import patch
+from typing import Any
+from unittest.mock import MagicMock, patch
 
 from starminder.implementations.base import BaseImplementation, Entry
 
 
 class ModifiedPopulateEntriesImplementation(BaseImplementation):
-    def populate_entries(self, entries: list) -> list:
+    def populate_entries(self, entries: list[Any]) -> list[Entry]:
         return [
             Entry(
                 owner=item.get("username"),
@@ -18,7 +19,7 @@ class ModifiedPopulateEntriesImplementation(BaseImplementation):
         ]
 
 
-def test_populate_entries_default():
+def test_populate_entries_default() -> None:
     implementation = BaseImplementation(access_token="test_token")
     test_list = [
         {
@@ -61,7 +62,7 @@ def test_populate_entries_default():
 
 
 @patch.object(BaseImplementation, "retrieve_all_entries")
-def test_generate_entries_default(mock_retrieve):
+def test_generate_entries_default(mock_retrieve: MagicMock) -> None:
     mock_entries = [
         {
             "owner": "user1",
@@ -107,7 +108,7 @@ def test_generate_entries_default(mock_retrieve):
 
 
 @patch.object(ModifiedPopulateEntriesImplementation, "retrieve_all_entries")
-def test_generate_entries_modified_populate_entries(mock_retrieve):
+def test_generate_entries_modified_populate_entries(mock_retrieve: MagicMock) -> None:
     mock_entries = [
         {
             "username": "user1",

@@ -6,7 +6,7 @@ from starminder.implementations.github import GitHubImplementation
 
 @patch("starminder.implementations.github.Github")
 @patch("starminder.implementations.github.Auth")
-def test_retrieve_all_entries(mock_auth, mock_github):
+def test_retrieve_all_entries(mock_auth: MagicMock, mock_github: MagicMock) -> None:
     mock_repo1 = Mock()
     mock_repo2 = Mock()
 
@@ -29,7 +29,7 @@ def test_retrieve_all_entries(mock_auth, mock_github):
     assert result == [mock_repo1, mock_repo2]
 
 
-def test_populate_entries():
+def test_populate_entries() -> None:
     implementation = GitHubImplementation(access_token="test_token")
 
     mock_repo1 = Mock()
@@ -69,7 +69,7 @@ def test_populate_entries():
 
 
 @patch.object(GitHubImplementation, "retrieve_all_entries")
-def test_generate_entries(mock_retrieve):
+def test_generate_entries(mock_retrieve: MagicMock) -> None:
     mock_repo1 = Mock()
     mock_repo1.owner.login = "owner1"
     mock_repo1.name = "repo1"
