@@ -1,5 +1,6 @@
 import random
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass
@@ -17,10 +18,10 @@ class BaseImplementation:
     access_token: str
     max_entries: int = 5  # TODO eventually configurable
 
-    def retrieve_all_entries(self):
+    def retrieve_all_entries(self) -> list[Any]:
         raise NotImplementedError
 
-    def populate_entries(self, entries: list) -> list[Entry]:
+    def populate_entries(self, entries: list[dict]) -> list[Entry]:
         return [
             Entry(
                 owner=entry["owner"],
@@ -33,7 +34,7 @@ class BaseImplementation:
             for entry in entries
         ]
 
-    def generate_entries(self):
+    def generate_entries(self) -> list[Entry]:
         entries = self.retrieve_all_entries()
         sample_size = min(self.max_entries, len(entries))
         sampled = random.sample(entries, sample_size)
