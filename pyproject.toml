@@ -21,3 +21,6 @@ dev = [
     "ruff>=0.14.0",
     "ty>=0.0.1a21",
 ]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "starminder.settings"
