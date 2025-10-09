@@ -7,6 +7,9 @@ lint:
 typecheck:
     uv run ty check .
 
+test:
+    uv run pytest
+
 makemigrations:
     uv run python manage.py makemigrations
 
