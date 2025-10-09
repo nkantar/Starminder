@@ -20,14 +20,7 @@ class BaseImplementation:
     def retrieve_all_entries(self):
         raise NotImplementedError
 
-    def populate_entries(self, entries: list) -> list:
-        return entries
-
-    def generate_entries(self):
-        entries = self.retrieve_all_entries()
-        sample_size = min(self.max_entries, len(entries))
-        sampled = random.sample(entries, sample_size)
-        populated = self.populate_entries(sampled)
+    def populate_entries(self, entries: list) -> list[Entry]:
         return [
             Entry(
                 owner=entry["owner"],
@@ -37,5 +30,12 @@ class BaseImplementation:
                 repo_url=entry["repo_url"],
                 project_url=entry["project_url"] if entry["project_url"] else None,
             )
-            for entry in populated
+            for entry in entries
         ]
+
+    def generate_entries(self):
+        entries = self.retrieve_all_entries()
+        sample_size = min(self.max_entries, len(entries))
+        sampled = random.sample(entries, sample_size)
+        populated = self.populate_entries(sampled)
+        return populated
