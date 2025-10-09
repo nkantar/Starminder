@@ -18,3 +18,6 @@ migrate:
 
 devserve:
     uv run python manage.py runserver
+
+djangocheck:
+    uv run python manage.py check
