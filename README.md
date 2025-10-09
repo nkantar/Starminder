@@ -1,9 +1,3 @@
-Do not use this at the moment.
-
-
----
-
-
 # Starminder
 
 _**Starminder**_ is a GitHub starred project reminder. ⭐

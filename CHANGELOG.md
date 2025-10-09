@@ -13,8 +13,14 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+## [3.0.0] - 2025-10-08
+
+### Added
+- Some files for what ended up being a false start
+
 ### Removed
 - Nearly everything, in preparation for v3.
+- Everything again, in preparation for v4 (to be CalVer for first release).
 
 
 ## [2.0.0] - 2025-01-28

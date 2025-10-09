@@ -1,18 +1,11 @@
 [project]
 name = "Starminder"
-version = "3.0.0"
+version = "4.0.0"  # TODO CalVer for first release
 dependencies = [
-    "django>=5.1.5",
-    "django-allauth>=65.3.1",
-    "neapolitan>=24.8",
-    "parsenvy>=3.0.3",
-    "psycopg[binary]>=3.2.4",
-    "python-dotenv>=1.0.1",
-    "requests>=2.32.3",
 ]
-requires-python = ">=3.13.1"
+requires-python = ">=3.13"
 authors = [
-    {name = "Nik Kantar", email = "nik@nkantar.com" },
+    { name = "Nik Kantar", email = "nik@nkantar.com" },
 ]
 description = "Remind yourself of your GitHub stars"
 readme = "README.md"
@@ -20,50 +13,4 @@ license = {file = "LICENSE"}
 
 [dependency-groups]
 dev = [
-    "django-debug-toolbar>=5.0.1",
-    "django-stubs>=5.1.2",
-    "mypy>=1.14.1",
-    "pdbpp>=0.10.3",
-    "pydocstyle>=6.3.0",
-    "pytest>=8.3.4",
-    "pytest-django>=4.9.0",
-    "python-lsp-server>=1.12.0",
-    "ruff>=0.9.3",
 ]
-
-[tool.ruff]
-exclude = ["migrations"]
-
-[tool.ruff.lint]
-# select = ["ALL"]
-# ignore = [
-#     "ANN401",
-#     "COM812",
-#     "CPY001",
-#     "D203",
-#     "D212",
-#     "DOC201",
-#     "DOC501",
-#     "E402",
-#     "EM101",
-#     "FBT001",
-#     "FIX002",
-#     "S101",
-#     "TD002",
-#     "TD003",
-#     "TD004",
-#     "TRY003",
-#     "RUF012",
-# ]
-
-[tool.mypy]
-plugins = ["mypy_django_plugin.main"]
-exclude = "migrations"
-follow_untyped_imports = true
-
-[tool.django-stubs]
-django_settings_module = "starminder.settings"
-
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "starminder.settings"
-python_files = ["test_*.py"]
