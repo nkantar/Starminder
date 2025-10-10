@@ -1,4 +1,5 @@
 import pytest
+from allauth.socialaccount.models import SocialAccount
 from django.test import Client
 from django.urls import reverse
 
@@ -22,3 +23,38 @@ def test_dashboard_view_returns_200_when_authenticated(
     client.force_login(user)
     response = client.get(reverse("dashboard"))
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_dashboard_shows_user_social_accounts_only(
+    client: Client,
+    django_user_model,
+) -> None:
+    user1 = django_user_model.objects.create_user(
+        username="user1",
+        email="user1@example.com",
+        password="testpass123",
+    )
+    user2 = django_user_model.objects.create_user(
+        username="user2",
+        email="user2@example.com",
+        password="testpass123",
+    )
+
+    account1 = SocialAccount.objects.create(
+        user=user1,
+        provider="github",
+        uid="user1_github_id",
+    )
+    account2 = SocialAccount.objects.create(
+        user=user2,
+        provider="github",
+        uid="user2_github_id",
+    )
+
+    client.force_login(user1)
+    response = client.get(reverse("dashboard"))
+
+    assert response.status_code == 200
+    assert account1.uid in response.content.decode()
+    assert account2.uid not in response.content.decode()

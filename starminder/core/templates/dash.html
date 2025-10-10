@@ -2,5 +2,15 @@
 
 {% block content %}
 <h1>Dashboard</h1>
-<p>Your starred repositories will appear here.</p>
+
+<h2>Connected Accounts</h2>
+{% if socialaccount_list %}
+    <ul>
+    {% for account in socialaccount_list %}
+        <li>{{ account.provider }} - {{ account.uid }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No connected accounts.</p>
+{% endif %}
 {% endblock %}
