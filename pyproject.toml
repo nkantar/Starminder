@@ -5,6 +5,7 @@ dependencies = [
     "django>=5.2.7",
     "django-allauth[socialaccount]>=65.12.0",
     "htpy>=25.10.0",
+    "parsenvy>=3.0.3",
     "pygithub>=2.8.1",
     "python-dotenv>=1.1.1",
 ]
