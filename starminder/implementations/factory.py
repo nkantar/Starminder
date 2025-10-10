@@ -7,6 +7,8 @@ IMPLEMENTATIONS: dict[str, Type[BaseImplementation]] = {
     "github": GitHubImplementation,
 }
 
+ProviderLiteral = Literal["github"]
 
-def get_implementation(provider: Literal["github"]) -> Type[BaseImplementation]:
+
+def get_implementation(provider: ProviderLiteral) -> Type[BaseImplementation]:
     return IMPLEMENTATIONS[provider]

@@ -19,7 +19,9 @@ class GitHubImplementation(BaseImplementation):
     def populate_entries(self, entries: list[Repository]) -> list[EntryData]:
         return [
             EntryData(
+                provider_id=str(repo.id),
                 owner=repo.owner.login,
+                owner_id=str(repo.owner.id),
                 name=repo.name,
                 description=repo.description,
                 star_count=repo.stargazers_count,

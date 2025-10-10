@@ -5,7 +5,9 @@ from typing import Any
 
 @dataclass
 class EntryData:
+    provider_id: str
     owner: str
+    owner_id: str
     name: str
     description: str | None
     star_count: int
@@ -24,7 +26,9 @@ class BaseImplementation:
     def populate_entries(self, entries: list[dict]) -> list[EntryData]:
         return [
             EntryData(
+                provider_id=entry["provider_id"],
                 owner=entry["owner"],
+                owner_id=entry["owner_id"],
                 name=entry["name"],
                 description=entry["description"] if entry["description"] else None,
                 star_count=entry["star_count"],
