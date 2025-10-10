@@ -118,3 +118,8 @@ ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_STORE_TOKENS = True
 
 ADMIN_PREFIX = parsenvy.str("DJANGO_ADMIN_PREFIX", "")
+
+Q_CLUSTER = {
+    "name": "starminder",
+    "workers": 2,
+}
