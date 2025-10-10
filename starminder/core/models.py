@@ -1,7 +1,15 @@
 from typing import Any
+from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CASCADE, DateTimeField, Manager, Model, OneToOneField
+from django.db.models import (
+    CASCADE,
+    DateTimeField,
+    Manager,
+    Model,
+    OneToOneField,
+    UUIDField,
+)
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -25,6 +33,7 @@ class UserProfile(TimestampedModel):
     objects: "Manager[UserProfile]"
 
     user = OneToOneField(CustomUser, on_delete=CASCADE, related_name="user_profile")
+    feed_id = UUIDField(default=uuid4, unique=True)
 
     def __str__(self):
         return f"{self.user.username} (Profile)"
