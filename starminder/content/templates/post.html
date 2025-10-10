@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Post from {{ post.created_at|date:"Y-m-d H:i" }}</h1>
+<p>User: {{ post.user.username }}</p>
+
+{% if post.entry_set.all %}
+    <h2>Entries:</h2>
+    <ul>
+        {% for entry in post.entry_set.all %}
+            <li>
+                <strong>{{ entry.owner }}/{{ entry.name }}</strong> ({{ entry.provider }})
+                {% if entry.description %}
+                    <p>{{ entry.description }}</p>
+                {% endif %}
+                <p>Stars: {{ entry.star_count }}</p>
+                <p>
+                    <a href="{{ entry.repo_url }}" target="_blank">Repository</a>
+                    {% if entry.project_url %}
+                        | <a href="{{ entry.project_url }}" target="_blank">Project</a>
+                    {% endif %}
+                </p>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No entries in this post.</p>
+{% endif %}
+
+<p><a href="{% url 'html_feed' post.user.user_profile.feed_id %}">Back to feed</a></p>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Feed</h1>
+
+{% if posts %}
+    {% for post in posts %}
+        <article>
+            <h2><a href="{% url 'post_detail' post.user.user_profile.feed_id post.id %}">Post from {{ post.created_at|date:"Y-m-d H:i" }}</a></h2>
+            <p>User: {{ post.user.username }}</p>
+
+            {% if post.entry_set.all %}
+                <h3>Entries:</h3>
+                <ul>
+                    {% for entry in post.entry_set.all %}
+                        <li>
+                            <strong>{{ entry.owner }}/{{ entry.name }}</strong> ({{ entry.provider }})
+                            {% if entry.description %}
+                                <p>{{ entry.description }}</p>
+                            {% endif %}
+                            <p>Stars: {{ entry.star_count }}</p>
+                            <p>
+                                <a href="{{ entry.repo_url }}" target="_blank">Repository</a>
+                                {% if entry.project_url %}
+                                    | <a href="{{ entry.project_url }}" target="_blank">Project</a>
+                                {% endif %}
+                            </p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No entries in this post.</p>
+            {% endif %}
+        </article>
+        <hr>
+    {% endfor %}
+{% else %}
+    <p>No posts available.</p>
+{% endif %}
+{% endblock %}
