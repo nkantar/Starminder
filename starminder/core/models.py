@@ -17,11 +17,17 @@ class TimestampedModel(Model):
 class CustomUser(AbstractUser):
     user_profile = "CustomUser"
 
+    def __str__(self):
+        return f"{self.username} (User)"
+
 
 class UserProfile(TimestampedModel):
     objects: "Manager[UserProfile]"
 
     user = OneToOneField(CustomUser, on_delete=CASCADE, related_name="user_profile")
+
+    def __str__(self):
+        return f"{self.user.username} (Profile)"
 
     class Meta:
         verbose_name = "Profile"
