@@ -24,19 +24,7 @@ class BaseImplementation:
         raise NotImplementedError
 
     def populate_entries(self, entries: list[dict]) -> list[EntryData]:
-        return [
-            EntryData(
-                provider_id=entry["provider_id"],
-                owner=entry["owner"],
-                owner_id=entry["owner_id"],
-                name=entry["name"],
-                description=entry["description"] if entry["description"] else None,
-                star_count=entry["star_count"],
-                repo_url=entry["repo_url"],
-                project_url=entry["project_url"] if entry["project_url"] else None,
-            )
-            for entry in entries
-        ]
+        raise NotImplementedError
 
     def generate_entries(self) -> list[EntryData]:
         entries = self.retrieve_all_entries()
