@@ -4,7 +4,7 @@ from typing import Any
 
 
 @dataclass
-class Entry:
+class EntryData:
     owner: str
     name: str
     description: str | None
@@ -21,9 +21,9 @@ class BaseImplementation:
     def retrieve_all_entries(self) -> list[Any]:
         raise NotImplementedError
 
-    def populate_entries(self, entries: list[dict]) -> list[Entry]:
+    def populate_entries(self, entries: list[dict]) -> list[EntryData]:
         return [
-            Entry(
+            EntryData(
                 owner=entry["owner"],
                 name=entry["name"],
                 description=entry["description"] if entry["description"] else None,
@@ -34,7 +34,7 @@ class BaseImplementation:
             for entry in entries
         ]
 
-    def generate_entries(self) -> list[Entry]:
+    def generate_entries(self) -> list[EntryData]:
         entries = self.retrieve_all_entries()
         sample_size = min(self.max_entries, len(entries))
         sampled = random.sample(entries, sample_size)

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 from github import Auth, Github
 from github.Repository import Repository
 
-from starminder.implementations.base import BaseImplementation, Entry
+from starminder.implementations.base import BaseImplementation, EntryData
 
 
 @dataclass
@@ -16,9 +16,9 @@ class GitHubImplementation(BaseImplementation):
         g.close()
         return starred
 
-    def populate_entries(self, entries: list[Repository]) -> list[Entry]:
+    def populate_entries(self, entries: list[Repository]) -> list[EntryData]:
         return [
-            Entry(
+            EntryData(
                 owner=repo.owner.login,
                 name=repo.name,
                 description=repo.description,
