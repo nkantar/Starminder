@@ -13,6 +13,7 @@ from starminder.core.models import TimestampedModel
 
 class Post(TimestampedModel):
     objects: "Manager[Post]"
+    entry_set: "Manager[Entry]"
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
 
