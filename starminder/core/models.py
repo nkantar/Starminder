@@ -18,6 +18,7 @@ from django.dispatch import receiver
 
 
 class TimestampedModel(Model):
+    id: int
     created_at = DateTimeField(auto_now_add=True)
     updated_at = DateTimeField(auto_now=True)
 
@@ -28,7 +29,7 @@ class TimestampedModel(Model):
 class CustomUser(AbstractUser):
     user_profile = "CustomUser"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.username} (User)"
 
     class Meta:
@@ -68,7 +69,7 @@ class UserProfile(TimestampedModel):
         validators=[MinValueValidator(0), MaxValueValidator(23)],
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.user.username} (Profile)"
 
     class Meta:

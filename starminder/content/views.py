@@ -1,4 +1,8 @@
+from datetime import datetime
+
 from django.contrib.syndication.views import Feed
+from django.db.models import QuerySet
+from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
 from django.utils.feedgenerator import Atom1Feed
 from django.views.generic import DetailView, ListView
@@ -11,7 +15,7 @@ class HTMLFeedView(ListView):
     template_name = "feed.html"
     context_object_name = "posts"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Post]:
         feed_id = self.kwargs["feed_id"]
         user_profile = get_object_or_404(UserProfile, feed_id=feed_id)
         return (
@@ -26,7 +30,7 @@ class PostDetailView(DetailView):
     context_object_name = "post"
     pk_url_kwarg = "post_id"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Post]:
         feed_id = self.kwargs["feed_id"]
         user_profile = get_object_or_404(UserProfile, feed_id=feed_id)
         return Post.objects.filter(user=user_profile.user).prefetch_related("entry_set")
@@ -35,30 +39,30 @@ class PostDetailView(DetailView):
 class AtomFeedView(Feed):
     feed_type = Atom1Feed
 
-    def get_object(self, request, feed_id):
+    def get_object(self, request: HttpRequest, feed_id: str) -> UserProfile:
         self.request = request
         return get_object_or_404(UserProfile, feed_id=feed_id)
 
-    def title(self, obj):
+    def title(self, obj: UserProfile) -> str:
         return f"Starminder Feed - {obj.user.username}"
 
-    def link(self, obj):
+    def link(self, obj: UserProfile) -> str:
         return self.request.build_absolute_uri(f"/feeds/{obj.feed_id}/")
 
-    def description(self, obj):
+    def description(self, obj: UserProfile) -> str:
         return f"Starred repository reminders for {obj.user.username}"
 
-    def items(self, obj):
+    def items(self, obj: UserProfile) -> QuerySet[Post]:
         return (
             Post.objects.filter(user=obj.user)
             .prefetch_related("user", "entry_set")
             .order_by("-created_at")
         )
 
-    def item_title(self, item):
+    def item_title(self, item: Post) -> str:
         return f"Post from {item.created_at.strftime('%Y-%m-%d %H:%M')}"
 
-    def item_description(self, item):
+    def item_description(self, item: Post) -> str:
         entries = item.entry_set.all()
         if not entries:
             return "No entries in this post."
@@ -76,16 +80,16 @@ class AtomFeedView(Feed):
 
         return "\n".join(lines)
 
-    def item_link(self, item):
+    def item_link(self, item: Post) -> str:
         return f"/feeds/{item.user.user_profile.feed_id}/{item.id}/"
 
-    def item_guid(self, item):
+    def item_guid(self, item: Post) -> str:
         return self.request.build_absolute_uri(
             f"/feeds/{item.user.user_profile.feed_id}/{item.id}/"
         )
 
-    def item_pubdate(self, item):
+    def item_pubdate(self, item: Post) -> datetime:
         return item.created_at
 
-    def item_updateddate(self, item):
+    def item_updateddate(self, item: Post) -> datetime:
         return item.updated_at
