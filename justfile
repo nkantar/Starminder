@@ -22,5 +22,8 @@ migrate:
 devserve:
     uv run python manage.py runserver
 
+worker:
+    uv run python manage.py qcluster
+
 djangocheck:
     uv run python manage.py check

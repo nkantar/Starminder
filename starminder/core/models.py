@@ -28,6 +28,9 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return f"{self.username} (User)"
 
+    class Meta:
+        verbose_name = "Custom User"
+
 
 class UserProfile(TimestampedModel):
     objects: "Manager[UserProfile]"
@@ -39,8 +42,7 @@ class UserProfile(TimestampedModel):
         return f"{self.user.username} (Profile)"
 
     class Meta:
-        verbose_name = "Profile"
-        verbose_name_plural = "Profiles"
+        verbose_name = "User Profile"
 
 
 @receiver(post_save, sender=CustomUser)

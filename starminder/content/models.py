@@ -16,13 +16,21 @@ class Post(TimestampedModel):
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
 
+    class Meta:
+        verbose_name = "Post"
+
+    def __str__(self) -> str:
+        return f"{self.user.username}, {self.created_at.date()}"
+
 
 class Entry(TimestampedModel):
     objects: "Manager[Entry]"
 
     post = ForeignKey(Post, on_delete=CASCADE)
+
     provider = CharField(max_length=255)
     provider_id = CharField(max_length=255)
+    name = CharField(max_length=255)
     owner = CharField(max_length=255)
     owner_id = CharField(max_length=255)
     description = CharField(max_length=500, null=True, blank=True)
@@ -31,5 +39,8 @@ class Entry(TimestampedModel):
     project_url = URLField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Entrie"
+        verbose_name = "Entry"
         verbose_name_plural = "Entries"
+
+    def __str__(self) -> str:
+        return f"{self.owner}/{self.name}, {self.provider}, {self.post}"

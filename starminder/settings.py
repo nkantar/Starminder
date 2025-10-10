@@ -123,4 +123,7 @@ ADMIN_PREFIX = parsenvy.str("DJANGO_ADMIN_PREFIX", "")
 Q_CLUSTER = {
     "name": "starminder",
     "workers": 2,
+    "orm": "default",
+    "retry": 90,
+    "timeout": 60,
 }

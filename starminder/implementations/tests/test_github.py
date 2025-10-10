@@ -33,7 +33,9 @@ def test_populate_entries() -> None:
     implementation = GitHubImplementation(access_token="test_token")
 
     mock_repo1 = Mock()
+    mock_repo1.id = 123
     mock_repo1.owner.login = "owner1"
+    mock_repo1.owner.id = 1001
     mock_repo1.name = "repo1"
     mock_repo1.description = "Description 1"
     mock_repo1.stargazers_count = 100
@@ -41,7 +43,9 @@ def test_populate_entries() -> None:
     mock_repo1.homepage = "https://homepage1.com"
 
     mock_repo2 = Mock()
+    mock_repo2.id = 456
     mock_repo2.owner.login = "owner2"
+    mock_repo2.owner.id = 1002
     mock_repo2.name = "repo2"
     mock_repo2.description = None
     mock_repo2.stargazers_count = 50
@@ -71,7 +75,9 @@ def test_populate_entries() -> None:
 @patch.object(GitHubImplementation, "retrieve_all_entries")
 def test_generate_entries(mock_retrieve: MagicMock) -> None:
     mock_repo1 = Mock()
+    mock_repo1.id = 123
     mock_repo1.owner.login = "owner1"
+    mock_repo1.owner.id = 1001
     mock_repo1.name = "repo1"
     mock_repo1.description = "Description 1"
     mock_repo1.stargazers_count = 100
@@ -79,7 +85,9 @@ def test_generate_entries(mock_retrieve: MagicMock) -> None:
     mock_repo1.homepage = "https://homepage1.com"
 
     mock_repo2 = Mock()
+    mock_repo2.id = 456
     mock_repo2.owner.login = "owner2"
+    mock_repo2.owner.id = 1002
     mock_repo2.name = "repo2"
     mock_repo2.description = None
     mock_repo2.stargazers_count = 50
