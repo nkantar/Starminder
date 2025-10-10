@@ -4,6 +4,9 @@ format:
 lint:
     uv run ruff check .
 
+lintfix:
+    uv run ruff check . --fix
+
 typecheck:
     uv run ty check .
 
