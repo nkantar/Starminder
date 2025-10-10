@@ -1,13 +1,13 @@
 from typing import Any
 from unittest.mock import MagicMock, patch
 
-from starminder.implementations.base import BaseImplementation, Entry
+from starminder.implementations.base import BaseImplementation, EntryData
 
 
 class ModifiedPopulateEntriesImplementation(BaseImplementation):
-    def populate_entries(self, entries: list[Any]) -> list[Entry]:
+    def populate_entries(self, entries: list[Any]) -> list[EntryData]:
         return [
-            Entry(
+            EntryData(
                 owner=item.get("username"),
                 name=item.get("proj_name"),
                 description=item.get("desc"),
@@ -41,7 +41,7 @@ def test_populate_entries_default() -> None:
     ]
     result = implementation.populate_entries(test_list)
     assert len(result) == 2
-    assert all(isinstance(entry, Entry) for entry in result)
+    assert all(isinstance(entry, EntryData) for entry in result)
 
     owners = {entry.owner for entry in result}
     assert owners == {"test_owner1", "test_owner2"}
@@ -87,7 +87,7 @@ def test_generate_entries_default(mock_retrieve: MagicMock) -> None:
     result = implementation.generate_entries()
 
     assert len(result) == 2
-    assert all(isinstance(entry, Entry) for entry in result)
+    assert all(isinstance(entry, EntryData) for entry in result)
 
     owners = {entry.owner for entry in result}
     assert owners == {"user1", "user2"}
@@ -133,7 +133,7 @@ def test_generate_entries_modified_populate_entries(mock_retrieve: MagicMock) ->
     result = implementation.generate_entries()
 
     assert len(result) == 2
-    assert all(isinstance(entry, Entry) for entry in result)
+    assert all(isinstance(entry, EntryData) for entry in result)
 
     owners = {entry.owner for entry in result}
     assert owners == {"user1", "user2"}

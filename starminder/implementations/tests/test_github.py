@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, Mock, patch
 
-from starminder.implementations.base import Entry
+from starminder.implementations.base import EntryData
 from starminder.implementations.github import GitHubImplementation
 
 
@@ -51,7 +51,7 @@ def test_populate_entries() -> None:
     result = implementation.populate_entries([mock_repo1, mock_repo2])
 
     assert len(result) == 2
-    assert all(isinstance(entry, Entry) for entry in result)
+    assert all(isinstance(entry, EntryData) for entry in result)
 
     assert result[0].owner == "owner1"
     assert result[0].name == "repo1"
@@ -92,7 +92,7 @@ def test_generate_entries(mock_retrieve: MagicMock) -> None:
     result = implementation.generate_entries()
 
     assert len(result) == 2
-    assert all(isinstance(entry, Entry) for entry in result)
+    assert all(isinstance(entry, EntryData) for entry in result)
 
     owners = {entry.owner for entry in result}
     assert owners == {"owner1", "owner2"}
