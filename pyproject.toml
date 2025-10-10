@@ -4,6 +4,7 @@ version = "4.0.0"  # TODO CalVer for first release
 dependencies = [
     "django>=5.2.7",
     "django-allauth[socialaccount]>=65.12.0",
+    "htpy>=25.10.0",
     "pygithub>=2.8.1",
     "python-dotenv>=1.1.1",
 ]
