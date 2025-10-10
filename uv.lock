@@ -326,6 +326,15 @@ wheels = [
 ]
 
 [[package]]
+name = "parsenvy"
+version = "3.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/13/92/95a162096d6ac809f17312ef52dd0a6121bc5c3611feb9a9cbb69293be58/parsenvy-3.0.3.tar.gz", hash = "sha256:931c15a8d718f3a0e4cb0e0ca11fad4338c472a6faae69a86ee36ef9e253ce5d", size = 42595, upload-time = "2025-01-27T02:09:10.531Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a8/36/48f625a4e3dc88341a98791a6020d5ddf94451d4d2823b19637cf6d502e5/parsenvy-3.0.3-py3-none-any.whl", hash = "sha256:9f1160045aece8e2caa26039dc7e3adce534374777fa4741e708a9cc0d5387f2", size = 5328, upload-time = "2025-01-27T02:09:06.84Z" },
+]
+
+[[package]]
 name = "pluggy"
 version = "1.6.0"
 source = { registry = "https://pypi.org/simple" }
@@ -514,6 +523,7 @@ dependencies = [
     { name = "django" },
     { name = "django-allauth", extra = ["socialaccount"] },
     { name = "htpy" },
+    { name = "parsenvy" },
     { name = "pygithub" },
     { name = "python-dotenv" },
 ]
@@ -532,6 +542,7 @@ requires-dist = [
     { name = "django", specifier = ">=5.2.7" },
     { name = "django-allauth", extras = ["socialaccount"], specifier = ">=65.12.0" },
     { name = "htpy", specifier = ">=25.10.0" },
+    { name = "parsenvy", specifier = ">=3.0.3" },
     { name = "pygithub", specifier = ">=2.8.1" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
 ]
