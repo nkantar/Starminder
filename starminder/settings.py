@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount",
     "allauth.socialaccount.providers.github",
     # local
+    "starminder.content",
     "starminder.core",
     "starminder.implementations",
 ]
