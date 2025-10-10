@@ -1,5 +1,11 @@
 from pathlib import Path
 
+
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,7 +19,7 @@ SECRET_KEY = "django-insecure-+hsn1g4l5*_vg&ze@tm37z0#g)og^rugdh9y$xp!h^g28r5w5(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["starminder.local"]
 
 AUTH_USER_MODEL = "core.CustomUser"
 
