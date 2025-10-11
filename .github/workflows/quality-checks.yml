@@ -1,0 +1,50 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DJANGO_SECRET_KEY: ${{vars.DJANGO_SECRET_KEY}}
+  DJANGO_DEBUG: ${{vars.DJANGO_DEBUG}}
+  DJANGO_ALLOWED_HOSTS: ${{vars.DJANGO_ALLOWED_HOSTS}}
+  DJANGO_SITE_DOMAIN_NAME: ${{vars.DJANGO_SITE_DOMAIN_NAME}}
+  DJANGO_SITE_DISPLAY_NAME: ${{vars.DJANGO_SITE_DISPLAY_NAME}}
+
+jobs:
+  quality-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install just
+        uses: extractions/setup-just@v3
+
+      - name: Sync dependencies
+        run: uv sync
+
+      - name: Run migrations
+        run: just migrate
+
+      - name: Run format check
+        run: just formatcheck
+
+      - name: Run lint
+        run: just lint
+
+      - name: Run typecheck
+        run: just typecheck
+
+      - name: Run tests
+        run: just test
+
+      - name: Run Django system check
+        run: just djangocheck
