@@ -14,6 +14,7 @@ from starminder.core.models import UserProfile
 class HTMLFeedView(ListView):
     template_name = "feed.html"
     context_object_name = "posts"
+    extra_context = {"page_title": "Feed"}
 
     def get_queryset(self) -> QuerySet[Post]:
         feed_id = self.kwargs["feed_id"]

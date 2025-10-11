@@ -1,23 +1,34 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Starminder</title>
+    <title>☆ Starminder ☆</title>
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <header>
+        <h1><a href="/" title="Home">☆ Starminder ☆</a></h1>
+
         {% if user.is_authenticated %}
-            <p>Welcome, {{ user.username }}!</p>
-            <a href="{% url 'account_logout' %}">Logout</a>
+            <p>Hello, <strong>{{ user.username }}</strong>. <a href="{% url 'dashboard' %}">Dashboard</a> <a href="{% url 'html_feed' user.user_profile.feed_id %}">HTML Feed</a> <a href="{% url 'atom_feed' user.user_profile.feed_id %}">Atom Feed</a> <a href="{% url 'account_logout' %}">Logout</a></p>
         {% else %}
-            <a href="{% url 'github_login' %}">Login with GitHub</a>
+            <p>Hello. <a href="{% url 'github_login' %}">Login with GitHub</a></p>
         {% endif %}
     </header>
 
+    {% if page_title %}
+        <h2>{{ page_title }}</h2>
+    {% endif %}
+    
     <main>
         {% block content %}
         {% endblock %}
     </main>
+
+    <footer>Made with <span class="red">&hearts;</span> by <a class="green" href="https://nkantar.com" title="Nik Kantar">Nik Kantar</a>.</footer>
 </body>
 </html>
