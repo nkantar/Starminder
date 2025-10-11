@@ -1,0 +1,24 @@
+<article>
+    <h4>Stars:</h4>
+    {% if reminder.star_set.all %}
+        <ul>
+            {% for star in reminder.star_set.all %}
+                <li>
+                    <strong>{{ star.owner }}/{{ star.name }}</strong>
+                    <ul>
+                        {% if star.description %}
+                            <li>{{ star.description_pretty }}</li>
+                        {% endif %}
+                            <li>{{ star.star_count }} star{% if star.star_count > 1 %}s{% endif %}</li>
+                        <li><a href="{{ star.repo_url }}" target="_blank">repository</a></li>
+                        {% if star.project_url %}
+                            <li><a href="{{ star.project_url }}" target="_blank">website</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No stars in this reminder.</p>
+    {% endif %}
+</article>

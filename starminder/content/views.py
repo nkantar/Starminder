@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from django.contrib.syndication.views import Feed
 from django.db.models import QuerySet
@@ -37,6 +38,10 @@ class ReminderDetailView(DetailView):
         return Reminder.objects.filter(user=user_profile.user).prefetch_related(
             "star_set"
         )
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        return {**context, "page_title": self.object.title}
 
 
 class AtomFeedView(Feed):
