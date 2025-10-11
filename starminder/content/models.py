@@ -7,6 +7,7 @@ from django.db.models import (
     Manager,
     URLField,
 )
+import emoji
 
 from starminder.core.models import TimestampedModel
 
@@ -22,6 +23,10 @@ class Reminder(TimestampedModel):
 
     def __str__(self) -> str:
         return f"{self.user.username}, {self.created_at.date()}"
+
+    @property
+    def title(self) -> str:
+        return f"Reminder: {self.created_at.date()}"
 
 
 class Star(TimestampedModel):
@@ -44,3 +49,7 @@ class Star(TimestampedModel):
 
     def __str__(self) -> str:
         return f"{self.owner}/{self.name}, {self.provider}, {self.reminder}"
+
+    @property
+    def description_pretty(self) -> str:
+        return emoji.emojize(self.description, language="alias")

@@ -3,33 +3,8 @@
 {% block content %}
 {% if reminders %}
     {% for reminder in reminders %}
-        <article>
-            <h2><a href="{% url 'reminder_detail' reminder.user.user_profile.feed_id reminder.id %}">Reminder from {{ reminder.created_at|date:"Y-m-d H:i" }}</a></h2>
-            <p>User: {{ reminder.user.username }}</p>
-
-            {% if reminder.star_set.all %}
-                <h3>Stars:</h3>
-                <ul>
-                    {% for star in reminder.star_set.all %}
-                        <li>
-                            <strong>{{ star.owner }}/{{ star.name }}</strong> ({{ star.provider }})
-                            {% if star.description %}
-                                <p>{{ star.description }}</p>
-                            {% endif %}
-                            <p>Stars: {{ star.star_count }}</p>
-                            <p>
-                                <a href="{{ star.repo_url }}" target="_blank">Repository</a>
-                                {% if star.project_url %}
-                                    | <a href="{{ star.project_url }}" target="_blank">Project</a>
-                                {% endif %}
-                            </p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No stars in this reminder.</p>
-            {% endif %}
-        </article>
+        <h3><a href="{% url 'reminder_detail' reminder.user.user_profile.feed_id reminder.id %}">{{ reminder.title }}</a></h3>
+        {% include "_reminder_body.html" %}
     {% endfor %}
 {% else %}
     <p>No reminders available.</p>
