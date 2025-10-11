@@ -1,9 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Dashboard</h1>
-
-<h2>Feed Configuration</h2>
+<h3>Feed Configuration</h3>
 <form method="post">
     {% csrf_token %}
 
@@ -12,11 +10,11 @@
     <button type="submit">Save Configuration</button>
 </form>
 
-<h2>Connected Accounts</h2>
+<h3>Connected Accounts</h3>
 {% if socialaccount_list %}
     <ul>
     {% for account in socialaccount_list %}
-        <li>{{ account.provider }} - {{ account.uid }}</li>
+        <li>{{ account.provider }} - {{ account }}</li>
     {% endfor %}
     </ul>
 {% else %}

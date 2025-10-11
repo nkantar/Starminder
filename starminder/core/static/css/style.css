@@ -1,0 +1,110 @@
+/* colors */
+
+:root {
+  --blue-dark: #1B2B34;
+  --blue-light: #6699CC;
+  --blue-faint: #C0C5CE;
+  --yellow: #FAC863;
+  --green: #99C794;
+  --red: #EC5f67;
+  --gray: #65737E;
+}
+
+
+/* overall layout */
+
+* {
+  font-family: "IBM Plex Mono";
+  font-weight: 400;
+}
+
+body {
+  text-align: center;
+  line-height: 2;
+  background: var(--blue-dark);
+  color: var(--blue-faint);
+}
+
+header,
+main,
+footer {
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+  max-width: 555px;
+}
+
+header {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
+  border-bottom: 1px dotted var(--blue-faint);
+}
+
+main {
+  text-align: left;
+}
+
+footer {
+  margin-top: 25px;
+  margin-bottom: 25px;
+  padding-top: 25px;
+  border-top: 1px dotted var(--blue-faint);
+}
+
+
+/* somewhat specific overrides */
+
+h1>a {
+  font-weight: 700;
+  text-decoration: none;
+  color: var(--yellow);
+
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 600;
+}
+
+h3 {
+  border-bottom: 1px dashed var(--blue-faint);
+}
+
+a {
+  color: var(--blue-light);
+}
+
+strong {
+  font-weight: 600;
+}
+
+input,
+select,
+button {
+  background: var(--gray);
+  color: var(--blue-faint);
+}
+
+input {
+  appearance: textfield;
+}
+
+/* very specific overrides */
+
+input#id_max_entries,
+input#id_hour_of_day {
+  width: 1.5rem;
+}
+
+span.red {
+  color: var(--red);
+}
+
+a.green {
+  color: var(--green);
+}

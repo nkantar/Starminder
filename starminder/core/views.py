@@ -29,6 +29,7 @@ class DashboardView(LoginRequiredMixin, FormView):
             user=self.request.user
         )
         context["user_profile"] = self.request.user.user_profile
+        context["page_title"] = "Dashboard"
         return context
 
     def form_valid(self, form: UserProfileConfigForm) -> HttpResponse:

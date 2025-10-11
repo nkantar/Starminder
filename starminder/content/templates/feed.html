@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Feed</h1>
-
 {% if posts %}
     {% for post in posts %}
         <article>
@@ -32,7 +30,6 @@
                 <p>No entries in this post.</p>
             {% endif %}
         </article>
-        <hr>
     {% endfor %}
 {% else %}
     <p>No posts available.</p>
