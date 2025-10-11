@@ -243,9 +243,9 @@ class TestAtomFeedView:
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert f"/feeds/{user.user_profile.feed_id}/{reminder.id}/" in content
+        assert f"/content/{user.user_profile.feed_id}/{reminder.id}/" in content
         assert (
-            f"/feeds/{user2.user_profile.feed_id}/{other_user_reminder.id}/"
+            f"/content/{user2.user_profile.feed_id}/{other_user_reminder.id}/"
             not in content
         )
 
@@ -257,8 +257,8 @@ class TestAtomFeedView:
 
         assert response.status_code == 200
         content = response.content.decode()
-        feed_link1 = f"/feeds/{user.user_profile.feed_id}/{reminder.id}/"
-        feed_link2 = f"/feeds/{user.user_profile.feed_id}/{reminder2.id}/"
+        feed_link1 = f"/content/{user.user_profile.feed_id}/{reminder.id}/"
+        feed_link2 = f"/content/{user.user_profile.feed_id}/{reminder2.id}/"
         pos1 = content.find(feed_link1)
         pos2 = content.find(feed_link2)
         assert pos2 < pos1
