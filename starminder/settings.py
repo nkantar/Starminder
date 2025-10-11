@@ -1,10 +1,15 @@
+import sys
 from pathlib import Path
 
 from dotenv import load_dotenv
+from loguru import logger
 import parsenvy
 
 
 load_dotenv()
+
+logger.remove()
+logger.add(sys.stdout)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

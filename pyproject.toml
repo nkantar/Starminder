@@ -7,6 +7,7 @@ dependencies = [
     "django-allauth[socialaccount]>=65.12.0",
     "django-q2>=1.8.0",
     "htpy>=25.10.0",
+    "loguru>=0.7.3",
     "parsenvy>=3.0.3",
     "pygithub>=2.8.1",
     "python-dotenv>=1.1.1",
