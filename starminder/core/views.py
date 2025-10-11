@@ -13,6 +13,10 @@ class HomepageView(TemplateView):
     template_name = "home.html"
 
 
+class FAQView(TemplateView):
+    template_name = "faq.html"
+
+
 class DashboardView(LoginRequiredMixin, FormView):
     template_name = "dash.html"
     form_class = UserProfileConfigForm
