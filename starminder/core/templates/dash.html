@@ -3,6 +3,15 @@
 {% block content %}
 <h1>Dashboard</h1>
 
+<h2>Feed Configuration</h2>
+<form method="post">
+    {% csrf_token %}
+
+    <p>Remind me about {{ form.max_entries }} projects I’ve starred every {{ form.day_of_week }} at {{ form.hour_of_day }} o’clock UTC.</p>
+
+    <button type="submit">Save Configuration</button>
+</form>
+
 <h2>Connected Accounts</h2>
 {% if socialaccount_list %}
     <ul>
