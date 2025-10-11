@@ -18,9 +18,9 @@
         <h1><a href="/" title="Home">☆ Starminder ☆</a></h1>
 
         {% if user.is_authenticated %}
-            <p>Hello, <strong>{{ user.username }}</strong>. <a href="{% url 'dashboard' %}">Dashboard</a> <a href="{% url 'html_feed' user.user_profile.feed_id %}">HTML Feed</a> <a href="{% url 'atom_feed' user.user_profile.feed_id %}">Atom Feed</a> <a href="{% url 'account_logout' %}">Logout</a></p>
+            <p>Hello, <strong>{{ user.username }}</strong>. <a href="{% url 'dashboard' %}">Dashboard</a> <a href="{% url 'html_feed' user.user_profile.feed_id %}">HTML Feed</a> <a href="{% url 'atom_feed' user.user_profile.feed_id %}">Atom Feed</a> <a href="{% url 'faq' %}">FAQ</a> <a href="{% url 'account_logout' %}">Logout</a></p>
         {% else %}
-            <p>Hello. <a href="{% url 'github_login' %}">Login with GitHub</a></p>
+            <p>Hello. <a href="{% url 'faq' %}">FAQ</a> <a href="{% url 'github_login' %}">Login with GitHub</a></p>
         {% endif %}
     </header>
 

@@ -1,8 +1,9 @@
 from django.urls import path
 
-from starminder.core.views import DashboardView, HomepageView
+from starminder.core.views import DashboardView, FAQView, HomepageView
 
 urlpatterns = [
     path("", HomepageView.as_view(), name="homepage"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
+    path("faq/", FAQView.as_view(), name="faq"),
 ]
