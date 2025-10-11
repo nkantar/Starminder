@@ -56,5 +56,5 @@ def test_dashboard_shows_user_social_accounts_only(
     response = client.get(reverse("dashboard"))
 
     assert response.status_code == 200
-    assert account1.uid in response.content.decode()
-    assert account2.uid not in response.content.decode()
+    assert str(account1) in response.content.decode()
+    assert str(account2) not in response.content.decode()
