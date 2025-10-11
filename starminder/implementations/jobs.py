@@ -24,6 +24,8 @@ def generate_content(user_id: int) -> None:
 
     all_stars = []
     for token in tokens:
+        logger.info(f"Processing {token.account.provider}…")
+
         provider = token.account.provider
         try:
             getter = GETTERS[provider]
@@ -32,7 +34,10 @@ def generate_content(user_id: int) -> None:
             continue
 
         stars = getter(user, token)
+        logger.info(f"Found {len(stars)} stars")
         all_stars.extend(stars)
+
+        logger.info("Processed.")
 
     logger.info(f"Found {len(all_stars)} stars")
 
