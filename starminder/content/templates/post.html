@@ -27,5 +27,5 @@
     <p>No entries in this post.</p>
 {% endif %}
 
-<p><a href="{% url 'html_feed' post.user.user_profile.feed_id %}">Back to feed</a></p>
+<p><a href="{% url 'reminder_list' post.user.user_profile.feed_id %}">Back to reminder list</a></p>
 {% endblock %}

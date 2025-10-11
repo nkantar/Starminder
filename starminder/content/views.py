@@ -11,10 +11,10 @@ from starminder.content.models import Post
 from starminder.core.models import UserProfile
 
 
-class HTMLFeedView(ListView):
-    template_name = "feed.html"
+class ReminderListView(ListView):
+    template_name = "reminder_list.html"
     context_object_name = "posts"
-    extra_context = {"page_title": "Feed"}
+    extra_context = {"page_title": "Reminders"}
 
     def get_queryset(self) -> QuerySet[Post]:
         feed_id = self.kwargs["feed_id"]
