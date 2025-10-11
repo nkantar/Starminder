@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites",
     # third-party
     "allauth",
     "allauth.account",
@@ -113,6 +114,8 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+SITE_ID = 1
+
 LOGIN_REDIRECT_URL = "/dashboard"
 LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_ON_GET = True
@@ -128,3 +131,6 @@ Q_CLUSTER = {
     "retry": 90,
     "timeout": 60,
 }
+
+DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME")
+DJANGO_SITE_DISPLAY_NAME = parsenvy.str("DJANGO_SITE_DISPLAY_NAME")
