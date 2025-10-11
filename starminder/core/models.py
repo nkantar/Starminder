@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
@@ -11,6 +12,8 @@ from django.db.models import (
     Model,
     OneToOneField,
     PositiveIntegerField,
+    Q,
+    QuerySet,
     UUIDField,
 )
 from django.db.models.signals import post_save
@@ -36,8 +39,19 @@ class CustomUser(AbstractUser):
         verbose_name = "Custom User"
 
 
+class UserProfileManager(Manager["UserProfile"]):
+    def scheduled_for(self, now: datetime) -> "QuerySet[UserProfile]":
+        current_day = now.weekday()
+        current_hour = now.hour
+
+        return self.get_queryset().filter(
+            Q(day_of_week=current_day) | Q(day_of_week=UserProfile.EVERY_DAY),
+            hour_of_day=current_hour,
+        )
+
+
 class UserProfile(TimestampedModel):
-    DAY = -1
+    EVERY_DAY = -1
     MONDAY = 0
     TUESDAY = 1
     WEDNESDAY = 2
@@ -47,7 +61,7 @@ class UserProfile(TimestampedModel):
     SUNDAY = 6
 
     DAY_OF_WEEK_CHOICES = [
-        (DAY, "day"),
+        (EVERY_DAY, "day"),
         (MONDAY, "Monday"),
         (TUESDAY, "Tuesday"),
         (WEDNESDAY, "Wednesday"),
@@ -57,13 +71,13 @@ class UserProfile(TimestampedModel):
         (SUNDAY, "Sunday"),
     ]
 
-    objects: "Manager[UserProfile]"
+    objects: UserProfileManager = UserProfileManager()
 
     user = OneToOneField(CustomUser, on_delete=CASCADE, related_name="user_profile")
     feed_id = UUIDField(default=uuid4, unique=True)
 
-    max_entries = PositiveIntegerField(default=5)
-    day_of_week = IntegerField(choices=DAY_OF_WEEK_CHOICES, default=DAY)
+    max_entries = PositiveIntegerField(default=5, validators=[MinValueValidator(1)])
+    day_of_week = IntegerField(choices=DAY_OF_WEEK_CHOICES, default=EVERY_DAY)
     hour_of_day = IntegerField(
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(23)],
