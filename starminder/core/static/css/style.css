@@ -39,7 +39,7 @@ header {
   margin-top: 25px;
   margin-bottom: 25px;
   padding-bottom: 25px;
-  border-bottom: 1px dotted var(--blue-faint);
+  border-bottom: 3px dotted var(--blue-faint);
 }
 
 main {
@@ -50,7 +50,7 @@ footer {
   margin-top: 25px;
   margin-bottom: 25px;
   padding-top: 25px;
-  border-top: 1px dotted var(--blue-faint);
+  border-top: 3px dotted var(--blue-faint);
 }
 
 
