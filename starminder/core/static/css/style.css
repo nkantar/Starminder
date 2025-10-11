@@ -102,6 +102,14 @@ blockquote {
 
 /* very specific overrides */
 
+nav>ul {
+  padding-left: 0;
+}
+
+nav>ul>li {
+  display: inline-block;
+}
+
 input#id_max_entries,
 input#id_hour_of_day {
   width: 1.5rem;
@@ -113,4 +121,17 @@ span.red {
 
 a.green {
   color: var(--green);
+}
+
+button.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--blue-light);
+  text-decoration: underline;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
 }
