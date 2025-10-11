@@ -1,6 +1,9 @@
 format:
     uv run ruff format .
 
+formatcheck:
+    uv run ruff format --check .
+
 lint:
     uv run ruff check .
 
