@@ -5,13 +5,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>☆ Starminder ☆</title>
+
+    <!-- OpenGraph meta tags -->
+    <meta property="og:title" content="☆ Starminder ☆">
+    <meta property="og:description" content="Rediscover your GitHub stars.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://starminder.dev{{ request.path }}">
+    <meta property="og:image" content="https://starminder.dev{% static 'img/starminder_hero.png' %}">
+    <meta property="og:site_name" content="☆ Starminder ☆">
+
+    <!-- Twitter Card meta tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="☆ Starminder ☆">
+    <meta name="twitter:description" content="Rediscover your GitHub stars.">
+    <meta name="twitter:image" content="https://starminder.dev{% static 'img/starminder_hero.png' %}">
+
+    <!-- assets -->
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script src="/static/js/script.js"></script>
-    <script defer data-api="/api/event" data-domain="starminder.dev" src="/js/script.js"></script>
     <link rel="shortcut icon" href="{% static 'img/starminder_star_180.png' %}">
     <link rel="apple-touch-icon" href="{% static 'img/starminder_star_180.png' %}">
+
+    <!-- Plausible -->
+    <script src="/static/js/script.js"></script>
+    <script defer data-api="/api/event" data-domain="starminder.dev" src="/js/script.js"></script>
 </head>
 <body>
     <header>
