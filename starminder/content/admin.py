@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from starminder.content.models import Entry, Reminder
+from starminder.content.models import Reminder, Star
 
 admin.site.register(Reminder)
-admin.site.register(Entry)
+admin.site.register(Star)

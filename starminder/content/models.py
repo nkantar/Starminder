@@ -13,7 +13,7 @@ from starminder.core.models import TimestampedModel
 
 class Reminder(TimestampedModel):
     objects: "Manager[Reminder]"
-    entry_set: "Manager[Entry]"
+    star_set: "Manager[Star]"
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
 
@@ -24,8 +24,8 @@ class Reminder(TimestampedModel):
         return f"{self.user.username}, {self.created_at.date()}"
 
 
-class Entry(TimestampedModel):
-    objects: "Manager[Entry]"
+class Star(TimestampedModel):
+    objects: "Manager[Star]"
 
     reminder = ForeignKey(Reminder, on_delete=CASCADE)
 
@@ -40,8 +40,7 @@ class Entry(TimestampedModel):
     project_url = URLField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Entry"
-        verbose_name_plural = "Entries"
+        verbose_name = "Star"
 
     def __str__(self) -> str:
         return f"{self.owner}/{self.name}, {self.provider}, {self.reminder}"

@@ -8,7 +8,7 @@ from starminder.core.models import CustomUser
 
 
 @dataclass
-class EntryData:
+class StarData:
     provider_id: str
     owner: str
     owner_id: str
@@ -22,7 +22,7 @@ class EntryData:
 ProviderLiteral = Literal["github",]
 
 
-def github_getter(user: CustomUser, token: SocialToken) -> list[EntryData]:
+def github_getter(user: CustomUser, token: SocialToken) -> list[StarData]:
     auth = Auth.Token(token.token)
     g = Github(auth=auth)
     github_user = g.get_user()
@@ -30,7 +30,7 @@ def github_getter(user: CustomUser, token: SocialToken) -> list[EntryData]:
     g.close()
 
     return [
-        EntryData(
+        StarData(
             provider_id=str(repo.id),
             owner=repo.owner.login,
             owner_id=str(repo.owner.id),
@@ -44,6 +44,6 @@ def github_getter(user: CustomUser, token: SocialToken) -> list[EntryData]:
     ]
 
 
-GETTERS: dict[ProviderLiteral, Callable[[CustomUser, SocialToken], list[EntryData]]] = {
+GETTERS: dict[ProviderLiteral, Callable[[CustomUser, SocialToken], list[StarData]]] = {
     "github": github_getter,
 }
