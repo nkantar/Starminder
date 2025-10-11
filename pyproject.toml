@@ -22,6 +22,7 @@ license = {file = "LICENSE"}
 [dependency-groups]
 dev = [
     "django-stubs>=5.2.7",
+    "pdbpp>=0.11.7",
     "pytest>=8.4.2",
     "pytest-django>=4.11.1",
     "ruff>=0.14.0",
