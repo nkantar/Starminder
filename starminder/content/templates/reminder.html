@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Post from {{ post.created_at|date:"Y-m-d H:i" }}</h1>
-<p>User: {{ post.user.username }}</p>
+<h1>Reminder from {{ reminder.created_at|date:"Y-m-d H:i" }}</h1>
+<p>User: {{ reminder.user.username }}</p>
 
-{% if post.entry_set.all %}
+{% if reminder.entry_set.all %}
     <h2>Entries:</h2>
     <ul>
-        {% for entry in post.entry_set.all %}
+        {% for entry in reminder.entry_set.all %}
             <li>
                 <strong>{{ entry.owner }}/{{ entry.name }}</strong> ({{ entry.provider }})
                 {% if entry.description %}
@@ -24,8 +24,8 @@
         {% endfor %}
     </ul>
 {% else %}
-    <p>No entries in this post.</p>
+    <p>No entries in this reminder.</p>
 {% endif %}
 
-<p><a href="{% url 'reminder_list' post.user.user_profile.feed_id %}">Back to reminder list</a></p>
+<p><a href="{% url 'reminder_list' reminder.user.user_profile.feed_id %}">Back to reminder list</a></p>
 {% endblock %}

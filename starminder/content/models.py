@@ -11,14 +11,14 @@ from django.db.models import (
 from starminder.core.models import TimestampedModel
 
 
-class Post(TimestampedModel):
-    objects: "Manager[Post]"
+class Reminder(TimestampedModel):
+    objects: "Manager[Reminder]"
     entry_set: "Manager[Entry]"
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
 
     class Meta:
-        verbose_name = "Post"
+        verbose_name = "Reminder"
 
     def __str__(self) -> str:
         return f"{self.user.username}, {self.created_at.date()}"
@@ -27,7 +27,7 @@ class Post(TimestampedModel):
 class Entry(TimestampedModel):
     objects: "Manager[Entry]"
 
-    post = ForeignKey(Post, on_delete=CASCADE)
+    reminder = ForeignKey(Reminder, on_delete=CASCADE)
 
     provider = CharField(max_length=255)
     provider_id = CharField(max_length=255)
@@ -44,4 +44,4 @@ class Entry(TimestampedModel):
         verbose_name_plural = "Entries"
 
     def __str__(self) -> str:
-        return f"{self.owner}/{self.name}, {self.provider}, {self.post}"
+        return f"{self.owner}/{self.name}, {self.provider}, {self.reminder}"

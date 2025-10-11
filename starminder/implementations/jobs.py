@@ -5,7 +5,7 @@ from allauth.socialaccount.models import SocialToken
 from django_q.tasks import schedule
 from loguru import logger
 
-from starminder.content.models import Entry, Post
+from starminder.content.models import Entry, Reminder
 from starminder.core.models import CustomUser, UserProfile
 from starminder.implementations.getters import GETTERS
 
@@ -41,11 +41,11 @@ def generate_content(user_id: int) -> None:
 
     logger.info(f"Sampled {sample_size} entries")
 
-    post = Post.objects.create(user_id=user_id)
+    reminder = Reminder.objects.create(user_id=user_id)
 
     for entry_data in sampled_entries:
         Entry.objects.create(
-            post=post,
+            reminder=reminder,
             provider=token.account.provider,
             provider_id=entry_data.provider_id,
             owner=entry_data.owner,
