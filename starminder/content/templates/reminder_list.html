@@ -7,27 +7,27 @@
             <h2><a href="{% url 'reminder_detail' reminder.user.user_profile.feed_id reminder.id %}">Reminder from {{ reminder.created_at|date:"Y-m-d H:i" }}</a></h2>
             <p>User: {{ reminder.user.username }}</p>
 
-            {% if reminder.entry_set.all %}
-                <h3>Entries:</h3>
+            {% if reminder.star_set.all %}
+                <h3>Stars:</h3>
                 <ul>
-                    {% for entry in reminder.entry_set.all %}
+                    {% for star in reminder.star_set.all %}
                         <li>
-                            <strong>{{ entry.owner }}/{{ entry.name }}</strong> ({{ entry.provider }})
-                            {% if entry.description %}
-                                <p>{{ entry.description }}</p>
+                            <strong>{{ star.owner }}/{{ star.name }}</strong> ({{ star.provider }})
+                            {% if star.description %}
+                                <p>{{ star.description }}</p>
                             {% endif %}
-                            <p>Stars: {{ entry.star_count }}</p>
+                            <p>Stars: {{ star.star_count }}</p>
                             <p>
-                                <a href="{{ entry.repo_url }}" target="_blank">Repository</a>
-                                {% if entry.project_url %}
-                                    | <a href="{{ entry.project_url }}" target="_blank">Project</a>
+                                <a href="{{ star.repo_url }}" target="_blank">Repository</a>
+                                {% if star.project_url %}
+                                    | <a href="{{ star.project_url }}" target="_blank">Project</a>
                                 {% endif %}
                             </p>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>No entries in this reminder.</p>
+                <p>No stars in this reminder.</p>
             {% endif %}
         </article>
     {% endfor %}

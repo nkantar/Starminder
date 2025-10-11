@@ -5,7 +5,7 @@ from allauth.socialaccount.models import SocialToken
 from django_q.tasks import schedule
 from loguru import logger
 
-from starminder.content.models import Entry, Reminder
+from starminder.content.models import Reminder, Star
 from starminder.core.models import CustomUser, UserProfile
 from starminder.implementations.getters import GETTERS
 
@@ -22,7 +22,7 @@ def generate_content(user_id: int) -> None:
         logger.info("Nothing to do here, exiting")
         return
 
-    all_entries = []
+    all_stars = []
     for token in tokens:
         provider = token.account.provider
         try:
@@ -31,30 +31,30 @@ def generate_content(user_id: int) -> None:
             logger.critical(f"No getter found for provider: {provider}")
             continue
 
-        entries = getter(user, token)
-        all_entries.extend(entries)
+        stars = getter(user, token)
+        all_stars.extend(stars)
 
-    logger.info(f"Found {len(all_entries)} entries")
+    logger.info(f"Found {len(all_stars)} stars")
 
-    sample_size = min(user.user_profile.max_entries, len(all_entries))
-    sampled_entries = random.sample(all_entries, sample_size)
+    sample_size = min(user.user_profile.max_entries, len(all_stars))
+    sampled_stars = random.sample(all_stars, sample_size)
 
-    logger.info(f"Sampled {sample_size} entries")
+    logger.info(f"Sampled {sample_size} stars")
 
     reminder = Reminder.objects.create(user_id=user_id)
 
-    for entry_data in sampled_entries:
-        Entry.objects.create(
+    for star_data in sampled_stars:
+        Star.objects.create(
             reminder=reminder,
             provider=token.account.provider,
-            provider_id=entry_data.provider_id,
-            owner=entry_data.owner,
-            owner_id=entry_data.owner_id,
-            name=entry_data.name,
-            description=entry_data.description,
-            star_count=entry_data.star_count,
-            repo_url=entry_data.repo_url,
-            project_url=entry_data.project_url,
+            provider_id=star_data.provider_id,
+            owner=star_data.owner,
+            owner_id=star_data.owner_id,
+            name=star_data.name,
+            description=star_data.description,
+            star_count=star_data.star_count,
+            repo_url=star_data.repo_url,
+            project_url=star_data.project_url,
         )
 
     logger.info("Done!")

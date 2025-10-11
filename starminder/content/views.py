@@ -21,7 +21,7 @@ class ReminderListView(ListView):
         user_profile = get_object_or_404(UserProfile, feed_id=feed_id)
         return (
             Reminder.objects.filter(user=user_profile.user)
-            .prefetch_related("entry_set")
+            .prefetch_related("star_set")
             .order_by("-created_at")
         )
 
@@ -35,7 +35,7 @@ class ReminderDetailView(DetailView):
         feed_id = self.kwargs["feed_id"]
         user_profile = get_object_or_404(UserProfile, feed_id=feed_id)
         return Reminder.objects.filter(user=user_profile.user).prefetch_related(
-            "entry_set"
+            "star_set"
         )
 
 
@@ -58,7 +58,7 @@ class AtomFeedView(Feed):
     def items(self, obj: UserProfile) -> QuerySet[Reminder]:
         return (
             Reminder.objects.filter(user=obj.user)
-            .prefetch_related("user", "entry_set")
+            .prefetch_related("user", "star_set")
             .order_by("-created_at")
         )
 
@@ -66,19 +66,19 @@ class AtomFeedView(Feed):
         return f"Reminder from {item.created_at.strftime('%Y-%m-%d %H:%M')}"
 
     def item_description(self, item: Reminder) -> str:
-        entries = item.entry_set.all()
-        if not entries:
-            return "No entries in this reminder."
+        stars = item.star_set.all()
+        if not stars:
+            return "No stars in this reminder."
 
         lines = []
-        for entry in entries:
-            lines.append(f"<h3>{entry.owner}/{entry.name} ({entry.provider})</h3>")
-            if entry.description:
-                lines.append(f"<p>{entry.description}</p>")
-            lines.append(f"<p>Stars: {entry.star_count}</p>")
-            lines.append(f'<p><a href="{entry.repo_url}">Repository</a>')
-            if entry.project_url:
-                lines.append(f' | <a href="{entry.project_url}">Project</a>')
+        for star in stars:
+            lines.append(f"<h3>{star.owner}/{star.name} ({star.provider})</h3>")
+            if star.description:
+                lines.append(f"<p>{star.description}</p>")
+            lines.append(f"<p>Stars: {star.star_count}</p>")
+            lines.append(f'<p><a href="{star.repo_url}">Repository</a>')
+            if star.project_url:
+                lines.append(f' | <a href="{star.project_url}">Project</a>')
             lines.append("</p>")
 
         return "\n".join(lines)
