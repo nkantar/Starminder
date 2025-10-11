@@ -94,6 +94,12 @@ input {
   appearance: textfield;
 }
 
+blockquote {
+  border-left: 1px dashed var(--blue-faint);
+  padding-left: 25px;
+  margin-left: 25px;
+}
+
 /* very specific overrides */
 
 input#id_max_entries,
