@@ -61,7 +61,7 @@ def generate_content(user_id: int) -> None:
 
 
 def start_jobs() -> None:
-    logger.info("Scheduling all applicable jobs...")
+    logger.info("Scheduling all applicable jobs…")
     now = datetime.now()
 
     scheduled_profiles = UserProfile.objects.scheduled_for(now)
