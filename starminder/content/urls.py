@@ -1,9 +1,13 @@
 from django.urls import path
 
-from starminder.content.views import AtomFeedView, PostDetailView, ReminderListView
+from starminder.content.views import AtomFeedView, ReminderDetailView, ReminderListView
 
 urlpatterns = [
     path("<uuid:feed_id>/", ReminderListView.as_view(), name="reminder_list"),
     path("<uuid:feed_id>/feed", AtomFeedView(), name="atom_feed"),
-    path("<uuid:feed_id>/<int:post_id>/", PostDetailView.as_view(), name="post_detail"),
+    path(
+        "<uuid:feed_id>/<int:reminder_id>/",
+        ReminderDetailView.as_view(),
+        name="reminder_detail",
+    ),
 ]

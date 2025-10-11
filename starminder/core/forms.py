@@ -13,7 +13,7 @@ class UserProfileConfigForm(forms.ModelForm):
             "hour_of_day": forms.NumberInput(attrs={"min": 0, "max": 23}),
         }
         labels = {
-            "max_entries": "Maximum entries per post",
+            "max_entries": "Maximum entries per reminder",
             "day_of_week": "Day of week",
             "hour_of_day": "Hour of day (0-23)",
         }
