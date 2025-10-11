@@ -1,11 +1,22 @@
 import pytest
-from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.models import SocialAccount, SocialApp
+from django.contrib.sites.models import Site
 from django.test import Client
 from django.urls import reverse
 
 
 @pytest.mark.django_db
 def test_homepage_view_returns_200(client: Client) -> None:
+    # Create a SocialApp for GitHub to allow the provider_login_url tag to work
+    site = Site.objects.get_current()
+    github_app = SocialApp.objects.create(
+        provider="github",
+        name="GitHub",
+        client_id="test_client_id",
+        secret="test_secret",
+    )
+    github_app.sites.add(site)
+
     response = client.get(reverse("homepage"))
     assert response.status_code == 200
 
