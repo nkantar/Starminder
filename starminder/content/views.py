@@ -5,6 +5,7 @@ from django.contrib.syndication.views import Feed
 from django.db.models import QuerySet
 from django.http import HttpRequest
 from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
 from django.utils.feedgenerator import Atom1Feed
 from django.views.generic import DetailView, ListView
 
@@ -52,7 +53,7 @@ class AtomFeedView(Feed):
         return get_object_or_404(UserProfile, feed_id=feed_id)
 
     def title(self, obj: UserProfile) -> str:
-        return f"Starminder Feed - {obj.user.username}"
+        return f"Starminder: Reminders for {obj.user.username}"
 
     def link(self, obj: UserProfile) -> str:
         return self.request.build_absolute_uri(f"/content/{obj.feed_id}/")
@@ -68,25 +69,10 @@ class AtomFeedView(Feed):
         )
 
     def item_title(self, item: Reminder) -> str:
-        return f"Reminder from {item.created_at.strftime('%Y-%m-%d %H:%M')}"
+        return item.title
 
     def item_description(self, item: Reminder) -> str:
-        stars = item.star_set.all()
-        if not stars:
-            return "No stars in this reminder."
-
-        lines = []
-        for star in stars:
-            lines.append(f"<h3>{star.owner}/{star.name} ({star.provider})</h3>")
-            if star.description:
-                lines.append(f"<p>{star.description}</p>")
-            lines.append(f"<p>Stars: {star.star_count}</p>")
-            lines.append(f'<p><a href="{star.repo_url}">Repository</a>')
-            if star.project_url:
-                lines.append(f' | <a href="{star.project_url}">Project</a>')
-            lines.append("</p>")
-
-        return "\n".join(lines)
+        return render_to_string("_reminder_body.html", {"reminder": item})
 
     def item_link(self, item: Reminder) -> str:
         return f"/content/{item.user.user_profile.feed_id}/{item.id}/"

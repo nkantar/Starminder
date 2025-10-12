@@ -204,7 +204,7 @@ class TestAtomFeedView:
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert f"Starminder Feed - {user.username}" in content
+        assert f"Starminder: Reminders for {user.username}" in content
 
     def test_feed_contains_user_reminders(self, client: Client, user, reminder):
         url = reverse("atom_feed", kwargs={"feed_id": user.user_profile.feed_id})
@@ -212,7 +212,7 @@ class TestAtomFeedView:
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert "Reminder from" in content
+        assert "Reminder:" in content
 
     def test_feed_item_includes_star_information(
         self, client: Client, user, reminder, star
