@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+import tomllib
 from typing import cast
 
 import dj_database_url
@@ -85,10 +86,13 @@ TEMPLATES = [
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
+                # built-in
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.request",
+                # local
+                "starminder.core.context_processors.global_settings",
             ],
         },
     },
@@ -170,3 +174,8 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+STARMINDER_VERSION = None
+PYPROJECT_TOML_PATH = BASE_DIR / "pyproject.toml"
+PYPROJECT_TOML_DATA = tomllib.loads(PYPROJECT_TOML_PATH.read_text())
+STARMINDER_VERSION = PYPROJECT_TOML_DATA["project"]["version"]
