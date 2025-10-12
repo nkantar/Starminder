@@ -16,7 +16,6 @@ from starminder.core.models import UserProfile
 class ReminderListView(ListView):
     template_name = "reminder_list.html"
     context_object_name = "reminders"
-    extra_context = {"page_title": "Reminders"}
 
     def get_queryset(self) -> QuerySet[Reminder]:
         feed_id = self.kwargs["feed_id"]
@@ -26,6 +25,15 @@ class ReminderListView(ListView):
             .prefetch_related("star_set")
             .order_by("-created_at")
         )
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        print(context)
+        return {
+            **context,
+            "page_title": "Reminders",
+            "feed_id": self.kwargs["feed_id"],
+        }
 
 
 class ReminderDetailView(DetailView):
@@ -42,7 +50,11 @@ class ReminderDetailView(DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        return {**context, "page_title": self.object.title}
+        return {
+            **context,
+            "page_title": self.object.title,
+            "feed_id": self.kwargs["feed_id"],
+        }
 
 
 class AtomFeedView(Feed):
