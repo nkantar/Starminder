@@ -46,7 +46,6 @@
                     <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
                     <li><a href="{% url 'reminder_list' user.user_profile.feed_id %}">Reminders</a></li>
                     <li><a href="{% url 'atom_feed' user.user_profile.feed_id %}">Feed</a></li>
-                    <li><a href="{% url 'faq' %}">FAQ</a></li>
                     <li><a href="{% url 'account_logout' %}">Logout</a></li>
                 </ul>
             </nav>
@@ -54,7 +53,6 @@
             <h4>Hello.</h4>
             <nav>
                 <ul>
-                    <li><a href="{% url 'faq' %}">FAQ</a></li>
                     <li><form style="display: inline-block;" method="post" action="{% provider_login_url 'github' %}" style="display: inline;">{% csrf_token %}<button type="submit" class="link-button">Login with GitHub</button></form></li>
                 </ul>
             </nav>
@@ -70,6 +68,16 @@
         {% endblock %}
     </main>
 
-    <footer><a href="/" title="Starminder">Starminder</a> version {{ VERSION }}. Made with <span class="red">&hearts;</span> by <a class="green" href="https://nkantar.com" title="Nik Kantar">Nik Kantar</a>.</footer>
+    <footer>
+        <nav>
+            <ul>
+                <li><a href="{% url 'faq' %}">FAQ</a></li>
+                <li><a href="https://github.com/nkantar/Starminder">GitHub</a></li>
+                <li></li>
+            </ul>
+        </nav>
+        <p><a href="/" title="Starminder">Starminder</a> version {{ VERSION }} has {{ USER_COUNT }} users.</p>
+        <p>Made with <span class="red">&hearts;</span> by <a class="green" href="https://nkantar.com" title="Nik Kantar">Nik Kantar</a>.</p>
+    </footer>
 </body>
 </html>
