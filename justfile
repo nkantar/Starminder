@@ -28,6 +28,9 @@ makemigrations:
 migrate:
     uv run python manage.py migrate
 
+schedulejobs:
+    uv run python manage.py setup_schedules
+
 collectstatic:
     uv run python manage.py collectstatic --noinput
 
