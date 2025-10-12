@@ -1,0 +1,42 @@
+services:
+  web:
+    build: .
+    container_name: starminder-web
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DJANGO_ADMIN_PREFIX=${DJANGO_ADMIN_PREFIX}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SITE_DISPLAY_NAME=${DJANGO_SITE_DISPLAY_NAME}
+      - DJANGO_SITE_DOMAIN_NAME=${DJANGO_SITE_DOMAIN_NAME}
+      - SENTRY_DSN=${SENTRY_DSN}
+    expose:
+      - "8000"
+    networks:
+      - starminder
+    depends_on:
+      - proxy
+
+  proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile_caddy
+    container_name: starminder-caddy
+    restart: unless-stopped
+    expose:
+      - "80"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - starminder
+
+networks:
+  starminder:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:
