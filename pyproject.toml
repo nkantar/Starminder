@@ -3,6 +3,7 @@ name = "Starminder"
 version = "4.0.0"  # TODO CalVer for first release
 dependencies = [
     "croniter>=6.0.0",
+    "dj-database-url>=3.0.1",
     "django>=5.2.7",
     "django-allauth[socialaccount]>=65.12.0",
     "django-q2>=1.8.0",

@@ -1,6 +1,7 @@
 import sys
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 from loguru import logger
 import parsenvy
@@ -91,12 +92,23 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "starminder.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if not DEBUG:
+    DATABASE_URL = parsenvy.str("DJANGO_DB_URL")
+    if not DATABASE_URL:
+        raise ValueError("DJANGO_DB_URL improperly configured")
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+        ),
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
