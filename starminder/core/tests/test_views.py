@@ -230,3 +230,73 @@ def test_testimonials_view_returns_200(client: Client) -> None:
 
     response = client.get(reverse("testimonials"))
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_delete_account_view_redirects_when_not_authenticated(client: Client) -> None:
+    response = client.post(reverse("delete_account"))
+    assert response.status_code == 302
+    assert response["Location"].startswith("/accounts/login/")
+
+
+@pytest.mark.django_db
+def test_delete_account_view_deletes_user_and_redirects(
+    client: Client,
+    django_user_model,
+) -> None:
+    user = django_user_model.objects.create_user(
+        username="testuser",
+        email="test@example.com",
+        password="testpass123",
+    )
+    user_id = user.id
+    client.force_login(user)
+
+    response = client.post(reverse("delete_account"))
+
+    assert response.status_code == 302
+    assert response["Location"] == reverse("homepage")
+    assert not django_user_model.objects.filter(id=user_id).exists()
+
+
+@pytest.mark.django_db
+def test_delete_account_view_deletes_user_profile(
+    client: Client,
+    django_user_model,
+) -> None:
+    user = django_user_model.objects.create_user(
+        username="testuser",
+        email="test@example.com",
+        password="testpass123",
+    )
+    profile_id = user.user_profile.id
+    client.force_login(user)
+
+    response = client.post(reverse("delete_account"))
+
+    assert response.status_code == 302
+    assert not UserProfile.objects.filter(id=profile_id).exists()
+
+
+@pytest.mark.django_db
+def test_delete_account_view_deletes_social_accounts(
+    client: Client,
+    django_user_model,
+) -> None:
+    user = django_user_model.objects.create_user(
+        username="testuser",
+        email="test@example.com",
+        password="testpass123",
+    )
+    social_account = SocialAccount.objects.create(
+        user=user,
+        provider="github",
+        uid="test_github_id",
+    )
+    social_account_id = social_account.id
+    client.force_login(user)
+
+    response = client.post(reverse("delete_account"))
+
+    assert response.status_code == 302
+    assert not SocialAccount.objects.filter(id=social_account_id).exists()

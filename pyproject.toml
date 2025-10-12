@@ -10,6 +10,7 @@ dependencies = [
     "emoji>=2.15.0",
     "granian[pname]>=2.5.5",
     "htpy>=25.10.0",
+    "httpx>=0.28.1",
     "loguru>=0.7.3",
     "parsenvy>=3.0.3",
     "psycopg[binary]>=3.2.10",

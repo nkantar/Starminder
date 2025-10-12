@@ -1,10 +1,15 @@
+from http import HTTPMethod
 from typing import Any
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
-from django.urls import reverse_lazy
-from django.views.generic import FormView, TemplateView
 from allauth.socialaccount.models import SocialAccount
+import httpx
+from django.contrib.auth import logout
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic import FormView, TemplateView
 
 from starminder.core.forms import UserProfileConfigForm
 
@@ -46,3 +51,25 @@ class DashboardView(LoginRequiredMixin, FormView):
     def form_valid(self, form: UserProfileConfigForm) -> HttpResponse:
         form.save()
         return super().form_valid(form)
+
+
+class DeleteAccountView(LoginRequiredMixin, View):
+    def post(self, request: HttpRequest) -> HttpResponse:
+        for social_account in request.user.socialaccount_set.all():
+            for social_token in social_account.socialtoken_set.all():
+                app_client_id = social_token.app.client_id
+
+                httpx.request(
+                    method=HTTPMethod.DELETE,
+                    url=f"https://api.github.com/applications/{app_client_id}/grant",
+                    auth=(social_token.app.client_id, social_token.app.secret),
+                    headers={
+                        "Accept": "application/vnd.github+json",
+                        "X-GitHub-Api-Vesrion": "2022-11-28",
+                    },
+                    json={"access_token": social_token.token},
+                )
+
+        request.user.delete()
+        logout(request)
+        return redirect("homepage")

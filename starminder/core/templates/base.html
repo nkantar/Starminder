@@ -47,6 +47,7 @@
                     <li><a href="{% url 'reminder_list' user.user_profile.feed_id %}">Reminders</a></li>
                     <li><a href="{% url 'atom_feed' user.user_profile.feed_id %}">Feed</a></li>
                     <li><a href="{% url 'account_logout' %}">Logout</a></li>
+                    <li><form style="display: inline-block;" method="post" action="{% url 'delete_account' %}" onsubmit="return confirm('Are you sure you want to permanently delete your account? This cannot be undone.');">{% csrf_token %}<button type="submit" class="link-button">Delete Account</button></form></li>
                 </ul>
             </nav>
         {% else %}
