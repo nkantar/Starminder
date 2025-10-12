@@ -19,6 +19,25 @@ services:
     depends_on:
       - proxy
 
+  worker:
+    build: .
+    container_name: starminder-web
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - DJANGO_ADMIN_PREFIX=${DJANGO_ADMIN_PREFIX}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS}
+      - DJANGO_DEBUG=${DJANGO_DEBUG:-False}
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY}
+      - DJANGO_SITE_DISPLAY_NAME=${DJANGO_SITE_DISPLAY_NAME}
+      - DJANGO_SITE_DOMAIN_NAME=${DJANGO_SITE_DOMAIN_NAME}
+      - SENTRY_DSN=${SENTRY_DSN}
+    networks:
+      - starminder
+    depends_on:
+      - web
+    command: ["just", "worker"]
+
   proxy:
     build:
       context: .
