@@ -215,3 +215,18 @@ def test_dashboard_form_submission_with_invalid_data(
     assert response.status_code == 200
     assert "form" in response.context
     assert response.context["form"].errors
+
+
+@pytest.mark.django_db
+def test_testimonials_view_returns_200(client: Client) -> None:
+    site = Site.objects.get_current()
+    github_app = SocialApp.objects.create(
+        provider="github",
+        name="GitHub",
+        client_id="test_client_id",
+        secret="test_secret",
+    )
+    github_app.sites.add(site)
+
+    response = client.get(reverse("testimonials"))
+    assert response.status_code == 200
