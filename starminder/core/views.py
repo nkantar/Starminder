@@ -11,10 +11,17 @@ from starminder.core.forms import UserProfileConfigForm
 
 class HomepageView(TemplateView):
     template_name = "home.html"
+    extra_context = {"page_title": "This is Starminder."}
 
 
 class FAQView(TemplateView):
     template_name = "faq.html"
+    extra_context = {"page_title": "FAQ"}
+
+
+class TestimonialsView(TemplateView):
+    template_name = "testimonials.html"
+    extra_context = {"page_title": "Testimonials"}
 
 
 class DashboardView(LoginRequiredMixin, FormView):
