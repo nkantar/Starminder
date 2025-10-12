@@ -1,6 +1,6 @@
 [project]
 name = "Starminder"
-version = "4.0.0"  # TODO CalVer for first release
+version = "25.10.11"
 dependencies = [
     "croniter>=6.0.0",
     "dj-database-url>=3.0.1",

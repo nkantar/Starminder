@@ -13,6 +13,15 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+
+## [25.10.11] - 2025-10-11
+
+### Added
+- v4 soft launch edition:
+    - only Atom feed support
+    - lots of small TODO items remaining
+
+
 ## [3.0.0] - 2025-10-08
 
 ### Added
@@ -127,7 +136,9 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.11...HEAD
+[25.10.11]: https://github.com/nkantar/Starminder/compare/3.0.0...25.10.11
+[3.0.0]: https://github.com/nkantar/Starminder/compare/2.0.0...3.0.0
 [2.0.0]: https://github.com/nkantar/Starminder/compare/1.0.8...2.0.0
 [1.0.8]: https://github.com/nkantar/Starminder/compare/1.0.7...1.0.8
 [1.0.7]: https://github.com/nkantar/Starminder/compare/1.0.6...1.0.7

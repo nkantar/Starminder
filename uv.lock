@@ -833,7 +833,7 @@ wheels = [
 
 [[package]]
 name = "starminder"
-version = "4.0.0"
+version = "25.10.11"
 source = { virtual = "." }
 dependencies = [
     { name = "croniter" },
