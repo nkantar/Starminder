@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import cast
 
 import dj_database_url
 from dotenv import load_dotenv
@@ -26,6 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = parsenvy.str("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = parsenvy.list("DJANGO_ALLOWED_HOSTS")
+
+CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in cast(list, ALLOWED_HOSTS)]
 
 AUTH_USER_MODEL = "core.CustomUser"
 
@@ -70,6 +73,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     # third-party
     "allauth.account.middleware.AccountMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "starminder.urls"
@@ -93,9 +97,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "starminder.wsgi.application"
 
 if not DEBUG:
-    DATABASE_URL = parsenvy.str("DJANGO_DB_URL")
+    DATABASE_URL = parsenvy.str("DATABASE_URL")
     if not DATABASE_URL:
-        raise ValueError("DJANGO_DB_URL improperly configured")
+        raise ValueError("DATABASE_URL improperly configured")
     DATABASES = {
         "default": dj_database_url.config(
             conn_max_age=600,
@@ -144,6 +148,8 @@ LOGIN_REDIRECT_URL = "/dashboard"
 LOGOUT_REDIRECT_URL = "/"
 ACCOUNT_LOGOUT_ON_GET = True
 
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = "https"
+
 SOCIALACCOUNT_STORE_TOKENS = True
 
 ADMIN_PREFIX = parsenvy.str("DJANGO_ADMIN_PREFIX", "")
@@ -158,3 +164,9 @@ Q_CLUSTER = {
 
 DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME")
 DJANGO_SITE_DISPLAY_NAME = parsenvy.str("DJANGO_SITE_DISPLAY_NAME")
+
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}

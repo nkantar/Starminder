@@ -34,6 +34,9 @@ jobs:
       - name: Run migrations
         run: just migrate
 
+      - name: Collect static
+        run: just collectstatic
+
       - name: Run format check
         run: just formatcheck
 
