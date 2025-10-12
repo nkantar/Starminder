@@ -12,6 +12,7 @@ dependencies = [
     "parsenvy>=3.0.3",
     "pygithub>=2.8.1",
     "python-dotenv>=1.1.1",
+    "sentry-sdk[django]>=2.41.0",
 ]
 requires-python = ">=3.13"
 authors = [

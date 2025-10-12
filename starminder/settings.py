@@ -4,6 +4,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from loguru import logger
 import parsenvy
+import sentry_sdk
 
 
 load_dotenv()
@@ -11,11 +12,17 @@ load_dotenv()
 logger.remove()
 logger.add(sys.stdout)
 
+
+DEBUG = parsenvy.bool("DJANGO_DEBUG")
+
+SENTRY_DSN = parsenvy.str("SENTRY_DSN")
+
+if not DEBUG:
+    sentry_sdk.init(dsn=SENTRY_DSN, send_default_pii=True)
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = parsenvy.str("DJANGO_SECRET_KEY")
-
-DEBUG = parsenvy.bool("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = parsenvy.list("DJANGO_ALLOWED_HOSTS")
 
