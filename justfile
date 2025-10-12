@@ -45,3 +45,6 @@ djangocheck:
 
 deploy:
     bash scripts/deploy.sh
+
+startjobs:
+    uv run python manage.py start_jobs
