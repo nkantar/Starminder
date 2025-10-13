@@ -13,6 +13,11 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Changed
+- worker configuration:
+    - longer timeout (+ retry offset)
+    - more workers (1x VCPU count)
+
 
 ## [25.10.12] - 2025-10-12
 

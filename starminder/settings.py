@@ -162,10 +162,10 @@ ADMIN_PREFIX = parsenvy.str("DJANGO_ADMIN_PREFIX", "")
 
 Q_CLUSTER = {
     "name": "starminder",
-    "workers": 2,
+    "workers": 3,  # 1x VCPU count
     "orm": "default",
-    "retry": 90,
-    "timeout": 60,
+    "timeout": 15 * 60,
+    "retry": 15 * 60 + 30,  # has to be longer than timeout
 }
 
 DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME")
