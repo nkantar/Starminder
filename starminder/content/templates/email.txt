@@ -1,0 +1,28 @@
+Hi {{ user.username }}!
+
+Your {{ reminder.created_at.date }} reminder brings you the following stars:
+
+{% for star in reminder.star_set.all %}- {{ star.owner }}/{{ star.name }}
+{% if star.description %}    - {{ star.description_pretty }}
+{% endif %}    - {{ star.star_count }} stars
+    - {{ star.repo_url }}
+{% if star.project_url %}    - {{ star.project_url }}
+{% endif %}
+{% endfor %}
+You can see the whole thing at: https://starminder.dev{% url 'reminder_detail' user.user_profile.feed_id reminder.id %}
+And all your reminders are at: https://starminder.dev{% url 'reminder_list' user.user_profile.feed_id %}
+
+See you next time!
+
+Cheers,
+Starminder
+https://starminder.dev
+
+To unsubscribe, please go to https://starminder.dev, log in, and delete your account.
+
+---
+
+Starminder
+2709 N Hayden Island Dr
+Ste 114408
+Portland, OR 97217, USA

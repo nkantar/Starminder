@@ -2,9 +2,12 @@ import random
 from datetime import datetime
 
 from allauth.socialaccount.models import SocialToken
+
+# from django.template.loader import render_to_string
 from django_q.tasks import schedule
 from loguru import logger
 
+# from starminder.content.email import send_email
 from starminder.content.models import Reminder, Star
 from starminder.core.models import CustomUser, UserProfile
 from starminder.implementations.getters import GETTERS
@@ -61,6 +64,19 @@ def generate_content(user_id: int) -> None:
             repo_url=star_data.repo_url,
             project_url=star_data.project_url,
         )
+
+    # if user.email:
+    #     logger.info(f"Found email for {user}, sending…")
+
+    #     subject = f"[Starminder] {reminder.title}"
+    #     html = render_to_string("email.html", {"reminder": reminder, "user": user})
+    #     text = render_to_string("email.txt", {"reminder": reminder, "user": user})
+    #     send_email(recipient=user.email, subject=subject, html=html, text=text)
+
+    #     logger.info("Sent!")
+
+    # else:
+    #     logger.info(f"No email found for {user}")
 
     logger.info("Done!")
 
