@@ -14,6 +14,19 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.12] - 2025-10-12
+
+### Added
+- email reminder support
+- FAQ, fake testimonials, and a homepage blurb
+- full account deletion (including GitHub app token)
+- repo metadata (CoC, Contrib Guide, etc.) files
+
+### Changed
+- hourly job is now scheduled through code + DB data, not externally
+- VPS specs + Granian config for more _juice!_
+
+
 ## [25.10.11] - 2025-10-11
 
 ### Added
@@ -136,7 +149,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.11...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.12...HEAD
+[25.10.12]: https://github.com/nkantar/Starminder/compare/25.10.11...25.10.12
 [25.10.11]: https://github.com/nkantar/Starminder/compare/3.0.0...25.10.11
 [3.0.0]: https://github.com/nkantar/Starminder/compare/2.0.0...3.0.0
 [2.0.0]: https://github.com/nkantar/Starminder/compare/1.0.8...2.0.0
