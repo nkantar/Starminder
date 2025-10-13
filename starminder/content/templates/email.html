@@ -4,8 +4,7 @@
 
 <ul>
   {% for star in reminder.star_set.all %}
-    <li><strong>{{ star.owner }}/{{ star.name }}</strong></li>
-    <li>
+    <li><strong>{{ star.owner }}/{{ star.name }}</strong><br>
       <ul>
         {% if star.description %}
           <li>{{ star.description_pretty }}</li>
