@@ -12,7 +12,6 @@ dependencies = [
     "htpy>=25.10.0",
     "httpx>=0.28.1",
     "loguru>=0.7.3",
-    "mailtrap>=2.2.0",
     "parsenvy>=3.0.3",
     "psycopg[binary]>=3.2.10",
     "pygithub>=2.8.1",

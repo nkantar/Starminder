@@ -182,4 +182,5 @@ PYPROJECT_TOML_PATH = BASE_DIR / "pyproject.toml"
 PYPROJECT_TOML_DATA = tomllib.loads(PYPROJECT_TOML_PATH.read_text())
 STARMINDER_VERSION = PYPROJECT_TOML_DATA["project"]["version"]
 
-MAILTRAP_TOKEN = parsenvy.str("MAILTRAP_TOKEN")
+FORWARDEMAIL_TOKEN = parsenvy.str("FORWARDEMAIL_TOKEN")
+EMAIL_FROM = "Starminder <hello@starminder.dev>"
