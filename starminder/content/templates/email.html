@@ -1,0 +1,40 @@
+<p>Hi {{ user.username }}!</p>
+
+<p>Your {{ reminder.created_at.date }} reminder brings you the following stars:</p>
+
+<ul>
+  {% for star in reminder.star_set.all %}
+    <li><strong>{{ star.owner }}/{{ star.name }}</strong></li>
+    <li>
+      <ul>
+        {% if star.description %}
+          <li>{{ star.description_pretty }}</li>
+        {% endif %}
+        <li>{{ star.star_count }} stars</li>
+        <li><a href="{{ star.repo_url }}">{{ star.repo_url }}</a></li>
+        {% if star.project_url %}
+          <li><a href="{{ star.project_url }}">{{ star.project_url }}</a></li>
+        {% endif %}
+      </ul>
+    </li>
+  {% endfor %}
+</ul>
+
+<p>You can see the whole thing at: <a href="https://starminder.dev{% url 'reminder_detail' user.user_profile.feed_id reminder.id %}">https://starminder.dev{% url 'reminder_detail' user.user_profile.feed_id reminder.id %}</a></p>
+
+<p>And all your reminders are at: <a href="https://starminder.dev{% url 'reminder_list' user.user_profile.feed_id %}">https://starminder.dev{% url 'reminder_list' user.user_profile.feed_id %}</a></p>
+
+<p>See you next time!</p>
+
+<p>Cheers,<br>
+Starminder<br>
+<a href="https://starminder.dev">https://starminder.dev</a></p>
+
+<p>To unsubscribe, please go to <a href="https://starminder.dev">https://starminder.dev</a>, log in, and delete your account.</p>
+
+<hr>
+
+<p>Starminder
+2709 N Hayden Island Dr
+Ste 114408
+Portland, OR 97217, USA</p>
