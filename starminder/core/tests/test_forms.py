@@ -111,10 +111,11 @@ class TestUserProfileConfigForm:
 
     def test_form_has_correct_fields(self):
         form = UserProfileConfigForm()
+        assert "reminder_email" in form.fields
         assert "max_entries" in form.fields
         assert "day_of_week" in form.fields
         assert "hour_of_day" in form.fields
-        assert len(form.fields) == 3
+        assert len(form.fields) == 4
 
     def test_form_max_entries_widget_has_min_attribute(self):
         form = UserProfileConfigForm()
@@ -132,6 +133,7 @@ class TestUserProfileConfigForm:
 
     def test_form_has_correct_labels(self):
         form = UserProfileConfigForm()
+        assert form.fields["reminder_email"].label == "Reminder email address"
         assert form.fields["max_entries"].label == "Maximum entries per reminder"
         assert form.fields["day_of_week"].label == "Day of week"
         assert form.fields["hour_of_day"].label == "Hour of day (0-23)"

@@ -7,6 +7,10 @@
 
     <p>Remind me about {{ form.max_entries }} projects I’ve starred every {{ form.day_of_week }} at {{ form.hour_of_day }} o’clock UTC.</p>
 
+    <p>Send reminders to this email address, if specified: {{ form.reminder_email }}.</p>
+
+    {{ form.errors }}
+
     <button type="submit">Save Configuration</button>
 </form>
 

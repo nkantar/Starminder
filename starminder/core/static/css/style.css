@@ -120,6 +120,10 @@ input#id_hour_of_day {
   width: 1.5rem;
 }
 
+input#id_reminder_email {
+  width: 20rem;
+}
+
 span.red {
   color: var(--red);
 }

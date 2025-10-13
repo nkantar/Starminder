@@ -7,6 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     CASCADE,
     DateTimeField,
+    EmailField,
     IntegerField,
     Manager,
     Model,
@@ -75,6 +76,7 @@ class UserProfile(TimestampedModel):
 
     user = OneToOneField(CustomUser, on_delete=CASCADE, related_name="user_profile")
     feed_id = UUIDField(default=uuid4, unique=True)
+    reminder_email = EmailField(null=True, blank=True)
 
     max_entries = PositiveIntegerField(default=5, validators=[MinValueValidator(1)])
     day_of_week = IntegerField(choices=DAY_OF_WEEK_CHOICES, default=EVERY_DAY)
@@ -98,4 +100,7 @@ def create_user_profile(
     **kwargs: Any,
 ) -> None:
     if created:
-        UserProfile.objects.get_or_create(user=instance)
+        UserProfile.objects.get_or_create(
+            user=instance,
+            defaults={"reminder_email": instance.email},
+        )
