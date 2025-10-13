@@ -63,13 +63,18 @@ def generate_content(user_id: int) -> None:
             project_url=star_data.project_url,
         )
 
-    if user.email:
+    if user.user_profile.reminder_email:
         logger.info(f"Found email for {user}, sending…")
 
         subject = f"[Starminder] {reminder.title}"
         html = render_to_string("email.html", {"reminder": reminder, "user": user})
         text = render_to_string("email.txt", {"reminder": reminder, "user": user})
-        send_email(recipient=user.email, subject=subject, html=html, text=text)
+        send_email(
+            recipient=user.user_profile.reminder_email,
+            subject=subject,
+            html=html,
+            text=text,
+        )
 
         logger.info("Sent!")
 
