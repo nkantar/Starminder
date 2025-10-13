@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- `generate_content` Django mangement command
+
 ### Changed
 - worker configuration:
     - longer timeout (+ retry offset)
