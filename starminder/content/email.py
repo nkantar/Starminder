@@ -1,7 +1,9 @@
-from django.conf import settings
-from loguru import logger
+from http import HTTPStatus
+import base64
 
-from mailtrap import Address, Mail, MailtrapClient
+from django.conf import settings
+import httpx
+from loguru import logger
 
 
 def send_email(
@@ -10,17 +12,29 @@ def send_email(
     html: str,
     text: str,
 ) -> None:
-    mail = Mail(
-        sender=Address(email="hello@starminder.dev", name="Starminder"),
-        # reply_to=Address(email="nik+starminder@nkantar.com", name="Nik Kantar"),
-        to=[Address(email=recipient)],
-        subject=subject,
-        html=html,
-        text=text,
-        category="Integration Test",
+    logger.info(f"Sending email to {recipient}")
+
+    b64_token = base64.b64encode(
+        f"{settings.FORWARDEMAIL_TOKEN}:".encode("utf-8")
+    ).decode()
+
+    response = httpx.post(
+        "https://api.forwardemail.net/v1/emails",
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Basic {b64_token}",
+        },
+        json={
+            "from": settings.EMAIL_FROM,
+            "to": recipient,
+            "subject": subject,
+            "text": text,
+            "html": html,
+        },
     )
 
-    client = MailtrapClient(token=settings.MAILTRAP_TOKEN)
-    response = client.send(mail)
+    if response.status_code != HTTPStatus.OK:
+        logger.critical(f"Email sending failed: {response}")
 
-    logger.info(response)
+    else:
+        logger.info("Done.")
