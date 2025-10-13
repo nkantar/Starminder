@@ -38,7 +38,7 @@ devserve:
     uv run python manage.py runserver --nostatic
 
 prodserve:
-    uv run granian starminder.wsgi:application --host 0.0.0.0 --port 8000 --interface wsgi --no-ws --workers 1 --runtime-threads 1 --log-level debug --log --process-name granian[starminder]
+    uv run granian starminder.wsgi:application --host 0.0.0.0 --port 8000 --interface wsgi --no-ws --workers 2 --runtime-threads 1 --blocking-threads 8 --backpressure 16 --log-level debug --log --process-name granian[starminder]
 
 worker:
     uv run python manage.py qcluster
