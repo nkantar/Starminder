@@ -1,15 +1,8 @@
 from django.conf import settings
-from django.db.models import (
-    CASCADE,
-    CharField,
-    ForeignKey,
-    IntegerField,
-    Manager,
-    URLField,
-)
+from django.db.models import CASCADE, ForeignKey, Manager
 import emoji
 
-from starminder.core.models import TimestampedModel
+from starminder.core.models import StarFieldsBase, TimestampedModel
 
 
 class Reminder(TimestampedModel):
@@ -29,20 +22,10 @@ class Reminder(TimestampedModel):
         return f"Reminder: {self.created_at.date()}"
 
 
-class Star(TimestampedModel):
+class Star(TimestampedModel, StarFieldsBase):
     objects: "Manager[Star]"
 
     reminder = ForeignKey(Reminder, on_delete=CASCADE)
-
-    provider = CharField(max_length=255)
-    provider_id = CharField(max_length=255)
-    name = CharField(max_length=255)
-    owner = CharField(max_length=255)
-    owner_id = CharField(max_length=255)
-    description = CharField(max_length=500, null=True, blank=True)
-    star_count = IntegerField()
-    repo_url = URLField()
-    project_url = URLField(null=True, blank=True)
 
     class Meta:
         verbose_name = "Star"
