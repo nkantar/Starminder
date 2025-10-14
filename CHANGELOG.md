@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+
+## [25.10.13.1] - 2025-10-13
+
 ### Changed
 - Refactored content generation to run via many smaller tasks and thus avoid choking for users with many stars
 - Worker timeouts
@@ -168,7 +171,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.13...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.13.1...HEAD
+[25.10.13.1]: https://github.com/nkantar/Starminder/compare/25.10.13...25.10.13.1
 [25.10.13]: https://github.com/nkantar/Starminder/compare/25.10.12...25.10.13
 [25.10.12]: https://github.com/nkantar/Starminder/compare/25.10.11...25.10.12
 [25.10.11]: https://github.com/nkantar/Starminder/compare/3.0.0...25.10.11
