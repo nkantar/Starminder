@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Fixed
+- Added line breaks in address in HTML email template
+
 
 ## [25.10.13] - 2025-10-13
 
