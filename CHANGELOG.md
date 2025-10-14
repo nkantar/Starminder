@@ -16,6 +16,7 @@ Security in case of vulnerabilities.
 ### Changed
 - Refactored content generation to run via many smaller tasks and thus avoid choking for users with many stars
 - Worker timeouts
+- Web server settings to hopefully improve performance on the relatively low powered server
 
 ### Fixed
 - Added line breaks in address in HTML email template
