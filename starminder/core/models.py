@@ -6,6 +6,7 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     CASCADE,
+    CharField,
     DateTimeField,
     EmailField,
     IntegerField,
@@ -15,6 +16,7 @@ from django.db.models import (
     PositiveIntegerField,
     Q,
     QuerySet,
+    URLField,
     UUIDField,
 )
 from django.db.models.signals import post_save
@@ -30,7 +32,25 @@ class TimestampedModel(Model):
         abstract = True
 
 
+class StarFieldsBase(Model):
+    """Abstract base model containing shared fields for star-related models."""
+
+    provider = CharField(max_length=255)
+    provider_id = CharField(max_length=255)
+    name = CharField(max_length=255)
+    owner = CharField(max_length=255)
+    owner_id = CharField(max_length=255)
+    description = CharField(max_length=500, null=True, blank=True)
+    star_count = IntegerField()
+    repo_url = URLField()
+    project_url = URLField(null=True, blank=True)
+
+    class Meta:
+        abstract = True
+
+
 class CustomUser(AbstractUser):
+    id: int
     user_profile = "CustomUser"
 
     def __str__(self) -> str:

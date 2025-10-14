@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Changed
+- Refactored content generation to run via many smaller tasks and thus avoid choking for users with many stars
+
 ### Fixed
 - Added line breaks in address in HTML email template
 
