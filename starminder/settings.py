@@ -164,8 +164,8 @@ Q_CLUSTER = {
     "name": "starminder",
     "workers": 3,  # 1x VCPU count
     "orm": "default",
-    "timeout": 15 * 60,
-    "retry": 15 * 60 + 30,  # has to be longer than timeout
+    "timeout": 3 * 60,
+    "retry": 3 * 60 + 30,  # has to be longer than timeout
 }
 
 DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME")
