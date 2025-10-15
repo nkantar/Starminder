@@ -19,6 +19,12 @@ services:
       - starminder
     depends_on:
       - proxy
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--output", "/dev/null", "https://starminder.dev"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   worker:
     build: .
@@ -38,6 +44,12 @@ services:
     depends_on:
       - web
     command: ["just", "worker"]
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "qcluster"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   proxy:
     build:
@@ -52,6 +64,12 @@ services:
       - caddy_config:/config
     networks:
       - starminder
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "caddy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 networks:
   starminder:

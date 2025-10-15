@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.14.2] - 2025-10-14
+
+### Added
+- Healthchecks to `docker-compose.yaml`
+
+
 ## [25.10.14.1] - 2025-10-14
 
 ### Added
@@ -184,7 +190,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.14.1...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.14.2...HEAD
+[25.10.14.2]: https://github.com/nkantar/Starminder/compare/25.10.14.1...25.10.14.2
 [25.10.14.1]: https://github.com/nkantar/Starminder/compare/25.10.14...25.10.14.1
 [25.10.14]: https://github.com/nkantar/Starminder/compare/25.10.13.1...25.10.14
 [25.10.13.1]: https://github.com/nkantar/Starminder/compare/25.10.13...25.10.13.1
