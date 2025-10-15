@@ -1,12 +1,13 @@
 import random
 from datetime import datetime
 
-import httpx
-from httpx_retries import Retry, RetryTransport
 from allauth.socialaccount.models import SocialToken
 from django.template.loader import render_to_string
 from django_q.tasks import async_task
 from loguru import logger
+import httpx
+from httpx_retries import Retry, RetryTransport
+import sentry_sdk
 
 from starminder.content.models import Reminder, Star
 from starminder.core.models import CustomUser, UserProfile
@@ -79,18 +80,21 @@ def pager(
     logger.info(f"Received {len(items)} items from GitHub API")
 
     for item in items:
-        TempStar.objects.create(
-            user=user,
-            provider="github",
-            provider_id=str(item["id"]),
-            name=item["name"],
-            owner=item["owner"]["login"],
-            owner_id=str(item["owner"]["id"]),
-            description=item.get("description"),
-            star_count=item["stargazers_count"],
-            repo_url=item["html_url"],
-            project_url=item.get("homepage"),
-        )
+        try:
+            TempStar.objects.create(
+                user=user,
+                provider="github",
+                provider_id=str(item["id"]),
+                name=item["name"],
+                owner=item["owner"]["login"],
+                owner_id=str(item["owner"]["id"]),
+                description=item.get("description"),
+                star_count=item["stargazers_count"],
+                repo_url=item["html_url"],
+                project_url=item.get("homepage"),
+            )
+        except Exception as error:
+            sentry_sdk.capture_exception(error, extras={"item": item})
 
     # no way to know if there are more pages without trying
     if len(items) == 100:

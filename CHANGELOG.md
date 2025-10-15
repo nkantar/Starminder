@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.14.1] - 2025-10-14
+
+### Added
+- Exception handling when creating `TempStar`s to guard against stuff like missing owner (which happens when a user is deleted)
+
+
 ## [25.10.14] - 2025-10-14
 
 ### Changed
@@ -178,7 +184,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.14...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.14.1...HEAD
+[25.10.14.1]: https://github.com/nkantar/Starminder/compare/25.10.14...25.10.14.1
 [25.10.14]: https://github.com/nkantar/Starminder/compare/25.10.13.1...25.10.14
 [25.10.13.1]: https://github.com/nkantar/Starminder/compare/25.10.13...25.10.13.1
 [25.10.13]: https://github.com/nkantar/Starminder/compare/25.10.12...25.10.13
