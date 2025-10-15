@@ -1,8 +1,8 @@
 # Starminder
 
-_**Starminder**_ is a GitHub starred project reminder. ⭐
+**Starminder** is a GitHub starred project reminder. ⭐
 
-If you have any number of starred projects, you probably have very little idea what's in there. _Starminder_ aims to periodically remind you of some random ones, so you don't forget about them entirely.
+If you have any number of starred projects, you probably have very little idea what's in there. **Starminder** aims to periodically remind you of some random ones, so you don't forget about them entirely.
 
 
 ## Contributing

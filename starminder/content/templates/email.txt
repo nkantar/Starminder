@@ -15,7 +15,7 @@ And all your reminders are at: https://starminder.dev{% url 'reminder_list' user
 See you next time!
 
 Cheers,
-Starminder
+☆ Starminder ☆
 https://starminder.dev
 
 To unsubscribe, please go to https://starminder.dev, log in, and delete your account.

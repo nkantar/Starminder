@@ -19,6 +19,9 @@ Security in case of vulnerabilities.
 ### Added
 - Healthchecks to `docker-compose.yaml`
 
+### Changed
+- Updated styling of “Starminder” through the site, emails, and docs
+
 
 ## [25.10.14.1] - 2025-10-14
 

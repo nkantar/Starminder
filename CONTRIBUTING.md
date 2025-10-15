@@ -1,11 +1,11 @@
 # Contributing to Starminder
 
-Thanks for your interest in _**Starminder**_!
+Thanks for your interest in **Starminder**!
 
 
 ## Project Status
 
-_**Starminder**_ is currently in early development. While I’m not actively soliciting contributions at this stage, I’m open to thoughtful proposals and improvements. Please understand that:
+**Starminder** is currently in early development. While I'm not actively soliciting contributions at this stage, I'm open to thoughtful proposals and improvements. Please understand that:
 - The architecture and design patterns may shift as the project evolves
 - Response times on issues and pull requests may vary
 - Some contributions might not align with the current direction and may be declined

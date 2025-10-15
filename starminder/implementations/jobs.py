@@ -165,7 +165,7 @@ def generate_data(user_id: int) -> None:
     if user.user_profile.reminder_email:
         logger.info(f"Found email for {user}, queuing email send…")
 
-        subject = f"[Starminder] {reminder.title}"
+        subject = f"☆ Starminder ☆ {reminder.title}"
         html = render_to_string("email.html", {"reminder": reminder, "user": user})
         text = render_to_string("email.txt", {"reminder": reminder, "user": user})
 

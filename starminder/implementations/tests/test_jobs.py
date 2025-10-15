@@ -493,7 +493,7 @@ def test_generate_data_queues_email_when_email_configured(
     email_call = mock_async_task.call_args_list[0]
     assert email_call[0][0] == "starminder.content.email.send_email"
     assert email_call[1]["recipient"] == "user@example.com"
-    assert "[Starminder]" in email_call[1]["subject"]
+    assert "☆ Starminder ☆" in email_call[1]["subject"]
 
 
 @pytest.mark.django_db
