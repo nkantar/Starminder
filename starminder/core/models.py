@@ -16,6 +16,7 @@ from django.db.models import (
     PositiveIntegerField,
     Q,
     QuerySet,
+    TextField,
     URLField,
     UUIDField,
 )
@@ -40,7 +41,7 @@ class StarFieldsBase(Model):
     name = CharField(max_length=255)
     owner = CharField(max_length=255)
     owner_id = CharField(max_length=255)
-    description = CharField(max_length=500, null=True, blank=True)
+    description = TextField(null=True, blank=True)
     star_count = IntegerField()
     repo_url = URLField(max_length=1024)
     project_url = URLField(max_length=1024, null=True, blank=True)

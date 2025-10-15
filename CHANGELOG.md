@@ -15,6 +15,7 @@ Security in case of vulnerabilities.
 
 ## Changed
 - Made URL fields longer
+- Made star description TextField
 
 
 ## [25.10.13.1] - 2025-10-13
