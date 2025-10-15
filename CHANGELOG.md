@@ -21,6 +21,7 @@ Security in case of vulnerabilities.
 
 ### Changed
 - Updated styling of “Starminder” through the site, emails, and docs
+- Updated site footer
 
 ### Removed
 - Erroneously copy/pasted `<script>` tag from base template
