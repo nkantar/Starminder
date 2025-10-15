@@ -22,6 +22,9 @@ Security in case of vulnerabilities.
 ### Changed
 - Updated styling of “Starminder” through the site, emails, and docs
 
+### Removed
+- Erroneously copy/pasted `<script>` tag from base template
+
 
 ## [25.10.14.1] - 2025-10-14
 
