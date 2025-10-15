@@ -13,7 +13,10 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
-## Changed
+
+## [25.10.14] - 2025-10-14
+
+### Changed
 - Made URL fields longer
 - Made star description TextField
 
@@ -175,7 +178,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.13.1...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.14...HEAD
+[25.10.14]: https://github.com/nkantar/Starminder/compare/25.10.13.1...25.10.14
 [25.10.13.1]: https://github.com/nkantar/Starminder/compare/25.10.13...25.10.13.1
 [25.10.13]: https://github.com/nkantar/Starminder/compare/25.10.12...25.10.13
 [25.10.12]: https://github.com/nkantar/Starminder/compare/25.10.11...25.10.12
