@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+## Changed
+- Made URL fields longer
+
 
 ## [25.10.13.1] - 2025-10-13
 

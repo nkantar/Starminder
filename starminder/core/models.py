@@ -42,8 +42,8 @@ class StarFieldsBase(Model):
     owner_id = CharField(max_length=255)
     description = CharField(max_length=500, null=True, blank=True)
     star_count = IntegerField()
-    repo_url = URLField()
-    project_url = URLField(null=True, blank=True)
+    repo_url = URLField(max_length=1024)
+    project_url = URLField(max_length=1024, null=True, blank=True)
 
     class Meta:
         abstract = True
