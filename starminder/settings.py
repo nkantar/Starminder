@@ -167,6 +167,8 @@ Q_CLUSTER = {
     "timeout": 3 * 60,
     "retry": 3 * 60 + 30,  # has to be longer than timeout
 }
+if DEBUG:
+    Q_CLUSTER["workers"] = 1
 
 DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME")
 DJANGO_SITE_DISPLAY_NAME = parsenvy.str("DJANGO_SITE_DISPLAY_NAME")

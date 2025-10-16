@@ -17,6 +17,7 @@ Security in case of vulnerabilities.
 ### Changed
 - Updated unsubscribe blurb in email templates to also mention cleaing the email
 - Set max number of stars per reminder to 100
+- Set number of queue workers to 1 when `DEBUG=True`
 
 
 ## [25.10.14.2] - 2025-10-14
