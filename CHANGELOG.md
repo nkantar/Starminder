@@ -14,6 +14,10 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+### Changed
+- Updated unsubscribe blurb in email templates to also mention cleaing the email
+
+
 ## [25.10.14.2] - 2025-10-14
 
 ### Added

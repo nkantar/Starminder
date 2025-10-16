@@ -18,7 +18,7 @@ Cheers,
 ☆ Starminder ☆
 https://starminder.dev
 
-To unsubscribe, please go to https://starminder.dev, log in, and delete your account.
+To unsubscribe, please go to https://starminder.dev, log in, and either clear your email address on the dashboard or delete your account.
 
 ---
 
