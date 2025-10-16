@@ -9,7 +9,7 @@ class UserProfileConfigForm(forms.ModelForm):
         fields = ["reminder_email", "max_entries", "day_of_week", "hour_of_day"]
         widgets = {
             "reminder_email": forms.EmailInput(),
-            "max_entries": forms.NumberInput(attrs={"min": 1}),
+            "max_entries": forms.NumberInput(attrs={"min": 1, "max": 100}),
             "day_of_week": forms.Select(),
             "hour_of_day": forms.NumberInput(attrs={"min": 0, "max": 23}),
         }

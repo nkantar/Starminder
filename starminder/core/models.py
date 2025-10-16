@@ -99,7 +99,10 @@ class UserProfile(TimestampedModel):
     feed_id = UUIDField(default=uuid4, unique=True)
     reminder_email = EmailField(null=True, blank=True)
 
-    max_entries = PositiveIntegerField(default=5, validators=[MinValueValidator(1)])
+    max_entries = PositiveIntegerField(
+        default=5,
+        validators=[MinValueValidator(1), MaxValueValidator(100)],
+    )
     day_of_week = IntegerField(choices=DAY_OF_WEEK_CHOICES, default=EVERY_DAY)
     hour_of_day = IntegerField(
         default=0,

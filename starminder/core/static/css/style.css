@@ -117,7 +117,7 @@ nav>ul>li {
 
 input#id_max_entries,
 input#id_hour_of_day {
-  width: 1.5rem;
+  width: 2rem;
 }
 
 input#id_reminder_email {
