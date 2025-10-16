@@ -14,6 +14,8 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.16] - 2025-10-16
+
 ### Changed
 - Updated unsubscribe blurb in email templates to also mention cleaing the email
 - Set max number of stars per reminder to 100
@@ -203,7 +205,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.14.2...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.16...HEAD
+[25.10.16]: https://github.com/nkantar/Starminder/compare/25.10.14.2...25.10.16
 [25.10.14.2]: https://github.com/nkantar/Starminder/compare/25.10.14.1...25.10.14.2
 [25.10.14.1]: https://github.com/nkantar/Starminder/compare/25.10.14...25.10.14.1
 [25.10.14]: https://github.com/nkantar/Starminder/compare/25.10.13.1...25.10.14
