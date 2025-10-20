@@ -14,6 +14,8 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.19] - 2025-10-19
+
 ### Added
 - Admin push notifications:
     - new user signup
@@ -216,7 +218,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.16...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.19...HEAD
+[25.10.19]: https://github.com/nkantar/Starminder/compare/25.10.16...25.10.19
 [25.10.16]: https://github.com/nkantar/Starminder/compare/25.10.14.2...25.10.16
 [25.10.14.2]: https://github.com/nkantar/Starminder/compare/25.10.14.1...25.10.14.2
 [25.10.14.1]: https://github.com/nkantar/Starminder/compare/25.10.14...25.10.14.1
