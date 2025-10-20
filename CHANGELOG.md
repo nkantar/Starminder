@@ -14,6 +14,10 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+### Changed
+- Disabled admin push notifs for user signup and deletion if `Debug=False`
+
+
 ## [25.10.19] - 2025-10-19
 
 ### Added

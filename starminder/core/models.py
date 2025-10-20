@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 from uuid import uuid4
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
@@ -130,10 +131,11 @@ def create_user_profile(
             user=instance,
             defaults={"reminder_email": instance.email},
         )
-        send_push_notification(
-            message=f"New user signed up: {instance.username}",
-            title="New Starminder Signup",
-        )
+        if not settings.DEBUG:
+            send_push_notification(
+                message=f"New user signed up: {instance.username}",
+                title="New Starminder Signup",
+            )
 
 
 @receiver(post_delete, sender=UserProfile)
@@ -142,7 +144,8 @@ def notify_user_profile_deletion(
     instance: UserProfile,
     **kwargs: Any,
 ) -> None:
-    send_push_notification(
-        message=f"User deleted their account: {instance.user.username}",
-        title="Starminder Account Deletion",
-    )
+    if not settings.DEBUG:
+        send_push_notification(
+            message=f"User deleted their account: {instance.user.username}",
+            title="Starminder Account Deletion",
+        )
