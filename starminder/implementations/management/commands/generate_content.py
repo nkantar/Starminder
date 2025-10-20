@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.core.management.base import BaseCommand, CommandParser
-from django_q.tasks import schedule
+from django_q.tasks import async_task
 
 
 class Command(BaseCommand):
@@ -16,4 +16,4 @@ class Command(BaseCommand):
 
     def handle(self, *args: Any, **options: Any) -> None:
         user_id = options["user_id"]
-        schedule("starminder.implementations.jobs.generate_content", user_id)
+        async_task("starminder.implementations.jobs.user_job", user_id)

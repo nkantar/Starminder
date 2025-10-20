@@ -22,6 +22,7 @@ Security in case of vulnerabilities.
 
 ### Changed
 - Content URLs from `/content/` to `/reminders/` (with 301 redirects for old ones)
+- Minor refactor of manual content generation Django management command
 
 
 ## [25.10.16] - 2025-10-16
