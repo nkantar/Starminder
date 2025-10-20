@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+### Added
+- Admin push notifications:
+    - new user signup
+    - user deletion
+    - exeception
+
 ### Changed
 - Content URLs from `/content/` to `/reminders/` (with 301 redirects for old ones)
 

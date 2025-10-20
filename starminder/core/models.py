@@ -20,8 +20,10 @@ from django.db.models import (
     URLField,
     UUIDField,
 )
-from django.db.models.signals import post_save
+from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+
+from starminder.core.push import send_push_notification
 
 
 class TimestampedModel(Model):
@@ -128,3 +130,19 @@ def create_user_profile(
             user=instance,
             defaults={"reminder_email": instance.email},
         )
+        send_push_notification(
+            message=f"New user signed up: {instance.username}",
+            title="New Starminder Signup",
+        )
+
+
+@receiver(post_delete, sender=UserProfile)
+def notify_user_profile_deletion(
+    sender: type[UserProfile],
+    instance: UserProfile,
+    **kwargs: Any,
+) -> None:
+    send_push_notification(
+        message=f"User deleted their account: {instance.user.username}",
+        title="Starminder Account Deletion",
+    )

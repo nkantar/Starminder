@@ -20,8 +20,27 @@ DEBUG = parsenvy.bool("DJANGO_DEBUG")
 
 SENTRY_DSN = parsenvy.str("SENTRY_DSN")
 
+
+def sentry_before_send(event, hint):
+    """Send Pushover notification before sending event to Sentry."""
+    from starminder.core.push import send_push_notification
+
+    if "exc_info" in hint:
+        exc_type, exc_value, tb = hint["exc_info"]
+        error_message = f"{exc_type.__name__}: {exc_value}"
+        send_push_notification(
+            message=error_message[:1024],
+            title="Starminder Exception",
+        )
+    return event
+
+
 if not DEBUG:
-    sentry_sdk.init(dsn=SENTRY_DSN, send_default_pii=True)
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        send_default_pii=True,
+        before_send=sentry_before_send,
+    )
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -186,3 +205,6 @@ STARMINDER_VERSION = PYPROJECT_TOML_DATA["project"]["version"]
 
 FORWARDEMAIL_TOKEN = parsenvy.str("FORWARDEMAIL_TOKEN")
 EMAIL_FROM = "Starminder <hello@starminder.dev>"
+
+PUSHOVER_USER_KEY = parsenvy.str("PUSHOVER_USER_KEY")
+PUSHOVER_API_TOKEN = parsenvy.str("PUSHOVER_API_TOKEN")
