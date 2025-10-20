@@ -23,6 +23,7 @@ from django.db.models import (
 )
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django_q.tasks import async_task
 
 from starminder.core.push import send_push_notification
 
@@ -130,6 +131,10 @@ def create_user_profile(
         UserProfile.objects.get_or_create(
             user=instance,
             defaults={"reminder_email": instance.email},
+        )
+        async_task(
+            "starminder.implementations.jobs.user_job",
+            instance.id,
         )
         if not settings.DEBUG:
             send_push_notification(

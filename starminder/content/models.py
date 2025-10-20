@@ -5,6 +5,9 @@ import emoji
 from starminder.core.models import StarFieldsBase, TimestampedModel
 
 
+TIMESTAMP_FORMAT = "%A %Y-%m-%d %H:%M:%S"
+
+
 class Reminder(TimestampedModel):
     objects: "Manager[Reminder]"
     star_set: "Manager[Star]"
@@ -19,7 +22,7 @@ class Reminder(TimestampedModel):
 
     @property
     def title(self) -> str:
-        return f"Reminder: {self.created_at.date()}"
+        return f"Reminder: {self.created_at.strftime(TIMESTAMP_FORMAT)}"
 
 
 class Star(TimestampedModel, StarFieldsBase):

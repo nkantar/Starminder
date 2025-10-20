@@ -13,9 +13,13 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- Added first reminder generation on user signup
+- Added blurb clarifying the above to the empty case in reminder list template
 
 ### Changed
 - Disabled admin push notifs for user signup and deletion if `Debug=False`
+- Reminder title now includes the time in addition to date, as the automated post-signup run increases odds of multiple Reminders on the same date (which were always possible if the user were to change desired time).
 
 
 ## [25.10.19] - 2025-10-19
