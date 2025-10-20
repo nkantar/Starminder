@@ -243,9 +243,9 @@ class TestAtomFeedView:
 
         assert response.status_code == 200
         content = response.content.decode()
-        assert f"/content/{user.user_profile.feed_id}/{reminder.id}/" in content
+        assert f"/reminders/{user.user_profile.feed_id}/{reminder.id}/" in content
         assert (
-            f"/content/{user2.user_profile.feed_id}/{other_user_reminder.id}/"
+            f"/reminders/{user2.user_profile.feed_id}/{other_user_reminder.id}/"
             not in content
         )
 
@@ -257,8 +257,8 @@ class TestAtomFeedView:
 
         assert response.status_code == 200
         content = response.content.decode()
-        feed_link1 = f"/content/{user.user_profile.feed_id}/{reminder.id}/"
-        feed_link2 = f"/content/{user.user_profile.feed_id}/{reminder2.id}/"
+        feed_link1 = f"/reminders/{user.user_profile.feed_id}/{reminder.id}/"
+        feed_link2 = f"/reminders/{user.user_profile.feed_id}/{reminder2.id}/"
         pos1 = content.find(feed_link1)
         pos2 = content.find(feed_link2)
         assert pos2 < pos1
@@ -311,3 +311,40 @@ class TestAtomFeedView:
         assert response.status_code == 200
         content = response.content.decode()
         assert star_without_desc.name in content
+
+
+@pytest.mark.django_db
+class TestBackwardCompatibilityRedirects:
+    def test_old_reminder_list_url_redirects_to_new_url(
+        self, client: Client, user, social_app
+    ):
+        old_url = f"/content/{user.user_profile.feed_id}/"
+        new_url = f"/reminders/{user.user_profile.feed_id}/"
+        response = client.get(old_url)
+
+        assert response.status_code == 301
+        assert response["Location"] == new_url
+
+    def test_old_reminder_detail_url_redirects_to_new_url(
+        self, client: Client, user, reminder, social_app
+    ):
+        old_url = f"/content/{user.user_profile.feed_id}/{reminder.id}/"
+        new_url = f"/reminders/{user.user_profile.feed_id}/{reminder.id}/"
+        response = client.get(old_url)
+
+        assert response.status_code == 301
+        assert response["Location"] == new_url
+
+    def test_old_feed_url_returns_content(self, client: Client, user, reminder, star):
+        old_feed_url = f"/content/{user.user_profile.feed_id}/feed"
+        response = client.get(old_feed_url)
+
+        assert response.status_code == 301
+        # Follow the redirect
+        response = client.get(old_feed_url, follow=True)
+        assert response.status_code == 200
+        assert response["Content-Type"].startswith("application/atom+xml")
+        content = response.content.decode()
+        assert f"Starminder: Reminders for {user.username}" in content
+        assert star.owner in content
+        assert star.name in content

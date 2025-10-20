@@ -68,7 +68,7 @@ class AtomFeedView(Feed):
         return f"Starminder: Reminders for {obj.user.username}"
 
     def link(self, obj: UserProfile) -> str:
-        return self.request.build_absolute_uri(f"/content/{obj.feed_id}/")
+        return self.request.build_absolute_uri(f"/reminders/{obj.feed_id}/")
 
     def description(self, obj: UserProfile) -> str:
         return f"Starred repository reminders for {obj.user.username}"
@@ -87,11 +87,11 @@ class AtomFeedView(Feed):
         return render_to_string("_reminder_body.html", {"reminder": item})
 
     def item_link(self, item: Reminder) -> str:
-        return f"/content/{item.user.user_profile.feed_id}/{item.id}/"
+        return f"/reminders/{item.user.user_profile.feed_id}/{item.id}/"
 
     def item_guid(self, item: Reminder) -> str:
         return self.request.build_absolute_uri(
-            f"/content/{item.user.user_profile.feed_id}/{item.id}/"
+            f"/reminders/{item.user.user_profile.feed_id}/{item.id}/"
         )
 
     def item_pubdate(self, item: Reminder) -> datetime:

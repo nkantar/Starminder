@@ -14,6 +14,10 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+### Changed
+- Content URLs from `/content/` to `/reminders/` (with 301 redirects for old ones)
+
+
 ## [25.10.16] - 2025-10-16
 
 ### Changed
