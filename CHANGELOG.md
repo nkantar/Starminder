@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.20.2] - 2025-10-20
+
+### Changed
+- The post-registration reminder generation job now gets scheduled for a minute later
+
+
 ## [25.10.20.1] - 2025-10-20
 
 ### Fixed
@@ -239,7 +245,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.20.1...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.20.2...HEAD
+[25.10.20.2]: https://github.com/nkantar/Starminder/compare/25.10.20.1...25.10.20.2
 [25.10.20.1]: https://github.com/nkantar/Starminder/compare/25.10.20...25.10.20.1
 [25.10.20]: https://github.com/nkantar/Starminder/compare/25.10.19...25.10.20
 [25.10.19]: https://github.com/nkantar/Starminder/compare/25.10.16...25.10.19
