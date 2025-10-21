@@ -132,22 +132,71 @@ def generate_data(user_id: int) -> None:
     user = CustomUser.objects.get(id=user_id)
     logger.info(f"Found user {user.username}")
 
-    temp_stars = list(TempStar.objects.filter(user=user))
-    logger.info(f"Found {len(temp_stars)} temp stars")
+    previously_shown_ids = set()
+    stars_in_current_cycle_count = 0
 
-    if not temp_stars:
-        logger.info("No temp stars found, exiting")
-        return
+    if cycle_start := user.user_profile.cycle_start:
+        logger.info(f"Current cycle started at Star ID: {cycle_start.id}")
 
-    sample_size = min(user.user_profile.max_entries, len(temp_stars))
-    sampled_temp_stars = random.sample(temp_stars, sample_size)
+        previously_shown_ids = set(
+            Star.objects.filter(
+                reminder__user=user,
+                id__gte=cycle_start.id,
+            )
+            .values_list("provider_id", flat=True)
+            .distinct()
+        )
+        stars_in_current_cycle_count = len(previously_shown_ids)
+        logger.info(
+            f"Found {stars_in_current_cycle_count} repos shown in current cycle"
+        )
+    else:
+        logger.info("No cycle start found, starting fresh cycle")
+
+    unshown_temp_stars = list(
+        TempStar.objects.filter(user=user).exclude(provider_id__in=previously_shown_ids)
+    )
+
+    logger.info(f"Found {len(unshown_temp_stars)} unshown temp stars")
+
+    if len(unshown_temp_stars) < user.user_profile.max_entries:
+        logger.info(
+            f"Only {len(unshown_temp_stars)} unshown repos, "
+            f"but need {user.user_profile.max_entries}. Querying all repos."
+        )
+
+        all_temp_stars = list(TempStar.objects.filter(user=user))
+
+        if not all_temp_stars:
+            logger.info("No temp stars found, exiting")
+            return
+
+        logger.info(
+            f"Cycle will reset with this reminder "
+            f"({len(unshown_temp_stars)} unshown, {len(all_temp_stars)} total)."
+        )
+
+        temp_stars_to_sample = all_temp_stars
+        total_repos_available = len(all_temp_stars)
+    else:
+        temp_stars_to_sample = unshown_temp_stars
+        total_repos_available = TempStar.objects.filter(user=user).count()
+
+    sample_size = min(user.user_profile.max_entries, len(temp_stars_to_sample))
+    sampled_temp_stars = random.sample(temp_stars_to_sample, sample_size)
 
     logger.info(f"Sampled {sample_size} temp stars")
 
+    cutoff_index = total_repos_available - stars_in_current_cycle_count
+    logger.info(
+        f"Cutoff index: {cutoff_index} "
+        f"(total: {total_repos_available}, shown: {stars_in_current_cycle_count})"
+    )
+
     reminder = Reminder.objects.create(user_id=user_id)
 
-    for temp_star in sampled_temp_stars:
-        Star.objects.create(
+    for i, temp_star in enumerate(sampled_temp_stars):
+        star = Star.objects.create(
             reminder=reminder,
             provider=temp_star.provider,
             provider_id=temp_star.provider_id,
@@ -160,7 +209,22 @@ def generate_data(user_id: int) -> None:
             project_url=temp_star.project_url,
         )
 
-    logger.info("Created reminder and stars")
+        if i == cutoff_index or (i == 0 and user.user_profile.cycle_start is None):
+            user.user_profile.cycle_start = star
+            user.user_profile.save()
+            logger.info(
+                f"Cycle start set to Star ID {star.id} "
+                f"(star {i + 1} of {len(sampled_temp_stars)} in this reminder)"
+            )
+
+    logger.info(f"Created reminder and {len(sampled_temp_stars)} stars")
+
+    if cutoff_index == len(sampled_temp_stars):
+        user.user_profile.cycle_start = None
+        user.user_profile.save()
+        logger.info(
+            "Cycle completed exactly with this reminder. Next reminder starts fresh."
+        )
 
     if user.user_profile.reminder_email:
         logger.info(f"Found email for {user}, queuing email send…")
