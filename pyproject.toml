@@ -39,3 +39,4 @@ dev = [
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "starminder.settings"
+django_debug_mode = true # mostly to disable admin push notifications

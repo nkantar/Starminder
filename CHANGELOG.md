@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Changed
+- Tests now run in debug more to avoid sending admin push notifications
+
 
 ## [25.10.20] - 2025-10-20
 
