@@ -18,6 +18,7 @@ Security in case of vulnerabilities.
 
 ### Changed
 - Tests now run in debug more to avoid sending admin push notifications
+- Made repo owner/name link to repo in Reminder body and HTML email template
 
 
 ## [25.10.20] - 2025-10-20

@@ -3,7 +3,7 @@
         <ul>
             {% for star in reminder.star_set.all %}
                 <li>
-                    <strong>{{ star.owner }}/{{ star.name }}</strong>
+                    <strong><a href="{{ star.repo_url }}" target="_blank">{{ star.owner }}/{{ star.name }}</a></strong>
                     <ul>
                         {% if star.description %}
                             <li>{{ star.description_pretty }}</li>
