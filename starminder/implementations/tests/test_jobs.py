@@ -405,6 +405,50 @@ def test_pager_handles_null_description_and_project_url(
     assert temp_star.project_url is None
 
 
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.httpx.Client")
+def test_pager_skips_repos_with_deleted_owner(
+    mock_client_class, mock_async_task, user, social_token
+) -> None:
+    mock_response = Mock()
+    mock_response.json.return_value = [
+        {
+            "id": 123,
+            "name": "repo1",
+            "owner": {"login": "owner1", "id": 456},
+            "stargazers_count": 100,
+            "html_url": "https://github.com/owner1/repo1",
+        },
+        {
+            "id": 124,
+            "name": "deleted-repo",
+            "owner": None,
+            "stargazers_count": 50,
+            "html_url": "https://github.com/deleted-user/deleted-repo",
+        },
+        {
+            "id": 125,
+            "name": "repo2",
+            "owner": {"login": "owner2", "id": 789},
+            "stargazers_count": 200,
+            "html_url": "https://github.com/owner2/repo2",
+        },
+    ]
+    mock_client = MagicMock()
+    mock_client.get.return_value = mock_response
+    mock_client.__enter__.return_value = mock_client
+    mock_client.__exit__.return_value = None
+    mock_client_class.return_value = mock_client
+
+    pager(user, [social_token])
+
+    assert TempStar.objects.filter(user=user).count() == 2
+    temp_stars = TempStar.objects.filter(user=user).order_by("provider_id")
+    assert temp_stars[0].name == "repo1"
+    assert temp_stars[1].name == "repo2"
+
+
 # generate_data tests
 
 

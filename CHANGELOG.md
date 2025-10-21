@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Fixed
+- Deleted owner account no longer raises `TypeError`
+
 ### Changed
 - Tests now run in debug more to avoid sending admin push notifications
 

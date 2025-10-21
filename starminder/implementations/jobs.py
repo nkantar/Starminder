@@ -93,6 +93,13 @@ def pager(
                 repo_url=item["html_url"],
                 project_url=item.get("homepage"),
             )
+        except TypeError:
+            if not item.get("owner"):
+                logger.info(
+                    f"Skipping repo {item.get('name', 'unknown')} with deleted owner"
+                )
+            else:
+                raise
         except Exception as error:
             sentry_sdk.capture_exception(error, extras={"item": item})
 
