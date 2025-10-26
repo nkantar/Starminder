@@ -44,6 +44,8 @@ docker run -d \
 | `PUSHOVER_USER_KEY`        | The user key for Pushover integration.                                                                      | No       |
 | `PUSHOVER_API_TOKEN`       | The API token for Pushover integration.                                                                     | No       |
 | `DJANGO_ADMIN_PREFIX`      | The prefix for the Django admin interface.                                                                  | No       |
+| `GITHUB_CLIENT_ID`         | The Client ID of your GitHub OAuth application.                                                             | **Yes**  |
+| `GITHUB_CLIENT_SECRET`     | The Client Secret of your GitHub OAuth application.                                                         | **Yes**  |
 
 ### SQLite Support
 
