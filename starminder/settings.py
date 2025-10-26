@@ -25,13 +25,14 @@ def sentry_before_send(event, hint):
     """Send Pushover notification before sending event to Sentry."""
     from starminder.core.push import send_push_notification
 
-    if "exc_info" in hint:
-        exc_type, exc_value, tb = hint["exc_info"]
-        error_message = f"{exc_type.__name__}: {exc_value}"
-        send_push_notification(
-            message=error_message[:1024],
-            title="Starminder Exception",
-        )
+    if PUSHOVER_USER_KEY and PUSHOVER_API_TOKEN:
+        if "exc_info" in hint:
+            exc_type, exc_value, tb = hint["exc_info"]
+            error_message = f"{exc_type.__name__}: {exc_value}"
+            send_push_notification(
+                message=error_message[:1024],
+                title="Starminder Exception",
+            )
     return event
 
 
