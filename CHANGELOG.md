@@ -14,6 +14,13 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.10.26] - 2025-10-26
+
+### Added
+- Docker publish workflow to push images to Docker Hub on release.
+
+
+
 ## [25.10.20.2] - 2025-10-20
 
 ### Changed
@@ -245,7 +252,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.20.2...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.10.26...HEAD
+[25.10.26]: https://github.com/nkantar/Starminder/compare/25.10.20.2...25.10.26
 [25.10.20.2]: https://github.com/nkantar/Starminder/compare/25.10.20.1...25.10.20.2
 [25.10.20.1]: https://github.com/nkantar/Starminder/compare/25.10.20...25.10.20.1
 [25.10.20]: https://github.com/nkantar/Starminder/compare/25.10.19...25.10.20
