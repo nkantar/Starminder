@@ -19,8 +19,11 @@ ENV PYTHONUNBUFFERED=1
 
 
 
+COPY scripts/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 RUN just deploy
 
 EXPOSE 8000
 
-CMD ["just", "prodserve"]
+ENTRYPOINT ["/entrypoint.sh"]
