@@ -14,6 +14,10 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+### Changed
+- Update issue and PR templates
+
+
 ## [25.10.20.2] - 2025-10-20
 
 ### Changed
