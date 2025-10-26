@@ -16,22 +16,23 @@ logger.remove()
 logger.add(sys.stdout)
 
 
-DEBUG = parsenvy.bool("DJANGO_DEBUG")
+DEBUG = parsenvy.bool("DJANGO_DEBUG", default=False)
 
-SENTRY_DSN = parsenvy.str("SENTRY_DSN")
+SENTRY_DSN = parsenvy.str("SENTRY_DSN", default="")
 
 
 def sentry_before_send(event, hint):
     """Send Pushover notification before sending event to Sentry."""
     from starminder.core.push import send_push_notification
 
-    if "exc_info" in hint:
-        exc_type, exc_value, tb = hint["exc_info"]
-        error_message = f"{exc_type.__name__}: {exc_value}"
-        send_push_notification(
-            message=error_message[:1024],
-            title="Starminder Exception",
-        )
+    if PUSHOVER_USER_KEY and PUSHOVER_API_TOKEN:
+        if "exc_info" in hint:
+            exc_type, exc_value, tb = hint["exc_info"]
+            error_message = f"{exc_type.__name__}: {exc_value}"
+            send_push_notification(
+                message=error_message[:1024],
+                title="Starminder Exception",
+            )
     return event
 
 
@@ -44,9 +45,9 @@ if not DEBUG:
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = parsenvy.str("DJANGO_SECRET_KEY")
+SECRET_KEY = parsenvy.str("DJANGO_SECRET_KEY", default="dummy-secret-key-for-build")
 
-ALLOWED_HOSTS = parsenvy.list("DJANGO_ALLOWED_HOSTS")
+ALLOWED_HOSTS = parsenvy.list("DJANGO_ALLOWED_HOSTS", default=[])
 
 CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in cast(list, ALLOWED_HOSTS)]
 
@@ -119,23 +120,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "starminder.wsgi.application"
 
-if not DEBUG:
-    DATABASE_URL = parsenvy.str("DATABASE_URL")
-    if not DATABASE_URL:
-        raise ValueError("DATABASE_URL improperly configured")
-    DATABASES = {
-        "default": dj_database_url.config(
-            conn_max_age=600,
-            conn_health_checks=True,
-        ),
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    ),
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -189,8 +180,8 @@ Q_CLUSTER = {
 if DEBUG:
     Q_CLUSTER["workers"] = 1
 
-DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME")
-DJANGO_SITE_DISPLAY_NAME = parsenvy.str("DJANGO_SITE_DISPLAY_NAME")
+DJANGO_SITE_DOMAIN_NAME = parsenvy.str("DJANGO_SITE_DOMAIN_NAME", default="localhost")
+DJANGO_SITE_DISPLAY_NAME = parsenvy.str("DJANGO_SITE_DISPLAY_NAME", default="Starminder")
 
 STORAGES = {
     "staticfiles": {
@@ -203,8 +194,8 @@ PYPROJECT_TOML_PATH = BASE_DIR / "pyproject.toml"
 PYPROJECT_TOML_DATA = tomllib.loads(PYPROJECT_TOML_PATH.read_text())
 STARMINDER_VERSION = PYPROJECT_TOML_DATA["project"]["version"]
 
-FORWARDEMAIL_TOKEN = parsenvy.str("FORWARDEMAIL_TOKEN")
+FORWARDEMAIL_TOKEN = parsenvy.str("FORWARDEMAIL_TOKEN", default="")
 EMAIL_FROM = "Starminder <hello@starminder.dev>"
 
-PUSHOVER_USER_KEY = parsenvy.str("PUSHOVER_USER_KEY")
-PUSHOVER_API_TOKEN = parsenvy.str("PUSHOVER_API_TOKEN")
+PUSHOVER_USER_KEY = parsenvy.str("PUSHOVER_USER_KEY", default="")
+PUSHOVER_API_TOKEN = parsenvy.str("PUSHOVER_API_TOKEN", default="")
