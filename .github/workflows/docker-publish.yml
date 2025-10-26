@@ -14,11 +14,11 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: pcarorevuelta
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: pcarorevuelta/starminder:latest,pcarorevuelta/starminder:${{ github.event.release.tag_name }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/starminder:latest,${{ secrets.DOCKERHUB_USERNAME }}/starminder:${{ github.event.release.tag_name }}
