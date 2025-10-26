@@ -15,7 +15,21 @@ You can run Starminder using the official Docker image from Docker Hub.
 docker pull pcarorevuelta/starminder:latest
 ```
 
-### 2. Run the container
+### 2. Create a GitHub OAuth App
+
+To allow users to log in with their GitHub account, you need to create a GitHub OAuth application.
+
+1.  Go to your GitHub **Settings**.
+2.  Navigate to **Developer settings** > **OAuth Apps**.
+3.  Click **New OAuth App**.
+4.  Fill in the application details:
+    *   **Application name:** You can name it whatever you like, for example, "Starminder".
+    *   **Homepage URL:** The URL where your application is hosted (e.g., `http://starminder.yourdomain.com`).
+    *   **Authorization callback URL:** This is the most important part. It must be `http://<your-domain>/accounts/github/login/callback/`. Replace `<your-domain>` with the actual domain or IP address where your application is running.
+5.  Click **Register application**.
+6.  On the next page, you will see the **Client ID**. You will also need to generate a **Client Secret**. Copy both of these values. You will need them for the environment variables in the next step.
+
+### 3. Run the container
 
 To run the container, you will need to provide several environment variables.
 
@@ -24,13 +38,14 @@ docker run -d \
   -e DJANGO_SECRET_KEY="your-secret-key" \
   -e DJANGO_ALLOWED_HOSTS="your-domain.com" \
   -e DJANGO_SITE_DOMAIN_NAME="your-domain.com" \
-  -e DJANGO_SITE_DISPLAY_NAME="Starminder" \
+  -e GITHUB_CLIENT_ID="your-github-client-id" \
+  -e GITHUB_CLIENT_SECRET="your-github-client-secret" \
   -e DATABASE_URL="postgres://user:password@host:port/dbname" \
   -p 8000:8000 \
   pcarorevuelta/starminder:latest
 ```
 
-### Environment Variables
+### 4. Environment Variables
 
 | Variable                   | Description                                                                                                 | Required |
 | -------------------------- | ----------------------------------------------------------------------------------------------------------- | -------- |
