@@ -120,21 +120,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "starminder.wsgi.application"
 
-if not DEBUG:
-    DATABASES = {
-        "default": dj_database_url.config(
-            default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-            conn_max_age=600,
-            conn_health_checks=True,
-        ),
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+DATABASES = {
+    "default": dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        conn_health_checks=True,
+    ),
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
