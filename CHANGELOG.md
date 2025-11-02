@@ -14,6 +14,7 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 ### Added
+- Add command for backfilling archived repository flags
 - Support for excluding archived repositories
 
 ### Changed
