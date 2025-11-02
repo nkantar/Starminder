@@ -4,9 +4,26 @@ from starminder.core.models import UserProfile
 
 
 class UserProfileConfigForm(forms.ModelForm):
+    INCLUDE_ARCHIVED_CHOICES = [
+        (True, "Include"),
+        (False, "Don't include"),
+    ]
+
+    include_archived = forms.TypedChoiceField(
+        choices=INCLUDE_ARCHIVED_CHOICES,
+        coerce=lambda x: x == "True",
+        widget=forms.Select(),
+    )
+
     class Meta:
         model = UserProfile
-        fields = ["reminder_email", "max_entries", "day_of_week", "hour_of_day"]
+        fields = [
+            "reminder_email",
+            "max_entries",
+            "day_of_week",
+            "hour_of_day",
+            "include_archived",
+        ]
         widgets = {
             "reminder_email": forms.EmailInput(),
             "max_entries": forms.NumberInput(attrs={"min": 1, "max": 100}),
@@ -18,4 +35,5 @@ class UserProfileConfigForm(forms.ModelForm):
             "max_entries": "Maximum entries per reminder",
             "day_of_week": "Day of week",
             "hour_of_day": "Hour of day (0-23)",
+            "include_archived": "Archived repositories",
         }

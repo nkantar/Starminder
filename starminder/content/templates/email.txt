@@ -2,7 +2,7 @@ Hi {{ user.username }}!
 
 Your {{ reminder.created_at.date }} reminder brings you the following stars:
 
-{% for star in reminder.star_set.all %}- {{ star.owner }}/{{ star.name }}
+{% for star in reminder.star_set.all %}- {{ star.owner }}/{{ star.name }}{% if star.archived %} [archived]{% endif %}
 {% if star.description %}    - {{ star.description_pretty }}
 {% endif %}    - {{ star.star_count }} stars
     - {{ star.repo_url }}

@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
+    BooleanField,
     CASCADE,
     CharField,
     DateTimeField,
@@ -49,6 +50,7 @@ class StarFieldsBase(Model):
     star_count = IntegerField()
     repo_url = URLField(max_length=1024)
     project_url = URLField(max_length=1024, null=True, blank=True)
+    archived = BooleanField(default=False)
 
     class Meta:
         abstract = True
@@ -112,6 +114,7 @@ class UserProfile(TimestampedModel):
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(23)],
     )
+    include_archived = BooleanField(default=True)
 
     def __str__(self) -> str:
         return f"{self.user.username} (Profile)"

@@ -92,6 +92,7 @@ def pager(
                 star_count=item["stargazers_count"],
                 repo_url=item["html_url"],
                 project_url=item.get("homepage"),
+                archived=item.get("archived", False),
             )
         except TypeError:
             if not item.get("owner"):
@@ -139,8 +140,15 @@ def generate_data(user_id: int) -> None:
     user = CustomUser.objects.get(id=user_id)
     logger.info(f"Found user {user.username}")
 
-    temp_stars = list(TempStar.objects.filter(user=user))
-    logger.info(f"Found {len(temp_stars)} temp stars")
+    temp_stars_kwargs = {"user": user}
+    archive_label = "unarchived"
+    if not user.user_profile.include_archived:
+        temp_stars_kwargs["archived"] = False
+        archive_label = "archived"
+        logger.info("Filtering out archived repositories")
+
+    temp_stars = list(TempStar.objects.filter(**temp_stars_kwargs))
+    logger.info(f"Found {len(temp_stars)} {archive_label} temp stars")
 
     if not temp_stars:
         logger.info("No temp stars found, exiting")
@@ -165,6 +173,7 @@ def generate_data(user_id: int) -> None:
             star_count=temp_star.star_count,
             repo_url=temp_star.repo_url,
             project_url=temp_star.project_url,
+            archived=temp_star.archived,
         )
 
     logger.info("Created reminder and stars")

@@ -125,6 +125,10 @@ input#id_reminder_email {
   width: 20rem;
 }
 
+select#id_include_archived {
+  width: 10rem;
+}
+
 span.red {
   color: var(--red);
 }

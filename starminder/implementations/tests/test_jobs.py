@@ -667,3 +667,230 @@ def test_cleanup_temp_stars_handles_no_temp_stars(user) -> None:
     cleanup_temp_stars(user.id)
 
     assert TempStar.objects.filter(user=user).count() == 0
+
+
+# archived repository tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.httpx.Client")
+def test_pager_captures_archived_status(
+    mock_client_class, mock_async_task, user, social_token
+) -> None:
+    """Test that pager captures archived field from GitHub API."""
+    mock_response = Mock()
+    mock_response.json.return_value = [
+        {
+            "id": 123,
+            "name": "active-repo",
+            "owner": {"login": "owner1", "id": 456},
+            "description": "Active repo",
+            "stargazers_count": 100,
+            "html_url": "https://github.com/owner1/active-repo",
+            "archived": False,
+        },
+        {
+            "id": 124,
+            "name": "archived-repo",
+            "owner": {"login": "owner2", "id": 789},
+            "description": "Archived repo",
+            "stargazers_count": 50,
+            "html_url": "https://github.com/owner2/archived-repo",
+            "archived": True,
+        },
+    ]
+    mock_client = MagicMock()
+    mock_client.get.return_value = mock_response
+    mock_client.__enter__.return_value = mock_client
+    mock_client.__exit__.return_value = None
+    mock_client_class.return_value = mock_client
+
+    pager(user, [social_token])
+
+    temp_stars = TempStar.objects.filter(user=user).order_by("provider_id")
+    assert temp_stars.count() == 2
+    assert temp_stars[0].archived is False
+    assert temp_stars[1].archived is True
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.httpx.Client")
+def test_pager_defaults_archived_to_false_when_missing(
+    mock_client_class, mock_async_task, user, social_token
+) -> None:
+    """Test that pager defaults archived to False if not in API response."""
+    mock_response = Mock()
+    mock_response.json.return_value = [
+        {
+            "id": 123,
+            "name": "repo-without-archived",
+            "owner": {"login": "owner1", "id": 456},
+            "stargazers_count": 100,
+            "html_url": "https://github.com/owner1/repo-without-archived",
+        }
+    ]
+    mock_client = MagicMock()
+    mock_client.get.return_value = mock_response
+    mock_client.__enter__.return_value = mock_client
+    mock_client.__exit__.return_value = None
+    mock_client_class.return_value = mock_client
+
+    pager(user, [social_token])
+
+    temp_star = TempStar.objects.get(user=user)
+    assert temp_star.archived is False
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_excludes_archived_when_preference_false(
+    mock_async_task, user
+) -> None:
+    """Test that archived repos are excluded when include_archived is False."""
+    # Set user preference to exclude archived
+    user.user_profile.include_archived = False
+    user.user_profile.save()
+
+    # Create mix of archived and non-archived TempStars
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="active-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=100,
+        repo_url="https://github.com/owner/active-repo",
+        archived=False,
+    )
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="2",
+        name="archived-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=50,
+        repo_url="https://github.com/owner/archived-repo",
+        archived=True,
+    )
+
+    generate_data(user.id)
+
+    # Verify only non-archived repo appears in results
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 1
+    assert stars[0].archived is False
+    assert stars[0].name == "active-repo"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_includes_archived_by_default(mock_async_task, user) -> None:
+    """Test that archived repos are included when include_archived is True (default)."""
+    # Default is include_archived=True
+    assert user.user_profile.include_archived is True
+
+    # Create archived TempStar
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="archived-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=50,
+        repo_url="https://github.com/owner/archived-repo",
+        archived=True,
+    )
+
+    generate_data(user.id)
+
+    # Verify archived repo appears in results
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 1
+    assert stars[0].archived is True
+    assert stars[0].name == "archived-repo"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_preserves_archived_status_in_stars(
+    mock_async_task, user
+) -> None:
+    """Test that archived status is correctly copied from TempStar to Star."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="active-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=100,
+        repo_url="https://github.com/owner/active-repo",
+        archived=False,
+    )
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="2",
+        name="archived-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=50,
+        repo_url="https://github.com/owner/archived-repo",
+        archived=True,
+    )
+
+    generate_data(user.id)
+
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder).order_by("name")
+    assert stars.count() == 2
+    assert stars[0].name == "active-repo"
+    assert stars[0].archived is False
+    assert stars[1].name == "archived-repo"
+    assert stars[1].archived is True
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_handles_all_archived_when_excluded(
+    mock_async_task, user
+) -> None:
+    """Test that no reminder is created when all repos are archived and excluded."""
+    user.user_profile.include_archived = False
+    user.user_profile.save()
+
+    # Create only archived TempStars
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="archived-repo-1",
+        owner="owner",
+        owner_id="123",
+        star_count=50,
+        repo_url="https://github.com/owner/archived-repo-1",
+        archived=True,
+    )
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="2",
+        name="archived-repo-2",
+        owner="owner",
+        owner_id="123",
+        star_count=25,
+        repo_url="https://github.com/owner/archived-repo-2",
+        archived=True,
+    )
+
+    generate_data(user.id)
+
+    # No reminder should be created
+    assert Reminder.objects.filter(user=user).count() == 0

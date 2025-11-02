@@ -13,6 +13,8 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- Support for excluding archived repositories
 
 ### Changed
 - Update issue and PR templates

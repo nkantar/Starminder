@@ -5,7 +5,9 @@
 <form method="post">
     {% csrf_token %}
 
-    <p>Remind me about {{ form.max_entries }} projects I’ve starred every {{ form.day_of_week }} at {{ form.hour_of_day }} o’clock UTC.</p>
+    <p>Remind me about {{ form.max_entries }} repositories I’ve starred every {{ form.day_of_week }} at {{ form.hour_of_day }} o’clock UTC.
+
+    <p>{{ form.include_archived }} archived repositories.</p>
 
     <p>Send reminders to this email address, if specified: {{ form.reminder_email }}.</p>
 
