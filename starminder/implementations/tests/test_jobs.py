@@ -894,3 +894,229 @@ def test_generate_data_handles_all_archived_when_excluded(
 
     # No reminder should be created
     assert Reminder.objects.filter(user=user).count() == 0
+
+
+# cycle tracking tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
+    """Test that cycle tracking works correctly with OneToOneField to Star."""
+    for i in range(10):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    user.user_profile.max_entries = 5
+    user.user_profile.save()
+
+    generate_data(user.id)
+
+    user.user_profile.refresh_from_db()
+    assert user.user_profile.cycle_start is not None
+
+    reminder1 = Reminder.objects.first()
+    assert reminder1 is not None
+    reminder1_ids = set(reminder1.star_set.values_list("provider_id", flat=True))
+    assert len(reminder1_ids) == 5
+
+    TempStar.objects.all().delete()
+    for i in range(10):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    generate_data(user.id)
+
+    user.user_profile.refresh_from_db()
+    assert user.user_profile.cycle_start is None
+
+    reminder2 = Reminder.objects.order_by("created_at")[1]
+    reminder2_ids = set(reminder2.star_set.values_list("provider_id", flat=True))
+    assert len(reminder2_ids) == 5
+
+    assert len(reminder1_ids & reminder2_ids) == 0
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
+    """Test cycle reset when cutoff happens mid-reminder."""
+    for i in range(10):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    user.user_profile.max_entries = 7
+    user.user_profile.save()
+
+    generate_data(user.id)
+    user.user_profile.refresh_from_db()
+    assert user.user_profile.cycle_start is not None
+
+    TempStar.objects.all().delete()
+    for i in range(10):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    generate_data(user.id)
+
+    user.user_profile.refresh_from_db()
+    assert user.user_profile.cycle_start is not None
+
+    reminder2 = Reminder.objects.order_by("created_at")[1]
+    stars2 = list(reminder2.star_set.order_by("id"))
+
+    assert user.user_profile.cycle_start.id == stars2[3].id
+    assert len(stars2) == 7
+
+
+@pytest.mark.django_db
+def test_cycle_start_validation(user, django_user_model) -> None:
+    """Test that cycle_start validation rejects Stars from other users."""
+    from django.core.exceptions import ValidationError
+
+    other_user = django_user_model.objects.create_user(
+        username="other", password="pass"
+    )
+
+    other_reminder = Reminder.objects.create(user=other_user)
+    other_star = Star.objects.create(
+        reminder=other_reminder,
+        provider="github",
+        provider_id="999",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+    )
+
+    user.user_profile.cycle_start = other_star
+
+    with pytest.raises(ValidationError):
+        user.user_profile.save()
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
+    """Test that when all repos shown, cycle resets at the first new Star."""
+    for i in range(6):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    user.user_profile.max_entries = 4
+    user.user_profile.save()
+
+    generate_data(user.id)
+    user.user_profile.refresh_from_db()
+    assert user.user_profile.cycle_start is not None
+
+    TempStar.objects.all().delete()
+    for i in range(6):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    generate_data(user.id)
+    user.user_profile.refresh_from_db()
+
+    reminder2 = Reminder.objects.order_by("created_at")[1]
+    stars2 = list(reminder2.star_set.order_by("id"))
+
+    assert user.user_profile.cycle_start is not None
+    assert user.user_profile.cycle_start.id == stars2[2].id
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
+    """Test that no duplicates appear within the first cycle."""
+    for i in range(12):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+    user.user_profile.max_entries = 5
+    user.user_profile.save()
+
+    all_shown_ids = set()
+
+    for reminder_num in range(3):
+        generate_data(user.id)
+
+        TempStar.objects.all().delete()
+        for i in range(12):
+            TempStar.objects.create(
+                user=user,
+                provider="github",
+                provider_id=str(i),
+                name=f"repo{i}",
+                owner="owner",
+                owner_id="123",
+                star_count=10,
+                repo_url=f"https://github.com/owner/repo{i}",
+            )
+
+        reminder = Reminder.objects.order_by("created_at")[reminder_num]
+        provider_ids = set(reminder.star_set.values_list("provider_id", flat=True))
+
+        if len(all_shown_ids) < 12:
+            duplicates = all_shown_ids & provider_ids
+            if len(all_shown_ids) + len(provider_ids) <= 12:
+                assert len(duplicates) == 0, f"Found duplicates in cycle: {duplicates}"
+
+        all_shown_ids.update(provider_ids)

@@ -140,6 +140,21 @@ def generate_data(user_id: int) -> None:
     user = CustomUser.objects.get(id=user_id)
     logger.info(f"Found user {user.username}")
 
+    previously_shown_ids = set()
+
+    if cycle_start := user.user_profile.cycle_start:
+        logger.info(f"Current cycle started at Star ID: {cycle_start.id}")
+
+        previously_shown_ids = set(
+            Star.objects.filter(reminder__user=user, id__gte=cycle_start.id)
+            .values_list("provider_id", flat=True)
+            .distinct()
+        )
+        logger.info(f"Found {len(previously_shown_ids)} repos shown in current cycle")
+
+    else:
+        logger.info("No cycle start found, starting fresh cycle")
+
     temp_stars_kwargs = {"user": user}
     archive_label = "unarchived"
     if not user.user_profile.include_archived:
@@ -147,22 +162,53 @@ def generate_data(user_id: int) -> None:
         archive_label = "archived"
         logger.info("Filtering out archived repositories")
 
-    temp_stars = list(TempStar.objects.filter(**temp_stars_kwargs))
-    logger.info(f"Found {len(temp_stars)} {archive_label} temp stars")
+    unshown_temp_stars = list(
+        TempStar.objects.filter(**temp_stars_kwargs).exclude(
+            provider_id__in=previously_shown_ids
+        )
+    )
 
-    if not temp_stars:
-        logger.info("No temp stars found, exiting")
-        return
+    logger.info(f"Found {len(unshown_temp_stars)} unshown {archive_label} temp stars")
 
-    sample_size = min(user.user_profile.max_entries, len(temp_stars))
-    sampled_temp_stars = random.sample(temp_stars, sample_size)
+    if len(unshown_temp_stars) < user.user_profile.max_entries:
+        logger.info(
+            f"Only {len(unshown_temp_stars)} unshown repos, "
+            f"but need {user.user_profile.max_entries}. Querying all repos."
+        )
+
+        all_temp_stars = list(TempStar.objects.filter(**temp_stars_kwargs))
+
+        if not all_temp_stars:
+            logger.info("No temp stars found, exiting")
+            return
+
+        logger.info(
+            f"Cycle will reset with this reminder "
+            f"({len(unshown_temp_stars)} unshown, {len(all_temp_stars)} total)."
+        )
+
+        temp_stars_to_sample = all_temp_stars
+        total_repos_available = len(all_temp_stars)
+
+    else:
+        temp_stars_to_sample = unshown_temp_stars
+        total_repos_available = TempStar.objects.filter(**temp_stars_kwargs).count()
+
+    sample_size = min(user.user_profile.max_entries, len(temp_stars_to_sample))
+    sampled_temp_stars = random.sample(temp_stars_to_sample, sample_size)
 
     logger.info(f"Sampled {sample_size} temp stars")
 
+    cutoff_index = total_repos_available - len(previously_shown_ids)
+    logger.info(
+        f"Cutoff index: {cutoff_index} "
+        f"(total: {total_repos_available}, shown: {len(previously_shown_ids)})"
+    )
+
     reminder = Reminder.objects.create(user_id=user_id)
 
-    for temp_star in sampled_temp_stars:
-        Star.objects.create(
+    for idx, temp_star in enumerate(sampled_temp_stars):
+        star = Star.objects.create(
             reminder=reminder,
             provider=temp_star.provider,
             provider_id=temp_star.provider_id,
@@ -176,7 +222,22 @@ def generate_data(user_id: int) -> None:
             archived=temp_star.archived,
         )
 
-    logger.info("Created reminder and stars")
+        if idx == cutoff_index or (idx == 0 and user.user_profile.cycle_start is None):
+            user.user_profile.cycle_start = star
+            user.user_profile.save()
+            logger.info(
+                f"Cycle start set to Star ID {star.id} "
+                f"(star {idx + 1} of {len(sampled_temp_stars)} in this reminder)"
+            )
+
+    logger.info(f"Created reminder and {len(sampled_temp_stars)} stars")
+
+    if cutoff_index == len(sampled_temp_stars):
+        user.user_profile.cycle_start = None
+        user.user_profile.save()
+        logger.info(
+            "Cycle completed exactly with this reminder. Next reminder starts fresh."
+        )
 
     if user.user_profile.reminder_email:
         logger.info(f"Found email for {user}, queuing email send…")

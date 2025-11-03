@@ -1,6 +1,6 @@
 [project]
 name = "Starminder"
-version = "25.11.2"
+version = "25.11.2.1"
 dependencies = [
     "croniter>=6.0.0",
     "dj-database-url>=3.0.1",

@@ -4,6 +4,7 @@ from uuid import uuid4
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
     BooleanField,
@@ -18,6 +19,7 @@ from django.db.models import (
     PositiveIntegerField,
     Q,
     QuerySet,
+    SET_NULL,
     TextField,
     URLField,
     UUIDField,
@@ -116,8 +118,30 @@ class UserProfile(TimestampedModel):
     )
     include_archived = BooleanField(default=True)
 
+    cycle_start = OneToOneField(
+        "content.Star",
+        on_delete=SET_NULL,
+        null=True,
+        blank=True,
+    )
+
     def __str__(self) -> str:
         return f"{self.user.username} (Profile)"
+
+    def clean(self) -> None:
+        super().clean()
+
+        if self.cycle_start is not None:
+            if self.cycle_start.reminder.user != self.user:
+                raise ValidationError(
+                    {
+                        "cycle_start": "Cycle start Star must belong to the same user as this profile."
+                    }
+                )
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "User Profile"
