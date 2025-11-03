@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from typing import Any
 from uuid import uuid4
 
+from allauth.socialaccount.models import SocialToken
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
@@ -12,6 +13,7 @@ from django.db.models import (
     CharField,
     DateTimeField,
     EmailField,
+    ForeignKey,
     IntegerField,
     Manager,
     Model,
@@ -53,6 +55,8 @@ class StarFieldsBase(Model):
     repo_url = URLField(max_length=1024)
     project_url = URLField(max_length=1024, null=True, blank=True)
     archived = BooleanField(default=False)
+
+    token = ForeignKey(SocialToken, on_delete=CASCADE)
 
     class Meta:
         abstract = True
@@ -116,7 +120,9 @@ class UserProfile(TimestampedModel):
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(23)],
     )
+
     include_archived = BooleanField(default=True)
+    include_own = BooleanField(default=True)
 
     cycle_start = OneToOneField(
         "content.Star",

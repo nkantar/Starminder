@@ -52,9 +52,10 @@ def social_token(social_account):
 
 
 @pytest.fixture
-def temp_star(user):
+def temp_star(user, social_token):
     return TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="12345",
         name="test-repo",
@@ -484,11 +485,14 @@ def test_generate_data_creates_stars_from_temp_stars(
 
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
-def test_generate_data_respects_max_entries_limit(mock_async_task, user) -> None:
+def test_generate_data_respects_max_entries_limit(
+    mock_async_task, user, social_token
+) -> None:
     # Create 10 temp stars
     for i in range(10):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -572,12 +576,15 @@ def test_generate_data_queues_cleanup(mock_async_task, user, temp_star) -> None:
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
 @patch("starminder.implementations.jobs.random.sample")
-def test_generate_data_samples_randomly(mock_sample, mock_async_task, user) -> None:
+def test_generate_data_samples_randomly(
+    mock_sample, mock_async_task, user, social_token
+) -> None:
     temp_stars = []
     for i in range(10):
         temp_stars.append(
             TempStar.objects.create(
                 user=user,
+                token=social_token,
                 provider="github",
                 provider_id=str(i),
                 name=f"repo{i}",
@@ -613,9 +620,12 @@ def test_cleanup_temp_stars_deletes_user_temp_stars(user, temp_star) -> None:
 
 
 @pytest.mark.django_db
-def test_cleanup_temp_stars_only_deletes_specific_user(user, user2) -> None:
+def test_cleanup_temp_stars_only_deletes_specific_user(
+    user, user2, social_token
+) -> None:
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="1",
         name="repo1",
@@ -624,8 +634,19 @@ def test_cleanup_temp_stars_only_deletes_specific_user(user, user2) -> None:
         star_count=10,
         repo_url="https://github.com/owner/repo1",
     )
+    # Create token for user2
+    social_account2 = SocialAccount.objects.create(
+        user=user2,
+        provider="github",
+        uid="test_uid_2",
+    )
+    social_token2 = SocialToken.objects.create(
+        account=social_account2,
+        token="test_token_2",
+    )
     TempStar.objects.create(
         user=user2,
+        token=social_token2,
         provider="github",
         provider_id="2",
         name="repo2",
@@ -642,10 +663,11 @@ def test_cleanup_temp_stars_only_deletes_specific_user(user, user2) -> None:
 
 
 @pytest.mark.django_db
-def test_cleanup_temp_stars_deletes_multiple_temp_stars(user) -> None:
+def test_cleanup_temp_stars_deletes_multiple_temp_stars(user, social_token) -> None:
     for i in range(5):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -746,7 +768,7 @@ def test_pager_defaults_archived_to_false_when_missing(
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
 def test_generate_data_excludes_archived_when_preference_false(
-    mock_async_task, user
+    mock_async_task, user, social_token
 ) -> None:
     """Test that archived repos are excluded when include_archived is False."""
     # Set user preference to exclude archived
@@ -756,6 +778,7 @@ def test_generate_data_excludes_archived_when_preference_false(
     # Create mix of archived and non-archived TempStars
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="1",
         name="active-repo",
@@ -767,6 +790,7 @@ def test_generate_data_excludes_archived_when_preference_false(
     )
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="2",
         name="archived-repo",
@@ -789,7 +813,9 @@ def test_generate_data_excludes_archived_when_preference_false(
 
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
-def test_generate_data_includes_archived_by_default(mock_async_task, user) -> None:
+def test_generate_data_includes_archived_by_default(
+    mock_async_task, user, social_token
+) -> None:
     """Test that archived repos are included when include_archived is True (default)."""
     # Default is include_archived=True
     assert user.user_profile.include_archived is True
@@ -797,6 +823,7 @@ def test_generate_data_includes_archived_by_default(mock_async_task, user) -> No
     # Create archived TempStar
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="1",
         name="archived-repo",
@@ -820,11 +847,12 @@ def test_generate_data_includes_archived_by_default(mock_async_task, user) -> No
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
 def test_generate_data_preserves_archived_status_in_stars(
-    mock_async_task, user
+    mock_async_task, user, social_token
 ) -> None:
     """Test that archived status is correctly copied from TempStar to Star."""
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="1",
         name="active-repo",
@@ -836,6 +864,7 @@ def test_generate_data_preserves_archived_status_in_stars(
     )
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="2",
         name="archived-repo",
@@ -860,7 +889,7 @@ def test_generate_data_preserves_archived_status_in_stars(
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
 def test_generate_data_handles_all_archived_when_excluded(
-    mock_async_task, user
+    mock_async_task, user, social_token
 ) -> None:
     """Test that no reminder is created when all repos are archived and excluded."""
     user.user_profile.include_archived = False
@@ -869,6 +898,7 @@ def test_generate_data_handles_all_archived_when_excluded(
     # Create only archived TempStars
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="1",
         name="archived-repo-1",
@@ -880,6 +910,7 @@ def test_generate_data_handles_all_archived_when_excluded(
     )
     TempStar.objects.create(
         user=user,
+        token=social_token,
         provider="github",
         provider_id="2",
         name="archived-repo-2",
@@ -901,11 +932,14 @@ def test_generate_data_handles_all_archived_when_excluded(
 
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
-def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
+def test_cycle_tracking_with_one_to_one_field(
+    mock_async_task, user, social_token
+) -> None:
     """Test that cycle tracking works correctly with OneToOneField to Star."""
     for i in range(10):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -932,6 +966,7 @@ def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
     for i in range(10):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -955,11 +990,12 @@ def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
 
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
-def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
+def test_cycle_cutoff_mid_reminder(mock_async_task, user, social_token) -> None:
     """Test cycle reset when cutoff happens mid-reminder."""
     for i in range(10):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -980,6 +1016,7 @@ def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
     for i in range(10):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -1002,7 +1039,7 @@ def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
 
 
 @pytest.mark.django_db
-def test_cycle_start_validation(user, django_user_model) -> None:
+def test_cycle_start_validation(user, django_user_model, social_token) -> None:
     """Test that cycle_start validation rejects Stars from other users."""
     from django.core.exceptions import ValidationError
 
@@ -1013,6 +1050,7 @@ def test_cycle_start_validation(user, django_user_model) -> None:
     other_reminder = Reminder.objects.create(user=other_user)
     other_star = Star.objects.create(
         reminder=other_reminder,
+        token=social_token,
         provider="github",
         provider_id="999",
         name="repo",
@@ -1030,11 +1068,14 @@ def test_cycle_start_validation(user, django_user_model) -> None:
 
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
-def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
+def test_all_repos_shown_resets_at_first_star(
+    mock_async_task, user, social_token
+) -> None:
     """Test that when all repos shown, cycle resets at the first new Star."""
     for i in range(6):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -1055,6 +1096,7 @@ def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
     for i in range(6):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -1076,11 +1118,12 @@ def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
 
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
-def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
+def test_no_duplicates_in_first_cycle(mock_async_task, user, social_token) -> None:
     """Test that no duplicates appear within the first cycle."""
     for i in range(12):
         TempStar.objects.create(
             user=user,
+            token=social_token,
             provider="github",
             provider_id=str(i),
             name=f"repo{i}",
@@ -1102,6 +1145,7 @@ def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
         for i in range(12):
             TempStar.objects.create(
                 user=user,
+                token=social_token,
                 provider="github",
                 provider_id=str(i),
                 name=f"repo{i}",
@@ -1120,3 +1164,153 @@ def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
                 assert len(duplicates) == 0, f"Found duplicates in cycle: {duplicates}"
 
         all_shown_ids.update(provider_ids)
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_excludes_own_repos_when_disabled(
+    mock_async_task, user, social_account, social_token
+) -> None:
+    """Test that user's own repos are excluded when include_own is False."""
+    # Set user preference to exclude own repos
+    user.user_profile.include_own = False
+    user.user_profile.save()
+
+    # Create mix of user's own repos and others' repos
+    # User's own repo (owner_id matches social_account.uid)
+    TempStar.objects.create(
+        user=user,
+        token=social_token,
+        provider="github",
+        provider_id="1",
+        name="my-repo",
+        owner=user.username,
+        owner_id=social_account.uid,  # Matches user's account
+        star_count=100,
+        repo_url=f"https://github.com/{user.username}/my-repo",
+        archived=False,
+    )
+    # Someone else's repo
+    TempStar.objects.create(
+        user=user,
+        token=social_token,
+        provider="github",
+        provider_id="2",
+        name="other-repo",
+        owner="other-owner",
+        owner_id="999",  # Different owner
+        star_count=50,
+        repo_url="https://github.com/other-owner/other-repo",
+        archived=False,
+    )
+
+    generate_data(user.id)
+
+    # Verify only other's repo appears in results
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 1
+    assert stars[0].owner == "other-owner"
+    assert stars[0].name == "other-repo"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_includes_own_repos_by_default(
+    mock_async_task, user, social_account, social_token
+) -> None:
+    """Test that user's own repos are included when include_own is True (default)."""
+    # Default is include_own=True
+    assert user.user_profile.include_own is True
+
+    # Create user's own repo
+    TempStar.objects.create(
+        user=user,
+        token=social_token,
+        provider="github",
+        provider_id="1",
+        name="my-repo",
+        owner=user.username,
+        owner_id=social_account.uid,
+        star_count=100,
+        repo_url=f"https://github.com/{user.username}/my-repo",
+        archived=False,
+    )
+
+    generate_data(user.id)
+
+    # Verify own repo appears in results
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 1
+    assert stars[0].owner == user.username
+    assert stars[0].name == "my-repo"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_excludes_multiple_account_repos(
+    mock_async_task, user, social_account, social_token
+) -> None:
+    """Test that repos from multiple user accounts are all excluded."""
+    # Set user preference to exclude own repos
+    user.user_profile.include_own = False
+    user.user_profile.save()
+
+    # Create second social account for same user
+    social_account2 = SocialAccount.objects.create(
+        user=user,
+        provider="github",
+        uid="second_uid",
+    )
+    token2 = SocialToken.objects.create(
+        account=social_account2,
+        token="second_token",
+    )
+
+    # Create repos owned by both accounts plus one from someone else
+    TempStar.objects.create(
+        user=user,
+        token=social_token,
+        provider="github",
+        provider_id="1",
+        name="first-account-repo",
+        owner="first-owner",
+        owner_id=social_account.uid,  # First account
+        star_count=100,
+        repo_url="https://github.com/first-owner/first-account-repo",
+        archived=False,
+    )
+    TempStar.objects.create(
+        user=user,
+        token=token2,
+        provider="github",
+        provider_id="2",
+        name="second-account-repo",
+        owner="second-owner",
+        owner_id=social_account2.uid,  # Second account
+        star_count=75,
+        repo_url="https://github.com/second-owner/second-account-repo",
+        archived=False,
+    )
+    TempStar.objects.create(
+        user=user,
+        token=social_token,
+        provider="github",
+        provider_id="3",
+        name="other-repo",
+        owner="other-owner",
+        owner_id="999",  # Different owner
+        star_count=50,
+        repo_url="https://github.com/other-owner/other-repo",
+        archived=False,
+    )
+
+    generate_data(user.id)
+
+    # Verify only the other owner's repo appears in results
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 1
+    assert stars[0].owner == "other-owner"
+    assert stars[0].name == "other-repo"

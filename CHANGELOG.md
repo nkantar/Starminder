@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- Support for excluding user’s own repositories
+
 
 ## [25.11.2.2] - 2025-11-02
 
