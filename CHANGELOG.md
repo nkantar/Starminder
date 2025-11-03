@@ -15,6 +15,7 @@ Security in case of vulnerabilities.
 
 ### Added
 - Testimonial target highlight CSS
+- Varun’s testimonial
 
 
 ## [25.11.2.1] - 2025-11-02
