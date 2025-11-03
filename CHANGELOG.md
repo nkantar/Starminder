@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- Testimonial target highlight CSS
+
 
 ## [25.11.2.1] - 2025-11-02
 

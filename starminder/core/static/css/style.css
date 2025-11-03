@@ -101,8 +101,12 @@ input {
 
 blockquote {
   border-left: 1px dashed var(--blue-faint);
-  padding-left: 25px;
+  padding: 10px 25px;
   margin-left: 25px;
+}
+
+blockquote:target {
+  border: 1px dashed var(--blue-faint);
 }
 
 /* very specific overrides */
