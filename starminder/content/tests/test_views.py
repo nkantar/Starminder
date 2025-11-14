@@ -1,5 +1,5 @@
 import pytest
-from allauth.socialaccount.models import SocialApp
+from allauth.socialaccount.models import SocialAccount, SocialApp, SocialToken
 from django.contrib.sites.models import Site
 from django.test import Client
 from django.urls import reverse
@@ -39,6 +39,23 @@ def user2(db, django_user_model):
 
 
 @pytest.fixture
+def social_account(user):
+    return SocialAccount.objects.create(
+        user=user,
+        provider="github",
+        uid="test_uid",
+    )
+
+
+@pytest.fixture
+def social_token(social_account):
+    return SocialToken.objects.create(
+        account=social_account,
+        token="test_token",
+    )
+
+
+@pytest.fixture
 def reminder(user):
     return Reminder.objects.create(user=user)
 
@@ -54,9 +71,10 @@ def other_user_reminder(user2):
 
 
 @pytest.fixture
-def star(reminder):
+def star(reminder, social_token):
     return Star.objects.create(
         reminder=reminder,
+        token=social_token,
         provider="github",
         provider_id="12345",
         name="test-repo",
@@ -271,9 +289,12 @@ class TestAtomFeedView:
         content = response.content.decode()
         assert star.project_url in content
 
-    def test_feed_item_without_project_url(self, client: Client, user, reminder):
+    def test_feed_item_without_project_url(
+        self, client: Client, user, reminder, social_token
+    ):
         star_without_project = Star.objects.create(
             reminder=reminder,
+            token=social_token,
             provider="github",
             provider_id="99999",
             name="test-repo-2",
@@ -292,9 +313,12 @@ class TestAtomFeedView:
         content = response.content.decode()
         assert star_without_project.repo_url in content
 
-    def test_feed_item_without_description(self, client: Client, user, reminder):
+    def test_feed_item_without_description(
+        self, client: Client, user, reminder, social_token
+    ):
         star_without_desc = Star.objects.create(
             reminder=reminder,
+            token=social_token,
             provider="github",
             provider_id="77777",
             name="test-repo-3",

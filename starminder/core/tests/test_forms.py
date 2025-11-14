@@ -29,6 +29,7 @@ class TestUserProfileConfigForm:
             "day_of_week": UserProfile.MONDAY,
             "hour_of_day": 12,
             "include_archived": True,
+            "include_own": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -39,6 +40,7 @@ class TestUserProfileConfigForm:
             "day_of_week": UserProfile.EVERY_DAY,
             "hour_of_day": 9,
             "include_archived": True,
+            "include_own": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -49,6 +51,7 @@ class TestUserProfileConfigForm:
             "day_of_week": UserProfile.TUESDAY,
             "hour_of_day": 0,
             "include_archived": True,
+            "include_own": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -59,6 +62,7 @@ class TestUserProfileConfigForm:
             "day_of_week": UserProfile.WEDNESDAY,
             "hour_of_day": 23,
             "include_archived": True,
+            "include_own": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -120,7 +124,8 @@ class TestUserProfileConfigForm:
         assert "day_of_week" in form.fields
         assert "hour_of_day" in form.fields
         assert "include_archived" in form.fields
-        assert len(form.fields) == 5
+        assert "include_own" in form.fields
+        assert len(form.fields) == 6
 
     def test_form_max_entries_widget_has_min_attribute(self):
         form = UserProfileConfigForm()
@@ -150,6 +155,7 @@ class TestUserProfileConfigForm:
             "day_of_week": UserProfile.FRIDAY,
             "hour_of_day": 18,
             "include_archived": True,
+            "include_own": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -177,6 +183,7 @@ class TestUserProfileConfigForm:
                 "day_of_week": day,
                 "hour_of_day": 12,
                 "include_archived": True,
+                "include_own": True,
             }
             form = UserProfileConfigForm(data=form_data, instance=user_profile)
             assert form.is_valid(), f"Form should be valid for day {day}"

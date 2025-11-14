@@ -1,7 +1,8 @@
 import random
 from datetime import datetime
 
-from allauth.socialaccount.models import SocialToken
+from allauth.socialaccount.models import SocialAccount, SocialToken
+from django.db.models import Q
 from django.template.loader import render_to_string
 from django_q.tasks import async_task
 from loguru import logger
@@ -83,6 +84,7 @@ def pager(
         try:
             TempStar.objects.create(
                 user=user,
+                token=current_token,
                 provider="github",
                 provider_id=str(item["id"]),
                 name=item["name"],
@@ -155,20 +157,31 @@ def generate_data(user_id: int) -> None:
     else:
         logger.info("No cycle start found, starting fresh cycle")
 
-    temp_stars_kwargs = {"user": user}
-    archive_label = "unarchived"
+    temp_stars_filter_kwargs = {"user": user}
     if not user.user_profile.include_archived:
-        temp_stars_kwargs["archived"] = False
-        archive_label = "archived"
+        temp_stars_filter_kwargs["archived"] = False
         logger.info("Filtering out archived repositories")
 
-    unshown_temp_stars = list(
-        TempStar.objects.filter(**temp_stars_kwargs).exclude(
-            provider_id__in=previously_shown_ids
+    # Build exclude conditions using Q objects for OR logic
+    exclude_conditions = Q(provider_id__in=previously_shown_ids)
+    if not user.user_profile.include_own:
+        user_account_uids = list(
+            SocialAccount.objects.filter(
+                user=user,
+                provider="github",
+            ).values_list("uid", flat=True)
         )
+        if user_account_uids:
+            exclude_conditions |= Q(owner_id__in=user_account_uids)
+            logger.info(
+                f"Filtering out repositories owned by user accounts: {user_account_uids}"
+            )
+
+    unshown_temp_stars = list(
+        TempStar.objects.filter(**temp_stars_filter_kwargs).exclude(exclude_conditions)
     )
 
-    logger.info(f"Found {len(unshown_temp_stars)} unshown {archive_label} temp stars")
+    logger.info(f"Found {len(unshown_temp_stars)} unshown eligible temp stars")
 
     if len(unshown_temp_stars) < user.user_profile.max_entries:
         logger.info(
@@ -176,7 +189,24 @@ def generate_data(user_id: int) -> None:
             f"but need {user.user_profile.max_entries}. Querying all repos."
         )
 
-        all_temp_stars = list(TempStar.objects.filter(**temp_stars_kwargs))
+        # When wrapping around, we need to query all repos, not just unshown ones
+        # But we still need to exclude user's own repos if that setting is enabled
+        all_repos_exclude_conditions = Q()
+        if not user.user_profile.include_own:
+            user_account_uids = list(
+                SocialAccount.objects.filter(
+                    user=user,
+                    provider="github",
+                ).values_list("uid", flat=True)
+            )
+            if user_account_uids:
+                all_repos_exclude_conditions = Q(owner_id__in=user_account_uids)
+
+        all_temp_stars = list(
+            TempStar.objects.filter(**temp_stars_filter_kwargs).exclude(
+                all_repos_exclude_conditions
+            )
+        )
 
         if not all_temp_stars:
             logger.info("No temp stars found, exiting")
@@ -192,7 +222,11 @@ def generate_data(user_id: int) -> None:
 
     else:
         temp_stars_to_sample = unshown_temp_stars
-        total_repos_available = TempStar.objects.filter(**temp_stars_kwargs).count()
+        total_repos_available = (
+            TempStar.objects.filter(**temp_stars_filter_kwargs)
+            .exclude(exclude_conditions)
+            .count()
+        )
 
     sample_size = min(user.user_profile.max_entries, len(temp_stars_to_sample))
     sampled_temp_stars = random.sample(temp_stars_to_sample, sample_size)
@@ -220,9 +254,17 @@ def generate_data(user_id: int) -> None:
             repo_url=temp_star.repo_url,
             project_url=temp_star.project_url,
             archived=temp_star.archived,
+            token=temp_star.token,
         )
 
-        if idx == cutoff_index or (idx == 0 and user.user_profile.cycle_start is None):
+        if idx == cutoff_index and cutoff_index > 0:
+            user.user_profile.cycle_start = star
+            user.user_profile.save()
+            logger.info(
+                f"Cycle start set to Star ID {star.id} "
+                f"(star {idx + 1} of {len(sampled_temp_stars)} in this reminder)"
+            )
+        elif idx == 0 and user.user_profile.cycle_start is None:
             user.user_profile.cycle_start = star
             user.user_profile.save()
             logger.info(
@@ -232,7 +274,7 @@ def generate_data(user_id: int) -> None:
 
     logger.info(f"Created reminder and {len(sampled_temp_stars)} stars")
 
-    if cutoff_index == len(sampled_temp_stars):
+    if cutoff_index <= 0 or cutoff_index == len(sampled_temp_stars):
         user.user_profile.cycle_start = None
         user.user_profile.save()
         logger.info(
