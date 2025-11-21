@@ -42,7 +42,9 @@ class UserProfileAdmin(admin.ModelAdmin):
         "max_entries",
         "day_of_week",
         "hour_of_day",
+        "enabled",
     ]
+    list_filter = ["enabled"]
 
     @admin.display(description="User", ordering="user__username")
     def user_link(self, obj: UserProfile) -> str:

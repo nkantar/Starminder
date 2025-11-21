@@ -122,6 +122,10 @@ class TestUserProfileConfigForm:
         assert "include_archived" in form.fields
         assert len(form.fields) == 5
 
+    def test_form_excludes_enabled_field(self):
+        form = UserProfileConfigForm()
+        assert "enabled" not in form.fields
+
     def test_form_max_entries_widget_has_min_attribute(self):
         form = UserProfileConfigForm()
         widget_attrs = form.fields["max_entries"].widget.attrs

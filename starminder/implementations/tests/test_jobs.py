@@ -1120,3 +1120,134 @@ def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
                 assert len(duplicates) == 0, f"Found duplicates in cycle: {duplicates}"
 
         all_shown_ids.update(provider_ids)
+
+
+# enabled flag tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.datetime")
+def test_start_jobs_excludes_disabled_users(
+    mock_datetime, mock_async_task, user, user2
+) -> None:
+    """Test that disabled users are excluded from scheduled jobs."""
+    now = datetime(2025, 10, 11, 12, 0)
+    mock_datetime.now.return_value = now
+
+    # Set both users to same schedule
+    user.user_profile.day_of_week = now.weekday()
+    user.user_profile.hour_of_day = now.hour
+    user.user_profile.enabled = True
+    user.user_profile.save()
+
+    user2.user_profile.day_of_week = now.weekday()
+    user2.user_profile.hour_of_day = now.hour
+    user2.user_profile.enabled = False
+    user2.user_profile.save()
+
+    start_jobs()
+
+    # Only the enabled user should be scheduled
+    mock_async_task.assert_called_once_with(
+        "starminder.implementations.jobs.user_job",
+        user.id,
+    )
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.datetime")
+def test_scheduled_for_excludes_disabled_profiles(
+    mock_datetime, mock_async_task, user, user2
+) -> None:
+    """Test that UserProfile.objects.scheduled_for() excludes disabled users."""
+    now = datetime(2025, 10, 11, 12, 0)
+
+    # Set both users to same schedule
+    user.user_profile.day_of_week = now.weekday()
+    user.user_profile.hour_of_day = now.hour
+    user.user_profile.enabled = True
+    user.user_profile.save()
+
+    user2.user_profile.day_of_week = now.weekday()
+    user2.user_profile.hour_of_day = now.hour
+    user2.user_profile.enabled = False
+    user2.user_profile.save()
+
+    scheduled_profiles = UserProfile.objects.scheduled_for(now)
+
+    # Only the enabled user should be in the queryset
+    assert scheduled_profiles.count() == 1
+    first_profile = scheduled_profiles.first()
+    assert first_profile is not None
+    assert first_profile.user.id == user.id
+
+
+@pytest.mark.django_db
+def test_new_users_enabled_by_default(db, django_user_model) -> None:
+    """Test that newly created users have enabled=True by default."""
+    new_user = django_user_model.objects.create_user(
+        username="newuser",
+        email="newuser@example.com",
+        password="testpass123",
+    )
+
+    # User profile should be auto-created with enabled=True
+    assert new_user.user_profile.enabled is True
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.datetime")
+def test_disabling_user_prevents_scheduling(
+    mock_datetime, mock_async_task, user
+) -> None:
+    """Test that disabling a user prevents them from being scheduled."""
+    now = datetime(2025, 10, 11, 12, 0)
+    mock_datetime.now.return_value = now
+
+    user.user_profile.day_of_week = now.weekday()
+    user.user_profile.hour_of_day = now.hour
+    user.user_profile.enabled = True
+    user.user_profile.save()
+
+    start_jobs()
+    assert mock_async_task.call_count == 1
+
+    # Now disable the user
+    mock_async_task.reset_mock()
+    user.user_profile.enabled = False
+    user.user_profile.save()
+
+    start_jobs()
+    mock_async_task.assert_not_called()
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.datetime")
+def test_reenabling_user_allows_scheduling(
+    mock_datetime, mock_async_task, user
+) -> None:
+    """Test that re-enabling a user allows them to be scheduled again."""
+    now = datetime(2025, 10, 11, 12, 0)
+    mock_datetime.now.return_value = now
+
+    user.user_profile.day_of_week = now.weekday()
+    user.user_profile.hour_of_day = now.hour
+    user.user_profile.enabled = False
+    user.user_profile.save()
+
+    start_jobs()
+    mock_async_task.assert_not_called()
+
+    # Re-enable the user
+    user.user_profile.enabled = True
+    user.user_profile.save()
+
+    start_jobs()
+    mock_async_task.assert_called_once_with(
+        "starminder.implementations.jobs.user_job",
+        user.id,
+    )

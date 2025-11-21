@@ -77,6 +77,7 @@ class UserProfileManager(Manager["UserProfile"]):
         return self.get_queryset().filter(
             Q(day_of_week=current_day) | Q(day_of_week=UserProfile.EVERY_DAY),
             hour_of_day=current_hour,
+            enabled=True,
         )
 
 
@@ -117,6 +118,7 @@ class UserProfile(TimestampedModel):
         validators=[MinValueValidator(0), MaxValueValidator(23)],
     )
     include_archived = BooleanField(default=True)
+    enabled = BooleanField(default=True)
 
     cycle_start = OneToOneField(
         "content.Star",

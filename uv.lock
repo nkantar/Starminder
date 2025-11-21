@@ -851,7 +851,7 @@ wheels = [
 
 [[package]]
 name = "starminder"
-version = "25.11.2.2"
+version = "25.11.20"
 source = { virtual = "." }
 dependencies = [
     { name = "croniter" },

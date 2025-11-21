@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [25.11.20]
+
+### Added
+- User enabled flag to allow manually disabling users with invalid tokens
+
+
 ## [25.11.2.2] - 2025-11-02
 
 ### Added
@@ -267,7 +273,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.11.2.2...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/25.11.20...HEAD
+[25.11.20]: https://github.com/nkantar/Starminder/compare/25.11.2.2...25.11.20
 [25.11.2.2]: https://github.com/nkantar/Starminder/compare/25.11.2.1...25.11.2.2
 [25.11.2.1]: https://github.com/nkantar/Starminder/compare/25.11.2...25.11.2.1
 [25.11.2]: https://github.com/nkantar/Starminder/compare/25.10.20.2...25.11.2
