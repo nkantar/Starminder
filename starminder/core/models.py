@@ -117,8 +117,10 @@ class UserProfile(TimestampedModel):
         default=0,
         validators=[MinValueValidator(0), MaxValueValidator(23)],
     )
-    include_archived = BooleanField(default=True)
     enabled = BooleanField(default=True)
+
+    include_archived = BooleanField(default=True)
+    include_own = BooleanField(default=True)
 
     cycle_start = OneToOneField(
         "content.Star",

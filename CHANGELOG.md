@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [26.5.18]
+
+### Added
+- Support for excluding own repositories
+
+
 ## [25.11.20]
 
 ### Added
@@ -273,7 +279,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/25.11.20...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/26.5.18...HEAD
+[26.5.18]: https://github.com/nkantar/Starminder/compare/25.11.20...26.5.18
 [25.11.20]: https://github.com/nkantar/Starminder/compare/25.11.2.2...25.11.20
 [25.11.2.2]: https://github.com/nkantar/Starminder/compare/25.11.2.1...25.11.2.2
 [25.11.2.1]: https://github.com/nkantar/Starminder/compare/25.11.2...25.11.2.1

@@ -347,6 +347,7 @@ def test_pager_schedules_generate_data_when_last_token(
     call_args = mock_async_task.call_args
     assert call_args[0][0] == "starminder.implementations.jobs.generate_data"
     assert call_args[0][1] == user.id
+    assert call_args[0][2] == "test_uid"
 
 
 @pytest.mark.django_db
@@ -455,7 +456,7 @@ def test_pager_skips_repos_with_deleted_owner(
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
 def test_generate_data_creates_reminder(mock_async_task, user, temp_star) -> None:
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     assert Reminder.objects.filter(user=user).count() == 1
 
@@ -465,7 +466,7 @@ def test_generate_data_creates_reminder(mock_async_task, user, temp_star) -> Non
 def test_generate_data_creates_stars_from_temp_stars(
     mock_async_task, user, temp_star
 ) -> None:
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     reminder = Reminder.objects.get(user=user)
     assert Star.objects.filter(reminder=reminder).count() == 1
@@ -501,7 +502,7 @@ def test_generate_data_respects_max_entries_limit(mock_async_task, user) -> None
     user.user_profile.max_entries = 3
     user.user_profile.save()
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     reminder = Reminder.objects.get(user=user)
     assert Star.objects.filter(reminder=reminder).count() == 3
@@ -512,7 +513,7 @@ def test_generate_data_respects_max_entries_limit(mock_async_task, user) -> None
 def test_generate_data_does_not_create_reminder_when_no_temp_stars(
     mock_async_task, user
 ) -> None:
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     assert Reminder.objects.filter(user=user).count() == 0
 
@@ -528,7 +529,7 @@ def test_generate_data_queues_email_when_email_configured(
     user.user_profile.reminder_email = "user@example.com"
     user.user_profile.save()
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     # Should have 2 calls: one for email send, one for cleanup
     assert mock_async_task.call_count == 2
@@ -548,7 +549,7 @@ def test_generate_data_does_not_queue_email_when_no_email(
     user.user_profile.reminder_email = None
     user.user_profile.save()
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     # Should only have 1 call for cleanup
     assert mock_async_task.call_count == 1
@@ -561,7 +562,7 @@ def test_generate_data_does_not_queue_email_when_no_email(
 @pytest.mark.django_db
 @patch("starminder.implementations.jobs.async_task")
 def test_generate_data_queues_cleanup(mock_async_task, user, temp_star) -> None:
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     # Get the last call (cleanup should be last)
     cleanup_call = mock_async_task.call_args_list[-1]
@@ -593,7 +594,7 @@ def test_generate_data_samples_randomly(mock_sample, mock_async_task, user) -> N
 
     mock_sample.return_value = temp_stars[:5]
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     mock_sample.assert_called_once()
     assert len(mock_sample.call_args[0][0]) == 10
@@ -777,7 +778,7 @@ def test_generate_data_excludes_archived_when_preference_false(
         archived=True,
     )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     # Verify only non-archived repo appears in results
     reminder = Reminder.objects.get(user=user)
@@ -807,7 +808,7 @@ def test_generate_data_includes_archived_by_default(mock_async_task, user) -> No
         archived=True,
     )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     # Verify archived repo appears in results
     reminder = Reminder.objects.get(user=user)
@@ -846,7 +847,7 @@ def test_generate_data_preserves_archived_status_in_stars(
         archived=True,
     )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     reminder = Reminder.objects.get(user=user)
     stars = Star.objects.filter(reminder=reminder).order_by("name")
@@ -890,10 +891,80 @@ def test_generate_data_handles_all_archived_when_excluded(
         archived=True,
     )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     # No reminder should be created
     assert Reminder.objects.filter(user=user).count() == 0
+
+
+# own repository tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_includes_own_when_preference_false(
+    mock_async_task,
+    user,
+) -> None:
+    """Test that own repositories are excluded when setting is False."""
+
+    user.user_profile.include_own = False
+    user.user_profile.save()
+
+    # create mix of own and non-own TempStars
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="active-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=100,
+        repo_url="https://github.com/owner/active-repo",
+        archived=False,
+    )
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="2",
+        name="archived-repo",
+        owner="owner",
+        owner_id="123",
+        star_count=50,
+        repo_url="https://github.com/owner/archived-repo",
+        archived=True,
+    )
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="3",
+        name="active-repo-2",
+        owner=user.username,
+        owner_id="456",
+        star_count=100,
+        repo_url="https://github.com/456/active-repo-2",
+        archived=False,
+    )
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="4",
+        name="archived-repo",
+        owner=user.username,
+        owner_id="456",
+        star_count=50,
+        repo_url="https://github.com/456/archived-repo-3",
+        archived=True,
+    )
+
+    generate_data(user.id, "456")
+
+    # verify only non-own repos appear in results
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 2
+    user_uids = {star.owner_id for star in stars}
+    assert "456" not in user_uids
 
 
 # cycle tracking tests
@@ -918,7 +989,7 @@ def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
     user.user_profile.max_entries = 5
     user.user_profile.save()
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is not None
@@ -941,7 +1012,7 @@ def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
             repo_url=f"https://github.com/owner/repo{i}",
         )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is None
@@ -972,7 +1043,7 @@ def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
     user.user_profile.max_entries = 7
     user.user_profile.save()
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is not None
 
@@ -989,7 +1060,7 @@ def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
             repo_url=f"https://github.com/owner/repo{i}",
         )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
 
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is not None
@@ -1047,7 +1118,7 @@ def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
     user.user_profile.max_entries = 4
     user.user_profile.save()
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is not None
 
@@ -1064,7 +1135,7 @@ def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
             repo_url=f"https://github.com/owner/repo{i}",
         )
 
-    generate_data(user.id)
+    generate_data(user.id, "irrelevant")
     user.user_profile.refresh_from_db()
 
     reminder2 = Reminder.objects.order_by("created_at")[1]
@@ -1096,7 +1167,7 @@ def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
     all_shown_ids = set()
 
     for reminder_num in range(3):
-        generate_data(user.id)
+        generate_data(user.id, "irrelevant")
 
         TempStar.objects.all().delete()
         for i in range(12):
