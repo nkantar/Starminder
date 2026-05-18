@@ -15,7 +15,7 @@ dependencies = [
     "loguru>=0.7.3",
     "parsenvy>=3.0.3",
     "psycopg[binary]>=3.2.10",
-    "python-dotenv>=1.1.1",
+    "python-dotenv>=1.2.2",
     "sentry-sdk[django]>=2.41.0",
     "whitenoise[brotli]>=6.11.0",
 ]
