@@ -129,7 +129,8 @@ input#id_reminder_email {
   width: 20rem;
 }
 
-select#id_include_archived {
+select#id_include_archived,
+select#id_include_own {
   width: 10rem;
 }
 

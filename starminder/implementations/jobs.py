@@ -130,10 +130,11 @@ def pager(
         async_task(
             "starminder.implementations.jobs.generate_data",
             user.id,
+            current_token.account.uid,
         )
 
 
-def generate_data(user_id: int) -> None:
+def generate_data(user_id: int, user_uid: str) -> None:
     """Sample TempStars, create Reminder and Stars, queue email sending, clean up."""
     logger.info(f"Generating data for user_id={user_id}")
 
@@ -162,11 +163,14 @@ def generate_data(user_id: int) -> None:
         archive_label = "archived"
         logger.info("Filtering out archived repositories")
 
-    unshown_temp_stars = list(
-        TempStar.objects.filter(**temp_stars_kwargs).exclude(
-            provider_id__in=previously_shown_ids
-        )
+    unshown_temp_stars_qs = TempStar.objects.filter(**temp_stars_kwargs).exclude(
+        provider_id__in=previously_shown_ids,
     )
+
+    if not user.user_profile.include_own:
+        unshown_temp_stars_qs = unshown_temp_stars_qs.exclude(owner_id=user_uid)
+
+    unshown_temp_stars = list(unshown_temp_stars_qs)
 
     logger.info(f"Found {len(unshown_temp_stars)} unshown {archive_label} temp stars")
 
@@ -176,7 +180,12 @@ def generate_data(user_id: int) -> None:
             f"but need {user.user_profile.max_entries}. Querying all repos."
         )
 
-        all_temp_stars = list(TempStar.objects.filter(**temp_stars_kwargs))
+        all_temp_stars_qs = TempStar.objects.filter(**temp_stars_kwargs)
+
+        if not user.user_profile.include_own:
+            all_temp_stars_qs = all_temp_stars_qs.exclude(owner_id=user_uid)
+
+        all_temp_stars = list(all_temp_stars_qs)
 
         if not all_temp_stars:
             logger.info("No temp stars found, exiting")
