@@ -48,6 +48,9 @@ SECRET_KEY = parsenvy.str("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = parsenvy.list("DJANGO_ALLOWED_HOSTS")
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
+
 CSRF_TRUSTED_ORIGINS = [f"https://{host}" for host in cast(list, ALLOWED_HOSTS)]
 
 AUTH_USER_MODEL = "core.CustomUser"

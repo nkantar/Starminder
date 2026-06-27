@@ -14,6 +14,21 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [26.6.28]
+
+### Added
+- `/health`
+
+### Changed
+- Hosting setup to expect external/host Caddy to do all the proxying
+
+### Deprecated
+- Caddy proxy container
+
+### Fixed
+- Intermittend downtime (hopefully)
+
+
 ## [26.5.18]
 
 ### Added
@@ -279,7 +294,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/26.5.18...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/26.6.28...HEAD
+[26.6.28]: https://github.com/nkantar/Starminder/compare/26.5.18...26.6.28
 [26.5.18]: https://github.com/nkantar/Starminder/compare/25.11.20...26.5.18
 [25.11.20]: https://github.com/nkantar/Starminder/compare/25.11.2.2...25.11.20
 [25.11.2.2]: https://github.com/nkantar/Starminder/compare/25.11.2.1...25.11.2.2

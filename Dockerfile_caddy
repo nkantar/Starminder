@@ -1,5 +1,0 @@
-# serve with Caddy
-FROM caddy:alpine
-
-# copy Caddy config
-COPY Caddyfile /etc/caddy/Caddyfile
