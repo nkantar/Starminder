@@ -1,5 +1,5 @@
 services:
-  web:
+  starminder-web:
     build: .
     container_name: starminder-web
     restart: unless-stopped
@@ -17,16 +17,15 @@ services:
       - "8000"
     networks:
       - starminder
-    depends_on:
-      - proxy
+      - coolify
     healthcheck:
-      test: ["CMD", "curl", "--fail", "--silent", "--output", "/dev/null", "https://starminder.dev"]
+      test: ["CMD", "curl", "--fail", "--silent", "--output", "/dev/null", "--header", "Host: starminder.dev", "http://localhost:8000/health/"]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  worker:
+  starminder-worker:
     build: .
     container_name: starminder-web
     restart: unless-stopped
@@ -42,7 +41,7 @@ services:
     networks:
       - starminder
     depends_on:
-      - web
+      - starminder-web
     command: ["just", "worker"]
     healthcheck:
       test: ["CMD", "pgrep", "-f", "qcluster"]
@@ -51,30 +50,8 @@ services:
       retries: 3
       start_period: 40s
 
-  proxy:
-    build:
-      context: .
-      dockerfile: Dockerfile_caddy
-    container_name: starminder-caddy
-    restart: unless-stopped
-    expose:
-      - "80"
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
-    networks:
-      - starminder
-    healthcheck:
-      test: ["CMD", "pgrep", "-f", "caddy"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
 networks:
   starminder:
     driver: bridge
-
-volumes:
-  caddy_data:
-  caddy_config:
+  coolify:
+    external: true

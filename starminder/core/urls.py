@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.urls import path
 
 from starminder.core.views import (
@@ -14,4 +15,5 @@ urlpatterns = [
     path("delete-account/", DeleteAccountView.as_view(), name="delete_account"),
     path("faq/", FAQView.as_view(), name="faq"),
     path("testimonials/", TestimonialsView.as_view(), name="testimonials"),
+    path("health/", lambda request: HttpResponse("ok")),
 ]
