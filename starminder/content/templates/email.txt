@@ -2,11 +2,11 @@ Hi {{ user.username }}!
 
 Your {{ reminder.created_at.date }} reminder brings you the following stars:
 
-{% for star in reminder.star_set.all %}- {{ star.owner }}/{{ star.name }}{% if star.archived %} [archived]{% endif %}
-{% if star.description %}    - {{ star.description_pretty }}
+{% for star in reminder.star_set.all %}- {{ star.owner }}/{{ star.emailable_name }}{% if star.archived %} [archived]{% endif %}
+{% if star.description and not star.description_flagged %}    - {{ star.description_pretty }}
 {% endif %}    - {{ star.star_count }} stars
     - {{ star.repo_url }}
-{% if star.project_url %}    - {{ star.project_url }}
+{% if star.project_url and not star.project_url_flagged %}    - {{ star.project_url }}
 {% endif %}
 {% endfor %}
 You can see the whole thing at: https://starminder.dev{% url 'reminder_detail' user.user_profile.feed_id reminder.id %}

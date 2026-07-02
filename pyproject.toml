@@ -1,6 +1,6 @@
 [project]
 name = "Starminder"
-version = "26.6.28"
+version = "26.7.1"
 dependencies = [
     "croniter>=6.0.0",
     "dj-database-url>=3.0.1",
@@ -12,6 +12,7 @@ dependencies = [
     "htpy>=25.10.0",
     "httpx>=0.28.1",
     "httpx-retries>=0.4.3",
+    "idna>=3.10",
     "loguru>=0.7.3",
     "parsenvy>=3.0.3",
     "psycopg[binary]>=3.2.10",

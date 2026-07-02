@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db.models import CASCADE, ForeignKey, Manager
+from django.db.models import BooleanField, CASCADE, ForeignKey, Manager
 import emoji
 
 from starminder.core.models import StarFieldsBase, TimestampedModel
@@ -29,6 +29,9 @@ class Star(TimestampedModel, StarFieldsBase):
     objects: "Manager[Star]"
 
     reminder = ForeignKey(Reminder, on_delete=CASCADE)
+    project_url_flagged = BooleanField(default=False)
+    description_flagged = BooleanField(default=False)
+    name_flagged = BooleanField(default=False)
 
     class Meta:
         verbose_name = "Star"
@@ -39,3 +42,9 @@ class Star(TimestampedModel, StarFieldsBase):
     @property
     def description_pretty(self) -> str:
         return emoji.emojize(self.description, language="alias")
+
+    @property
+    def emailable_name(self) -> str:
+        if self.name_flagged:
+            return self.name.replace(".", "[.]")
+        return self.name

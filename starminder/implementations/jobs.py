@@ -9,6 +9,7 @@ import httpx
 from httpx_retries import Retry, RetryTransport
 import sentry_sdk
 
+from starminder.content.linkcheck import extract_urls, get_flagged_urls
 from starminder.content.models import Reminder, Star
 from starminder.core.models import CustomUser, UserProfile
 from starminder.implementations.models import TempStar
@@ -208,13 +209,45 @@ def generate_data(user_id: int, user_uid: str) -> None:
 
     logger.info(f"Sampled {sample_size} temp stars")
 
+    reminder = Reminder.objects.create(user_id=user_id)
+
+    description_urls = {
+        temp_star.id: extract_urls(temp_star.description or "")
+        for temp_star in sampled_temp_stars
+    }
+    name_urls = {
+        temp_star.id: extract_urls(temp_star.name) for temp_star in sampled_temp_stars
+    }
+    checked_urls = (
+        [
+            temp_star.project_url
+            for temp_star in sampled_temp_stars
+            if temp_star.project_url
+        ]
+        + [url for urls in description_urls.values() for url in urls]
+        + [url for urls in name_urls.values() for url in urls]
+    )
+    with sentry_sdk.new_scope() as scope:
+        scope.set_extra("reminder_id", reminder.id)
+        scope.set_extra(
+            "reminder_url",
+            f"https://starminder.dev/reminders/"
+            f"{user.user_profile.feed_id}/{reminder.id}/",
+        )
+        scope.set_extra("recipient", user.user_profile.reminder_email)
+
+        try:
+            flagged_urls = get_flagged_urls(checked_urls)
+        except Exception as error:
+            logger.exception("Link check failed entirely, failing closed on all URLs")
+            sentry_sdk.capture_exception(error)
+            flagged_urls = set(checked_urls)
+
     cutoff_index = total_repos_available - len(previously_shown_ids)
     logger.info(
         f"Cutoff index: {cutoff_index} "
         f"(total: {total_repos_available}, shown: {len(previously_shown_ids)})"
     )
-
-    reminder = Reminder.objects.create(user_id=user_id)
 
     for idx, temp_star in enumerate(sampled_temp_stars):
         star = Star.objects.create(
@@ -224,10 +257,15 @@ def generate_data(user_id: int, user_uid: str) -> None:
             owner=temp_star.owner,
             owner_id=temp_star.owner_id,
             name=temp_star.name,
+            name_flagged=any(url in flagged_urls for url in name_urls[temp_star.id]),
             description=temp_star.description,
+            description_flagged=any(
+                url in flagged_urls for url in description_urls[temp_star.id]
+            ),
             star_count=temp_star.star_count,
             repo_url=temp_star.repo_url,
             project_url=temp_star.project_url,
+            project_url_flagged=temp_star.project_url in flagged_urls,
             archived=temp_star.archived,
         )
 

@@ -851,7 +851,7 @@ wheels = [
 
 [[package]]
 name = "starminder"
-version = "26.6.28"
+version = "26.7.1"
 source = { virtual = "." }
 dependencies = [
     { name = "croniter" },
@@ -864,6 +864,7 @@ dependencies = [
     { name = "htpy" },
     { name = "httpx" },
     { name = "httpx-retries" },
+    { name = "idna" },
     { name = "loguru" },
     { name = "parsenvy" },
     { name = "psycopg", extra = ["binary"] },
@@ -894,6 +895,7 @@ requires-dist = [
     { name = "htpy", specifier = ">=25.10.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "httpx-retries", specifier = ">=0.4.3" },
+    { name = "idna", specifier = ">=3.10" },
     { name = "loguru", specifier = ">=0.7.3" },
     { name = "parsenvy", specifier = ">=3.0.3" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.2.10" },

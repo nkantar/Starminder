@@ -4,14 +4,14 @@
 
 <ul>
   {% for star in reminder.star_set.all %}
-    <li><strong><a href="{{ star.repo_url }}">{{ star.owner }}/{{ star.name }}</a></strong>{% if star.archived %} <small>[archived]</small>{% endif %}<br>
+    <li><strong><a href="{{ star.repo_url }}">{{ star.owner }}/{{ star.emailable_name }}</a></strong>{% if star.archived %} <small>[archived]</small>{% endif %}<br>
       <ul>
-        {% if star.description %}
+        {% if star.description and not star.description_flagged %}
           <li>{{ star.description_pretty }}</li>
         {% endif %}
         <li>{{ star.star_count }} stars</li>
         <li><a href="{{ star.repo_url }}">{{ star.repo_url }}</a></li>
-        {% if star.project_url %}
+        {% if star.project_url and not star.project_url_flagged %}
           <li><a href="{{ star.project_url }}">{{ star.project_url }}</a></li>
         {% endif %}
       </ul>
