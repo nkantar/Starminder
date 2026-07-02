@@ -1,7 +1,7 @@
 from http import HTTPMethod
-from typing import Any
+from typing import Any, cast
 
-from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.models import SocialAccount, SocialToken
 import httpx
 from django.contrib.auth import logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,6 +12,7 @@ from django.views import View
 from django.views.generic import FormView, TemplateView
 
 from starminder.core.forms import UserProfileConfigForm
+from starminder.core.models import CustomUser
 
 
 class HomepageView(TemplateView):
@@ -36,7 +37,7 @@ class DashboardView(LoginRequiredMixin, FormView):
 
     def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
-        kwargs["instance"] = self.request.user.user_profile
+        kwargs["instance"] = cast(CustomUser, self.request.user).user_profile
         return kwargs
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
@@ -44,7 +45,7 @@ class DashboardView(LoginRequiredMixin, FormView):
         context["socialaccount_list"] = SocialAccount.objects.filter(
             user=self.request.user
         )
-        context["user_profile"] = self.request.user.user_profile
+        context["user_profile"] = cast(CustomUser, self.request.user).user_profile
         context["page_title"] = "Dashboard"
         return context
 
@@ -55,8 +56,9 @@ class DashboardView(LoginRequiredMixin, FormView):
 
 class DeleteAccountView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest) -> HttpResponse:
-        for social_account in request.user.socialaccount_set.all():
-            for social_token in social_account.socialtoken_set.all():
+        user = cast(CustomUser, request.user)
+        for social_account in user.socialaccount_set.all():
+            for social_token in SocialToken.objects.filter(account=social_account):
                 app_client_id = social_token.app.client_id
 
                 httpx.request(
@@ -70,6 +72,6 @@ class DeleteAccountView(LoginRequiredMixin, View):
                     json={"access_token": social_token.token},
                 )
 
-        request.user.delete()
+        user.delete()
         logout(request)
         return redirect("homepage")

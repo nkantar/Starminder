@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, ClassVar
 from uuid import uuid4
 
+from allauth.socialaccount.models import SocialAccount
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
@@ -60,7 +61,9 @@ class StarFieldsBase(Model):
 
 class CustomUser(AbstractUser):
     id: int
-    user_profile = "CustomUser"
+    objects: ClassVar[UserManager["CustomUser"]]
+    user_profile: "UserProfile"
+    socialaccount_set: "Manager[SocialAccount]"
 
     def __str__(self) -> str:
         return f"{self.username} (User)"
@@ -102,7 +105,7 @@ class UserProfile(TimestampedModel):
         (SUNDAY, "Sunday"),
     ]
 
-    objects: UserProfileManager = UserProfileManager()
+    objects: ClassVar[UserProfileManager] = UserProfileManager()
 
     user = OneToOneField(CustomUser, on_delete=CASCADE, related_name="user_profile")
     feed_id = UUIDField(default=uuid4, unique=True)

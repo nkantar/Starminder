@@ -1,10 +1,7 @@
 import pytest
-from django.contrib.auth import get_user_model
 
 from starminder.core.forms import UserProfileConfigForm
-from starminder.core.models import UserProfile
-
-User = get_user_model()
+from starminder.core.models import CustomUser as User, UserProfile
 
 
 @pytest.fixture

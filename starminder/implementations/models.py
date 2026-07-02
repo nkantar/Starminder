@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.conf import settings
 from django.db.models import CASCADE, ForeignKey, Manager
 
@@ -5,7 +7,7 @@ from starminder.core.models import StarFieldsBase, TimestampedModel
 
 
 class TempStar(TimestampedModel, StarFieldsBase):
-    objects: "Manager[TempStar]"
+    objects: ClassVar["Manager[TempStar]"]
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
 
