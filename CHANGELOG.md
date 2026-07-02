@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [26.7.1]
+
+### Fixed
+- Reminder emails being rejected by Forward Email when a project URL, description, or repository name referenced a domain flagged by Cloudflare Family DNS
+
+
 ## [26.6.28]
 
 ### Added
@@ -294,7 +300,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/26.6.28...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/26.7.1...HEAD
+[26.7.1]: https://github.com/nkantar/Starminder/compare/26.6.28...26.7.1
 [26.6.28]: https://github.com/nkantar/Starminder/compare/26.5.18...26.6.28
 [26.5.18]: https://github.com/nkantar/Starminder/compare/25.11.20...26.5.18
 [25.11.20]: https://github.com/nkantar/Starminder/compare/25.11.2.2...25.11.20

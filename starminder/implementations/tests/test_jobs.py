@@ -51,6 +51,15 @@ def social_token(social_account):
     )
 
 
+@pytest.fixture(autouse=True)
+def mock_get_flagged_urls():
+    with patch(
+        "starminder.implementations.jobs.get_flagged_urls",
+        return_value=set(),
+    ) as mock_flagged:
+        yield mock_flagged
+
+
 @pytest.fixture
 def temp_star(user):
     return TempStar.objects.create(
@@ -1191,6 +1200,301 @@ def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
                 assert len(duplicates) == 0, f"Found duplicates in cycle: {duplicates}"
 
         all_shown_ids.update(provider_ids)
+
+
+# project URL flagging tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_flags_flagged_project_url(
+    mock_async_task, user, temp_star, mock_get_flagged_urls
+) -> None:
+    """Test that a flagged project URL sets the flag but preserves the URL."""
+    mock_get_flagged_urls.return_value = {"https://example.com"}
+
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.project_url_flagged is True
+    assert star.project_url == "https://example.com"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_does_not_flag_clean_project_url(
+    mock_async_task, user, temp_star
+) -> None:
+    """Test that a clean project URL leaves the flag unset."""
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.project_url_flagged is False
+    assert star.project_url == "https://example.com"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_checks_only_sampled_project_urls(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that the checker gets one call with only the sampled stars' URLs."""
+    for i in range(3):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+            project_url=f"https://example.com/repo{i}" if i < 2 else None,
+        )
+
+    generate_data(user.id, "irrelevant")
+
+    mock_get_flagged_urls.assert_called_once()
+    checked_urls = mock_get_flagged_urls.call_args[0][0]
+    assert set(checked_urls) == {
+        "https://example.com/repo0",
+        "https://example.com/repo1",
+    }
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_does_not_flag_missing_project_url(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that stars without a project URL are never flagged."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+    )
+
+    generate_data(user.id, "irrelevant")
+
+    mock_get_flagged_urls.assert_called_once_with([])
+    star = Star.objects.get(reminder__user=user)
+    assert star.project_url_flagged is False
+
+
+# description flagging tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_flags_description_with_flagged_url(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that a description containing a flagged URL sets the flag."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        description="Phishing tool, see wifiphisher.org for docs",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+    )
+    mock_get_flagged_urls.return_value = {"wifiphisher.org"}
+
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.description_flagged is True
+    assert star.description == "Phishing tool, see wifiphisher.org for docs"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_does_not_flag_clean_description(
+    mock_async_task, user, temp_star
+) -> None:
+    """Test that a description with no flagged URLs leaves the flag unset."""
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.description_flagged is False
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_checks_description_and_project_urls_together(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that description URLs join project URLs in the single batch call."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        description="Docs at docs.example.org",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+        project_url="https://example.com",
+    )
+
+    generate_data(user.id, "irrelevant")
+
+    mock_get_flagged_urls.assert_called_once()
+    checked_urls = mock_get_flagged_urls.call_args[0][0]
+    assert set(checked_urls) == {"https://example.com", "docs.example.org"}
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_does_not_flag_missing_description(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that stars without a description are never flagged."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+    )
+
+    generate_data(user.id, "irrelevant")
+
+    mock_get_flagged_urls.assert_called_once_with([])
+    star = Star.objects.get(reminder__user=user)
+    assert star.description_flagged is False
+
+
+# checker failure tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_survives_checker_failure(
+    mock_async_task, user, temp_star, mock_get_flagged_urls
+) -> None:
+    """Test that an unexpected checker crash fails closed instead of killing the job."""
+    mock_get_flagged_urls.side_effect = RuntimeError("boom")
+
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.project_url_flagged is True
+    assert star.name_flagged is False
+    assert star.description_flagged is False
+
+    cleanup_call = mock_async_task.call_args_list[-1]
+    assert cleanup_call[0][0] == "starminder.implementations.jobs.cleanup_temp_stars"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_flags_unicode_description_domain(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that bare unicode domains in descriptions reach the checker."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        description="докс на ドメイン.jp",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+    )
+    mock_get_flagged_urls.return_value = {"ドメイン.jp"}
+
+    generate_data(user.id, "irrelevant")
+
+    mock_get_flagged_urls.assert_called_once_with(["ドメイン.jp"])
+    star = Star.objects.get(reminder__user=user)
+    assert star.description_flagged is True
+
+
+# name flagging tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_flags_flagged_name(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that a domain-like flagged name sets the flag but stays raw."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="wifiphisher.org",
+        owner="owner",
+        owner_id="123",
+        star_count=10,
+        repo_url="https://github.com/owner/wifiphisher.org",
+    )
+    mock_get_flagged_urls.return_value = {"wifiphisher.org"}
+
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.name_flagged is True
+    assert star.name == "wifiphisher.org"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_does_not_flag_ordinary_name(
+    mock_async_task, user, temp_star, mock_get_flagged_urls
+) -> None:
+    """Test that a name with no domain-like tokens is never flagged."""
+    generate_data(user.id, "irrelevant")
+
+    star = Star.objects.get(reminder__user=user)
+    assert star.name_flagged is False
+    checked_urls = mock_get_flagged_urls.call_args[0][0]
+    assert "test-repo" not in checked_urls
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_checks_name_urls_in_batch(
+    mock_async_task, user, mock_get_flagged_urls
+) -> None:
+    """Test that name-derived URLs join the single batch call."""
+    TempStar.objects.create(
+        user=user,
+        provider="github",
+        provider_id="1",
+        name="cheat.sh",
+        owner="owner",
+        owner_id="123",
+        description="Docs at docs.example.org",
+        star_count=10,
+        repo_url="https://github.com/owner/cheat.sh",
+        project_url="https://example.com",
+    )
+
+    generate_data(user.id, "irrelevant")
+
+    mock_get_flagged_urls.assert_called_once()
+    checked_urls = mock_get_flagged_urls.call_args[0][0]
+    assert set(checked_urls) == {
+        "https://example.com",
+        "docs.example.org",
+        "cheat.sh",
+    }
 
 
 # enabled flag tests
