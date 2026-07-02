@@ -1,8 +1,10 @@
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from allauth.socialaccount.models import SocialToken
+from django.db import transaction
 from django.template.loader import render_to_string
+from django.utils import timezone
 from django_q.tasks import async_task
 from loguru import logger
 import httpx
@@ -13,6 +15,11 @@ from starminder.content.linkcheck import extract_urls, get_flagged_urls
 from starminder.content.models import Reminder, Star
 from starminder.core.models import CustomUser, UserProfile
 from starminder.implementations.models import TempStar
+
+
+# a task re-delivered by django-q after this long is assumed to be a
+# duplicate of an already-completed run rather than a legitimate new one
+RECENT_REMINDER_WINDOW = timedelta(hours=1)
 
 
 def start_jobs() -> None:
@@ -45,6 +52,12 @@ def user_job(user_id: int) -> None:
         logger.info("No tokens found, exiting")
         return
 
+    # a previous run that died mid-chain leaves TempStars behind; start
+    # every run from a clean slate so retries can't pollute the sampling
+    deleted_count, _ = TempStar.objects.filter(user=user).delete()
+    if deleted_count:
+        logger.info(f"Deleted {deleted_count} leftover temp stars")
+
     async_task(
         "starminder.implementations.jobs.pager",
         user,
@@ -63,7 +76,7 @@ def pager(
     current_token = tokens[0]
 
     httpx_transport = RetryTransport(retry=Retry(total=5, backoff_factor=0.5))
-    with httpx.Client(transport=httpx_transport) as client:
+    with httpx.Client(transport=httpx_transport, timeout=30) as client:
         response = client.get(
             "https://api.github.com/user/starred",
             headers={
@@ -142,6 +155,17 @@ def generate_data(user_id: int, user_uid: str) -> None:
     user = CustomUser.objects.get(id=user_id)
     logger.info(f"Found user {user.username}")
 
+    recent_reminder = Reminder.objects.filter(
+        user=user,
+        created_at__gte=timezone.now() - RECENT_REMINDER_WINDOW,
+    ).first()
+    if recent_reminder:
+        logger.info(
+            f"Reminder {recent_reminder.id} was created recently, "
+            "assuming duplicate delivery and skipping"
+        )
+        return
+
     previously_shown_ids = set()
 
     if cycle_start := user.user_profile.cycle_start:
@@ -209,106 +233,120 @@ def generate_data(user_id: int, user_uid: str) -> None:
 
     logger.info(f"Sampled {sample_size} temp stars")
 
-    reminder = Reminder.objects.create(user_id=user_id)
+    # everything from the Reminder to the queued email (an ORM-broker row)
+    # commits or rolls back as one unit, so a crash anywhere leaves no
+    # partial state and django-q's re-delivery can start completely fresh;
+    # the link check runs inside it too, holding the transaction open for up
+    # to its 60s budget — hoist it above the block if that ever hurts
+    with transaction.atomic():
+        reminder = Reminder.objects.create(user_id=user_id)
 
-    description_urls = {
-        temp_star.id: extract_urls(temp_star.description or "")
-        for temp_star in sampled_temp_stars
-    }
-    name_urls = {
-        temp_star.id: extract_urls(temp_star.name) for temp_star in sampled_temp_stars
-    }
-    checked_urls = (
-        [
-            temp_star.project_url
+        description_urls = {
+            temp_star.id: extract_urls(temp_star.description or "")
             for temp_star in sampled_temp_stars
-            if temp_star.project_url
-        ]
-        + [url for urls in description_urls.values() for url in urls]
-        + [url for urls in name_urls.values() for url in urls]
-    )
-    with sentry_sdk.new_scope() as scope:
-        scope.set_extra("reminder_id", reminder.id)
-        scope.set_extra(
-            "reminder_url",
-            f"https://starminder.dev/reminders/"
-            f"{user.user_profile.feed_id}/{reminder.id}/",
+        }
+        name_urls = {
+            temp_star.id: extract_urls(temp_star.name)
+            for temp_star in sampled_temp_stars
+        }
+        checked_urls = (
+            [
+                temp_star.project_url
+                for temp_star in sampled_temp_stars
+                if temp_star.project_url
+            ]
+            + [url for urls in description_urls.values() for url in urls]
+            + [url for urls in name_urls.values() for url in urls]
         )
-        scope.set_extra("recipient", user.user_profile.reminder_email)
+        with sentry_sdk.new_scope() as scope:
+            scope.set_extra("reminder_id", reminder.id)
+            scope.set_extra(
+                "reminder_url",
+                f"https://starminder.dev/reminders/"
+                f"{user.user_profile.feed_id}/{reminder.id}/",
+            )
+            scope.set_extra("recipient", user.user_profile.reminder_email)
 
-        try:
-            flagged_urls = get_flagged_urls(checked_urls)
-        except Exception as error:
-            logger.exception("Link check failed entirely, failing closed on all URLs")
-            sentry_sdk.capture_exception(error)
-            flagged_urls = set(checked_urls)
+            try:
+                flagged_urls = get_flagged_urls(checked_urls)
+            except Exception as error:
+                logger.exception(
+                    "Link check failed entirely, failing closed on all URLs"
+                )
+                sentry_sdk.capture_exception(error)
+                flagged_urls = set(checked_urls)
 
-    cutoff_index = total_repos_available - len(previously_shown_ids)
-    logger.info(
-        f"Cutoff index: {cutoff_index} "
-        f"(total: {total_repos_available}, shown: {len(previously_shown_ids)})"
-    )
-
-    for idx, temp_star in enumerate(sampled_temp_stars):
-        star = Star.objects.create(
-            reminder=reminder,
-            provider=temp_star.provider,
-            provider_id=temp_star.provider_id,
-            owner=temp_star.owner,
-            owner_id=temp_star.owner_id,
-            name=temp_star.name,
-            name_flagged=any(url in flagged_urls for url in name_urls[temp_star.id]),
-            description=temp_star.description,
-            description_flagged=any(
-                url in flagged_urls for url in description_urls[temp_star.id]
-            ),
-            star_count=temp_star.star_count,
-            repo_url=temp_star.repo_url,
-            project_url=temp_star.project_url,
-            project_url_flagged=temp_star.project_url in flagged_urls,
-            archived=temp_star.archived,
+        cutoff_index = total_repos_available - len(previously_shown_ids)
+        logger.info(
+            f"Cutoff index: {cutoff_index} "
+            f"(total: {total_repos_available}, shown: {len(previously_shown_ids)})"
         )
 
-        if idx == cutoff_index or (idx == 0 and user.user_profile.cycle_start is None):
-            user.user_profile.cycle_start = star
-            user.user_profile.save()
-            logger.info(
-                f"Cycle start set to Star ID {star.id} "
-                f"(star {idx + 1} of {len(sampled_temp_stars)} in this reminder)"
+        for idx, temp_star in enumerate(sampled_temp_stars):
+            star = Star.objects.create(
+                reminder=reminder,
+                provider=temp_star.provider,
+                provider_id=temp_star.provider_id,
+                owner=temp_star.owner,
+                owner_id=temp_star.owner_id,
+                name=temp_star.name,
+                name_flagged=any(
+                    url in flagged_urls for url in name_urls[temp_star.id]
+                ),
+                description=temp_star.description,
+                description_flagged=any(
+                    url in flagged_urls for url in description_urls[temp_star.id]
+                ),
+                star_count=temp_star.star_count,
+                repo_url=temp_star.repo_url,
+                project_url=temp_star.project_url,
+                project_url_flagged=temp_star.project_url in flagged_urls,
+                archived=temp_star.archived,
             )
 
-    logger.info(f"Created reminder and {len(sampled_temp_stars)} stars")
+            if idx == cutoff_index or (
+                idx == 0 and user.user_profile.cycle_start is None
+            ):
+                user.user_profile.cycle_start = star
+                user.user_profile.save()
+                logger.info(
+                    f"Cycle start set to Star ID {star.id} "
+                    f"(star {idx + 1} of {len(sampled_temp_stars)} in this reminder)"
+                )
 
-    if cutoff_index == len(sampled_temp_stars):
-        user.user_profile.cycle_start = None
-        user.user_profile.save()
-        logger.info(
-            "Cycle completed exactly with this reminder. Next reminder starts fresh."
-        )
+        logger.info(f"Created reminder and {len(sampled_temp_stars)} stars")
 
-    if user.user_profile.reminder_email:
-        logger.info(f"Found email for {user}, queuing email send…")
+        if cutoff_index == len(sampled_temp_stars):
+            user.user_profile.cycle_start = None
+            user.user_profile.save()
+            logger.info(
+                "Cycle completed exactly with this reminder. "
+                "Next reminder starts fresh."
+            )
 
-        subject = f"☆ Starminder ☆ {reminder.title}"
-        html = render_to_string("email.html", {"reminder": reminder, "user": user})
-        text = render_to_string("email.txt", {"reminder": reminder, "user": user})
+        if user.user_profile.reminder_email:
+            logger.info(f"Found email for {user}, queuing email send…")
+
+            subject = f"☆ Starminder ☆ {reminder.title}"
+            html = render_to_string("email.html", {"reminder": reminder, "user": user})
+            text = render_to_string("email.txt", {"reminder": reminder, "user": user})
+
+            async_task(
+                "starminder.content.email.send_email",
+                recipient=user.user_profile.reminder_email,
+                subject=subject,
+                html=html,
+                text=text,
+            )
+            logger.info("Queued email send")
+
+        else:
+            logger.info(f"No email found for {user}")
 
         async_task(
-            "starminder.content.email.send_email",
-            recipient=user.user_profile.reminder_email,
-            subject=subject,
-            html=html,
-            text=text,
+            "starminder.implementations.jobs.cleanup_temp_stars",
+            user_id,
         )
-        logger.info("Queued email send")
-
-    else:
-        logger.info(f"No email found for {user}")
-
-    async_task(
-        "starminder.implementations.jobs.cleanup_temp_stars",
-        user_id,
-    )
 
     logger.info("Done!")
 

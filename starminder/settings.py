@@ -188,6 +188,9 @@ Q_CLUSTER = {
     "orm": "default",
     "timeout": 3 * 60,
     "retry": 3 * 60 + 30,  # has to be longer than timeout
+    # failed tasks are re-delivered automatically every `retry` seconds;
+    # without a cap, deterministic failures retry forever
+    "max_attempts": 5,
 }
 if DEBUG:
     Q_CLUSTER["workers"] = 1

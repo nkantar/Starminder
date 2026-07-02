@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import MagicMock, Mock, patch
 
+from django.utils import timezone
 import pytest
 from allauth.socialaccount.models import SocialAccount, SocialToken
 
@@ -49,6 +50,11 @@ def social_token(social_account):
         account=social_account,
         token="test_token",
     )
+
+
+def backdate_reminders() -> None:
+    """Age existing reminders past the duplicate-delivery guard window."""
+    Reminder.objects.update(created_at=timezone.now() - timedelta(hours=2))
 
 
 @pytest.fixture(autouse=True)
@@ -1008,6 +1014,8 @@ def test_cycle_tracking_with_one_to_one_field(mock_async_task, user) -> None:
     reminder1_ids = set(reminder1.star_set.values_list("provider_id", flat=True))
     assert len(reminder1_ids) == 5
 
+    backdate_reminders()
+
     TempStar.objects.all().delete()
     for i in range(10):
         TempStar.objects.create(
@@ -1055,6 +1063,8 @@ def test_cycle_cutoff_mid_reminder(mock_async_task, user) -> None:
     generate_data(user.id, "irrelevant")
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is not None
+
+    backdate_reminders()
 
     TempStar.objects.all().delete()
     for i in range(10):
@@ -1131,6 +1141,8 @@ def test_all_repos_shown_resets_at_first_star(mock_async_task, user) -> None:
     user.user_profile.refresh_from_db()
     assert user.user_profile.cycle_start is not None
 
+    backdate_reminders()
+
     TempStar.objects.all().delete()
     for i in range(6):
         TempStar.objects.create(
@@ -1177,6 +1189,7 @@ def test_no_duplicates_in_first_cycle(mock_async_task, user) -> None:
 
     for reminder_num in range(3):
         generate_data(user.id, "irrelevant")
+        backdate_reminders()
 
         TempStar.objects.all().delete()
         for i in range(12):
@@ -1375,6 +1388,76 @@ def test_generate_data_does_not_flag_missing_description(
     mock_get_flagged_urls.assert_called_once_with([])
     star = Star.objects.get(reminder__user=user)
     assert star.description_flagged is False
+
+
+# resilience tests
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_user_job_deletes_leftover_temp_stars(
+    mock_async_task, user, user2, social_token, temp_star
+) -> None:
+    """Test that a run starts from a clean slate, for the running user only."""
+    TempStar.objects.create(
+        user=user2,
+        provider="github",
+        provider_id="1",
+        name="repo",
+        owner="owner",
+        owner_id="123",
+        star_count=10,
+        repo_url="https://github.com/owner/repo",
+    )
+
+    user_job(user.id)
+
+    assert TempStar.objects.filter(user=user).count() == 0
+    assert TempStar.objects.filter(user=user2).count() == 1
+    mock_async_task.assert_called_once()
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_skips_when_recent_reminder_exists(
+    mock_async_task, user, temp_star
+) -> None:
+    """Test that a re-delivered task doesn't create a duplicate reminder."""
+    Reminder.objects.create(user=user)
+
+    generate_data(user.id, "irrelevant")
+
+    assert Reminder.objects.filter(user=user).count() == 1
+    mock_async_task.assert_not_called()
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_proceeds_when_reminder_is_old(
+    mock_async_task, user, temp_star
+) -> None:
+    """Test that the duplicate guard doesn't block the next legitimate run."""
+    Reminder.objects.create(user=user)
+    backdate_reminders()
+
+    generate_data(user.id, "irrelevant")
+
+    assert Reminder.objects.filter(user=user).count() == 2
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+def test_generate_data_rolls_back_on_crash(mock_async_task, user, temp_star) -> None:
+    """Test that a mid-run crash leaves no partial reminder behind."""
+    with patch(
+        "starminder.implementations.jobs.Star.objects.create",
+        side_effect=RuntimeError("boom"),
+    ):
+        with pytest.raises(RuntimeError):
+            generate_data(user.id, "irrelevant")
+
+    assert Reminder.objects.filter(user=user).count() == 0
+    mock_async_task.assert_not_called()
 
 
 # checker failure tests
