@@ -14,6 +14,12 @@ Security in case of vulnerabilities.
 ## [Unreleased]
 
 
+## [26.7.2]
+
+### Fixed
+- Reminder runs failing on slow GitHub API responses, and duplicate/partial reminders when failed tasks were automatically retried
+
+
 ## [26.7.1]
 
 ### Fixed
@@ -300,7 +306,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/26.7.1...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/26.7.2...HEAD
+[26.7.2]: https://github.com/nkantar/Starminder/compare/26.7.1...26.7.2
 [26.7.1]: https://github.com/nkantar/Starminder/compare/26.6.28...26.7.1
 [26.6.28]: https://github.com/nkantar/Starminder/compare/26.5.18...26.6.28
 [26.5.18]: https://github.com/nkantar/Starminder/compare/25.11.20...26.5.18
