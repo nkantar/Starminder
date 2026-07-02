@@ -1,3 +1,5 @@
+from typing import ClassVar
+
 from django.conf import settings
 from django.db.models import BooleanField, CASCADE, ForeignKey, Manager
 import emoji
@@ -9,7 +11,7 @@ TIMESTAMP_FORMAT = "%A %Y-%m-%d %H:%M:%S"
 
 
 class Reminder(TimestampedModel):
-    objects: "Manager[Reminder]"
+    objects: ClassVar["Manager[Reminder]"]
     star_set: "Manager[Star]"
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
@@ -26,7 +28,7 @@ class Reminder(TimestampedModel):
 
 
 class Star(TimestampedModel, StarFieldsBase):
-    objects: "Manager[Star]"
+    objects: ClassVar["Manager[Star]"]
 
     reminder = ForeignKey(Reminder, on_delete=CASCADE)
     project_url_flagged = BooleanField(default=False)

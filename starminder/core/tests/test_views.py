@@ -295,7 +295,7 @@ def test_delete_account_view_deletes_social_accounts(
         provider="github",
         uid="test_github_id",
     )
-    social_account_id = social_account.id
+    social_account_id = social_account.pk
     client.force_login(user)
 
     response = client.post(reverse("delete_account"))

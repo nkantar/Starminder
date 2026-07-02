@@ -1,11 +1,8 @@
 import pytest
 from datetime import datetime, timedelta
-from django.contrib.auth import get_user_model
 from unittest.mock import patch
 
-from starminder.core.models import UserProfile
-
-User = get_user_model()
+from starminder.core.models import CustomUser as User, UserProfile
 
 
 @pytest.mark.django_db
