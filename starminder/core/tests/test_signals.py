@@ -1,6 +1,8 @@
 import pytest
-from datetime import datetime, timedelta
+from datetime import timedelta
 from unittest.mock import patch
+
+from django.utils import timezone
 
 from starminder.core.models import CustomUser as User, UserProfile
 
@@ -56,13 +58,13 @@ def test_multiple_users_get_separate_profiles() -> None:
 @pytest.mark.django_db
 @patch("starminder.core.models.schedule")
 def test_user_job_kicked_off_on_user_creation(mock_schedule) -> None:
-    before_creation = datetime.now()
+    before_creation = timezone.now()
     user = User.objects.create_user(
         username="testuser",
         email="test@example.com",
         password="testpass123",
     )
-    after_creation = datetime.now()
+    after_creation = timezone.now()
 
     mock_schedule.assert_called_once()
     call_args = mock_schedule.call_args

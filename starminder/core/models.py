@@ -27,6 +27,7 @@ from django.db.models import (
 )
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
+from django.utils import timezone
 from django_q.tasks import schedule
 
 from starminder.core.push import send_push_notification
@@ -169,7 +170,7 @@ def create_user_profile(
         schedule(
             "starminder.implementations.jobs.user_job",
             instance.id,
-            next_run=datetime.now() + timedelta(minutes=1),
+            next_run=timezone.now() + timedelta(minutes=1),
         )
         if not settings.DEBUG:
             send_push_notification(

@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Fixed
+- Silenced test warnings
+
 
 ## [26.7.2]
 
