@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Added
+- Support for repos user contributed to
+
 
 ## [26.7.2]
 

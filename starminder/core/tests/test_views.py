@@ -183,6 +183,7 @@ def test_dashboard_form_submission_updates_profile(
         "hour_of_day": 15,
         "include_archived": True,
         "include_own": True,
+        "include_contributed": True,
     }
     response = client.post(reverse("dashboard"), data=form_data)
 

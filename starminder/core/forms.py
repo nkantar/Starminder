@@ -21,6 +21,12 @@ class UserProfileConfigForm(forms.ModelForm):
         widget=forms.Select(),
     )
 
+    include_contributed = forms.TypedChoiceField(
+        choices=INCLUDE_CHOICES,
+        coerce=lambda x: x == "True",
+        widget=forms.Select(),
+    )
+
     class Meta:
         model = UserProfile
         fields = [
@@ -30,6 +36,7 @@ class UserProfileConfigForm(forms.ModelForm):
             "hour_of_day",
             "include_archived",
             "include_own",
+            "include_contributed",
         ]
         widgets = {
             "reminder_email": forms.EmailInput(),
@@ -44,4 +51,5 @@ class UserProfileConfigForm(forms.ModelForm):
             "hour_of_day": "Hour of day (0-23)",
             "include_archived": "Archived repositories",
             "include_own": "Own repositories",
+            "include_contributed": "Repositories I’ve contributed to",
         }

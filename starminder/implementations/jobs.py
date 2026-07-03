@@ -148,6 +148,69 @@ def pager(
         )
 
 
+def has_default_branch_commits(
+    client: httpx.Client,
+    owner: str,
+    name: str,
+    login: str,
+) -> bool:
+    """Check whether `login` has any commits on the repo's default branch."""
+    response = client.get(
+        f"https://api.github.com/repos/{owner}/{name}/commits",
+        params={"author": login, "per_page": 1},
+    )
+    if response.status_code == 200:
+        return bool(response.json())
+    # 409 empty repo, 404 renamed/gone, etc. — fail open and show the repo
+    return False
+
+
+def sample_uncontributed(
+    user: CustomUser,
+    candidates: list[TempStar],
+    sample_size: int,
+) -> list[TempStar]:
+    """Randomly pick repos the user has no default-branch commits on."""
+    tokens = list(SocialToken.objects.filter(account__user=user))
+    logins = [
+        login for token in tokens if (login := token.account.extra_data.get("login"))
+    ]
+
+    if not tokens or not logins:
+        logger.info("No tokens or logins found, skipping contribution checks")
+        return random.sample(candidates, sample_size)
+
+    # cap API checks at 3x the sample so a heavy contributor can't
+    # turn one reminder into hundreds of calls; persist verdicts per
+    # provider_id if this budget ever proves too tight
+    budget = 3 * sample_size
+    random.shuffle(candidates)
+    sampled: list[TempStar] = []
+
+    httpx_transport = RetryTransport(retry=Retry(total=5, backoff_factor=0.5))
+    with httpx.Client(
+        transport=httpx_transport,
+        timeout=30,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {tokens[0].token}",
+        },
+    ) as client:
+        for candidate in candidates:
+            if len(sampled) == sample_size or budget <= 0:
+                break
+            budget -= 1
+            if not any(
+                has_default_branch_commits(
+                    client, candidate.owner, candidate.name, login
+                )
+                for login in logins
+            ):
+                sampled.append(candidate)
+
+    return sampled
+
+
 def generate_data(user_id: int, user_uid: str) -> None:
     """Sample TempStars, create Reminder and Stars, queue email sending, clean up."""
     logger.info(f"Generating data for user_id={user_id}")
@@ -229,9 +292,19 @@ def generate_data(user_id: int, user_uid: str) -> None:
         total_repos_available = TempStar.objects.filter(**temp_stars_kwargs).count()
 
     sample_size = min(user.user_profile.max_entries, len(temp_stars_to_sample))
-    sampled_temp_stars = random.sample(temp_stars_to_sample, sample_size)
 
-    logger.info(f"Sampled {sample_size} temp stars")
+    if user.user_profile.include_contributed:
+        sampled_temp_stars = random.sample(temp_stars_to_sample, sample_size)
+    else:
+        sampled_temp_stars = sample_uncontributed(
+            user, temp_stars_to_sample, sample_size
+        )
+
+    if not sampled_temp_stars:
+        logger.info("No eligible repos after contribution filtering, exiting")
+        return
+
+    logger.info(f"Sampled {len(sampled_temp_stars)} temp stars")
 
     # everything from the Reminder to the queued email (an ORM-broker row)
     # commits or rolls back as one unit, so a crash anywhere leaves no

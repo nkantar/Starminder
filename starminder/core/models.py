@@ -124,6 +124,7 @@ class UserProfile(TimestampedModel):
 
     include_archived = BooleanField(default=True)
     include_own = BooleanField(default=True)
+    include_contributed = BooleanField(default=True)
 
     cycle_start = OneToOneField(
         "content.Star",

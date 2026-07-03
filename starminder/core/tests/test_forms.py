@@ -27,6 +27,7 @@ class TestUserProfileConfigForm:
             "hour_of_day": 12,
             "include_archived": True,
             "include_own": True,
+            "include_contributed": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -38,6 +39,7 @@ class TestUserProfileConfigForm:
             "hour_of_day": 9,
             "include_archived": True,
             "include_own": True,
+            "include_contributed": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -49,6 +51,7 @@ class TestUserProfileConfigForm:
             "hour_of_day": 0,
             "include_archived": True,
             "include_own": True,
+            "include_contributed": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -60,6 +63,7 @@ class TestUserProfileConfigForm:
             "hour_of_day": 23,
             "include_archived": True,
             "include_own": True,
+            "include_contributed": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -122,7 +126,8 @@ class TestUserProfileConfigForm:
         assert "hour_of_day" in form.fields
         assert "include_archived" in form.fields
         assert "include_own" in form.fields
-        assert len(form.fields) == 6
+        assert "include_contributed" in form.fields
+        assert len(form.fields) == 7
 
     def test_form_excludes_enabled_field(self):
         form = UserProfileConfigForm()
@@ -157,6 +162,7 @@ class TestUserProfileConfigForm:
             "hour_of_day": 18,
             "include_archived": True,
             "include_own": True,
+            "include_contributed": True,
         }
         form = UserProfileConfigForm(data=form_data, instance=user_profile)
         assert form.is_valid()
@@ -185,6 +191,7 @@ class TestUserProfileConfigForm:
                 "hour_of_day": 12,
                 "include_archived": True,
                 "include_own": True,
+                "include_contributed": True,
             }
             form = UserProfileConfigForm(data=form_data, instance=user_profile)
             assert form.is_valid(), f"Form should be valid for day {day}"

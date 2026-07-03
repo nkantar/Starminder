@@ -982,6 +982,85 @@ def test_generate_data_includes_own_when_preference_false(
     assert "456" not in user_uids
 
 
+# contributed repository tests
+
+
+@pytest.fixture
+def contributed_setup(user, social_account):
+    """Toggle off include_contributed and give the account a login."""
+    user.user_profile.include_contributed = False
+    user.user_profile.save()
+
+    social_account.extra_data = {"login": user.username}
+    social_account.save()
+    SocialToken.objects.create(account=social_account, token="test_token")
+
+    for i in range(2):
+        TempStar.objects.create(
+            user=user,
+            provider="github",
+            provider_id=str(i),
+            name=f"repo{i}",
+            owner="owner",
+            owner_id="123",
+            star_count=10,
+            repo_url=f"https://github.com/owner/repo{i}",
+        )
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.httpx.Client")
+def test_generate_data_excludes_contributed_repos(
+    mock_client_class, mock_async_task, user, contributed_setup
+) -> None:
+    """Repos with the user's commits are skipped and replaced when excluded."""
+    user.user_profile.max_entries = 1
+    user.user_profile.save()
+
+    def fake_get(url, params=None, **kwargs):
+        response = Mock()
+        response.status_code = 200
+        # user has commits on repo0 only
+        response.json.return_value = [{"sha": "abc"}] if "repo0" in url else []
+        return response
+
+    mock_client = MagicMock()
+    mock_client.get.side_effect = fake_get
+    mock_client.__enter__.return_value = mock_client
+    mock_client.__exit__.return_value = None
+    mock_client_class.return_value = mock_client
+
+    generate_data(user.id, "irrelevant")
+
+    reminder = Reminder.objects.get(user=user)
+    stars = Star.objects.filter(reminder=reminder)
+    assert stars.count() == 1
+    assert stars[0].name == "repo1"
+
+
+@pytest.mark.django_db
+@patch("starminder.implementations.jobs.async_task")
+@patch("starminder.implementations.jobs.httpx.Client")
+def test_generate_data_skips_reminder_when_all_contributed(
+    mock_client_class, mock_async_task, user, contributed_setup
+) -> None:
+    """No reminder is created when every candidate has the user's commits."""
+    contributed_response = Mock()
+    contributed_response.status_code = 200
+    contributed_response.json.return_value = [{"sha": "abc"}]
+
+    mock_client = MagicMock()
+    mock_client.get.return_value = contributed_response
+    mock_client.__enter__.return_value = mock_client
+    mock_client.__exit__.return_value = None
+    mock_client_class.return_value = mock_client
+
+    generate_data(user.id, "irrelevant")
+
+    assert Reminder.objects.filter(user=user).count() == 0
+
+
 # cycle tracking tests
 
 
