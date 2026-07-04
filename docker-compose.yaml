@@ -27,7 +27,7 @@ services:
 
   starminder-worker:
     build: .
-    container_name: starminder-web
+    container_name: starminder-worker
     restart: unless-stopped
     environment:
       - DATABASE_URL=${DATABASE_URL}

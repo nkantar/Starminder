@@ -15,6 +15,7 @@ Security in case of vulnerabilities.
 
 ### Fixed
 - Silenced test warnings
+- Incorrect worker container name
 
 
 ## [26.7.2]
