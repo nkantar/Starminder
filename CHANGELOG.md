@@ -13,6 +13,9 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+### Changed
+- Updated Granian web server config
+
 ### Fixed
 - Silenced test warnings
 - Incorrect worker container name
