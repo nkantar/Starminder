@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Any, ClassVar
+from typing import Any, ClassVar, TYPE_CHECKING
 from uuid import uuid4
 
 from allauth.socialaccount.models import SocialAccount
@@ -31,6 +31,9 @@ from django.utils import timezone
 from django_q.tasks import schedule
 
 from starminder.core.push import send_push_notification
+
+if TYPE_CHECKING:
+    from django.db.models.fields.related_descriptors import RelatedManager
 
 
 class TimestampedModel(Model):
@@ -64,7 +67,7 @@ class CustomUser(AbstractUser):
     id: int
     objects: ClassVar[UserManager["CustomUser"]]
     user_profile: "UserProfile"
-    socialaccount_set: "Manager[SocialAccount]"
+    socialaccount_set: "RelatedManager[SocialAccount]"
 
     def __str__(self) -> str:
         return f"{self.username} (User)"

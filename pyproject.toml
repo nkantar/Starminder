@@ -1,10 +1,10 @@
 [project]
 name = "Starminder"
-version = "26.7.2"
+version = "26.11.3"
 dependencies = [
     "croniter>=6.0.0",
     "dj-database-url>=3.0.1",
-    "django>=5.2.7",
+    "django>=6.1.3",
     "django-allauth[socialaccount]>=65.12.0",
     "django-q2>=1.8.0",
     "emoji>=2.15.0",
@@ -30,7 +30,7 @@ license = {file = "LICENSE"}
 
 [dependency-groups]
 dev = [
-    "django-stubs>=5.2.7",
+    "django-stubs>=6.1.2",
     "pdbpp>=0.11.7",
     "pytest>=8.4.2",
     "pytest-django>=4.11.1",
@@ -41,3 +41,6 @@ dev = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "starminder.settings"
 django_debug_mode = true # mostly to disable admin push notifications
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"] # ruff's former defaults

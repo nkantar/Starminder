@@ -1,4 +1,4 @@
-from typing import ClassVar
+from typing import ClassVar, TYPE_CHECKING
 
 from django.conf import settings
 from django.db.models import BooleanField, CASCADE, ForeignKey, Manager
@@ -6,13 +6,16 @@ import emoji
 
 from starminder.core.models import StarFieldsBase, TimestampedModel
 
+if TYPE_CHECKING:
+    from django.db.models.fields.related_descriptors import RelatedManager
+
 
 TIMESTAMP_FORMAT = "%A %Y-%m-%d %H:%M:%S"
 
 
 class Reminder(TimestampedModel):
     objects: ClassVar["Manager[Reminder]"]
-    star_set: "Manager[Star]"
+    star_set: "RelatedManager[Star]"
 
     user = ForeignKey(settings.AUTH_USER_MODEL, on_delete=CASCADE)
 

@@ -13,12 +13,18 @@ Security in case of vulnerabilities.
 
 ## [Unreleased]
 
+
+## [26.11.3]
+
 ### Changed
 - Updated Granian web server config
 
 ### Fixed
 - Silenced test warnings
 - Incorrect worker container name
+
+### Security
+- Upgraded dependencies, including Django to 6.1
 
 
 ## [26.7.2]
@@ -313,7 +319,8 @@ Security in case of vulnerabilities.
 - First version suitable for public consumption.
 
 
-[Unreleased]: https://github.com/nkantar/Starminder/compare/26.7.2...HEAD
+[Unreleased]: https://github.com/nkantar/Starminder/compare/26.11.3...HEAD
+[26.7.2]: https://github.com/nkantar/Starminder/compare/26.7.2...26.11.3
 [26.7.2]: https://github.com/nkantar/Starminder/compare/26.7.1...26.7.2
 [26.7.1]: https://github.com/nkantar/Starminder/compare/26.6.28...26.7.1
 [26.6.28]: https://github.com/nkantar/Starminder/compare/26.5.18...26.6.28
